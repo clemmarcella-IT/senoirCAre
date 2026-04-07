@@ -1,0 +1,138 @@
+:root {
+    --bg-light: #F4FFFC;
+    --accent-mint: #91EAAF;
+    --lime-highlight: #C3E956;
+    --olive-dark: #4D7111;
+    --forest-deep: #1F4B2C;
+    --navy: #2c3e50;
+    --healthcare-blue: #3498db;
+    --success-green: #27ae60;
+    --alert-red: #e74c3c;
+    --sidebar-width: 260px;
+    --transition-speed: 0.3s;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--forest-deep);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* --- TIP #2: RESPONSIVE FONT SIZES (CLAMP) --- */
+h2 {
+    /* Minimum 1.5rem, preferred scales with viewport, maximum 2rem */
+    font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem) !important;
+    font-weight: 700;
+}
+
+/* SIDEBAR */
+#sidebar {
+    width: var(--sidebar-width);
+    /* --- TIP #4: DYNAMIC VIEWPORT HEIGHT (dvh) --- */
+    height: 100vh; /* Fallback for older browsers */
+    height: 100dvh; /* Modern solution for mobile toolbars */
+    position: fixed;
+    left: 0; top: 0;
+    background: var(--forest-deep);
+    color: white;
+    transition: transform var(--transition-speed);
+    z-index: 1000;
+    padding-top: 20px;
+}
+
+#sidebar .brand {
+    padding: 0 25px 30px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    color: var(--accent-mint);
+}
+
+#sidebar .nav-link {
+    color: rgba(255,255,255,0.7);
+    padding: 12px 25px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+#sidebar .nav-link i { margin-right: 15px; width: 20px; text-align: center; }
+
+#sidebar .nav-link:hover, #sidebar .nav-link.active {
+    color: var(--lime-highlight);
+    background: rgba(255,255,255,0.1);
+}
+
+/* MAIN CONTENT */
+#main-content {
+    margin-left: var(--sidebar-width);
+    /* --- TIP #1: RELATIVE PADDING (MIN) --- */
+    /* 30px on desktop, shrinks to 5vw on tiny screens */
+    padding: min(30px, 5vw);
+    transition: margin-left var(--transition-speed);
+}
+
+/* --- TIP #3: RESPONSIVE IMAGES --- */
+/* Add this class to any <img> tag later to prevent stretching */
+.resp-img {
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+/* COMPONENTS */
+.card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+.stat-card { border-left: 5px solid var(--accent-mint); }
+.fab {
+    position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+    border-radius: 50%; background: var(--olive-dark); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* SEARCH PALETTE */
+.search-container { position: relative; width: 100%; max-width: 500px; }
+.suggestion-palette {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: white; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    display: none; z-index: 100; padding: 10px 0;
+}
+.suggestion-item { padding: 10px 20px; cursor: pointer; }
+.suggestion-item:hover { background: var(--bg-light); }
+
+/* SCANNER SIM */
+.qr-scanner-sim {
+    width: min(250px, 100%); /* Responsive sizing */
+    aspect-ratio: 1 / 1;
+    border: 5px dashed var(--olive-dark);
+    margin: 0 auto; display: flex; align-items: center; justify-content: center;
+    background: #eee; position: relative;
+}
+
+/* KIOSK MODE OVERRIDES (Desktop Only) */
+@media (min-width: 769px) {
+    body.kiosk-mode #sidebar { width: 100px; }
+    body.kiosk-mode #sidebar .brand, body.kiosk-mode #sidebar span { display: none; }
+    body.kiosk-mode #sidebar .nav-link i { margin-right: 0; font-size: 1.8rem; }
+    body.kiosk-mode #main-content { margin-left: 100px; }
+    body.kiosk-mode .btn, body.kiosk-mode .card, body.kiosk-mode .form-control {
+        padding: 20px !important; font-size: 1.5rem !important;
+    }
+}
+
+/* --- THE RESPONSIVE BREAKPOINT (MOBILE PHONES & TABLETS) --- */
+@media (max-width: 768px) {
+    #sidebar {
+        transform: translateX(-100%); /* Hide sidebar off-screen */
+    }
+    #sidebar.show {
+        transform: translateX(0); /* Slide in when open */
+    }
+    #main-content {
+        margin-left: 0; /* Full width content */
+    }
+}
