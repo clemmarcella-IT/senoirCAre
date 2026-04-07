@@ -8,8 +8,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 1. ADD: Mobile Overlay -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- 2. ADD: Top Bar Navigation -->
+  <header id="topbar">
+    <button id="hamburger-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    
+    <!-- Reverted text to original, keeping your custom logo -->
+    <div class="brand">
+        <img src="care.png" alt="Senior Care Logo" class="brand-img">
+        SENIOR-CARE
+    </div>
+</header>
+
+    <!-- 3. UPDATE: Sidebar (Removed .brand div from inside here) -->
     <nav id="sidebar">
-        <div class="brand">SENIOR-CARE</div>
         <div class="nav flex-column">
             <a href="dashboard.html" class="nav-link"> <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
             <a href="profiling.html" class="nav-link"> <i class="fa-solid fa-users"></i> <span>Senior Profiling</span></a>
@@ -20,21 +36,55 @@
         </div>
     </nav>
     <main id="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Dashboard Overview</h2>
-            <button class="btn btn-outline-dark btn-sm" onclick="toggleKiosk()">Toggle Kiosk Mode</button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dashboard Overview</h2>
+        <button class="btn btn-outline-dark btn-sm" onclick="toggleKiosk()">Toggle Kiosk Mode</button>
+    </div>
+
+    <!-- Quick Stats Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3"><div class="card stat-card p-3"><h6>Total Seniors</h6><h3>1,284</h3></div></div>
+        <div class="col-md-3"><div class="card stat-card p-3" style="border-left-color: #3498db;"><h6>Active Events</h6><h3>12</h3></div></div>
+        <div class="col-md-3"><div class="card stat-card p-3" style="border-left-color: #C3E956;"><h6>Assistance Issued</h6><h3>85%</h3></div></div>
+        <div class="col-md-3"><div class="card stat-card p-3" style="border-left-color: #e74c3c;"><h6>Medical Alerts</h6><h3>04</h3></div></div>
+    </div>
+
+    <!-- Charts Row 1: Health & Assistance -->
+    <div class="row">
+        <!-- Line Graph -->
+        <div class="col-md-7 mb-4">
+            <div class="card p-4">
+                <h5 class="mb-3">Health Trends: Monthly Medical Alerts</h5>
+                <canvas id="healthLineChart"></canvas>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-md-3"><div class="card stat-card p-3"><h6>Total Seniors</h6><h3>1,284</h3></div></div>
-            <div class="col-md-3"><div class="card stat-card p-3" style="border-left-color: #3498db;"><h6>Active Events</h6><h3>12</h3></div></div>
-            <div class="col-md-3"><div class="card stat-card p-3" style="border-left-color: #C3E956;"><h6>Assistance Issued</h6><h3>85%</h3></div></div>
-            <div class="col-md-3"><div class="card stat-card p-3" style="border-left-color: #e74c3c;"><h6>Medical Alerts</h6><h3>04</h3></div></div>
+        <!-- Bar Chart -->
+        <div class="col-md-5 mb-4">
+            <div class="card p-4">
+                <h5 class="mb-3">Assistance Distribution</h5>
+                <canvas id="assistanceBarChart"></canvas>
+            </div>
         </div>
-        <div class="row mt-4">
-            <div class="col-md-8"><div class="card p-4"><canvas id="barChart"></canvas></div></div>
-            <div class="col-md-4"><div class="card p-4"><canvas id="pieChart"></canvas></div></div>
+    </div>
+
+    <!-- Charts Row 2: Demographics & Activities -->
+    <div class="row">
+        <!-- Pie Chart -->
+        <div class="col-md-4 mb-4">
+            <div class="card p-4">
+                <h5 class="mb-3">Senior Demographics</h5>
+                <canvas id="genderPieChart"></canvas>
+            </div>
         </div>
-    </main>
+        <!-- Horizontal Bar Chart -->
+        <div class="col-md-8 mb-4">
+            <div class="card p-4">
+                <h5 class="mb-3">Program Participation Rate</h5>
+                <canvas id="activitiesHBarChart"></canvas>
+            </div>
+        </div>
+    </div>
+</main>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts.js"></script>
     <script>

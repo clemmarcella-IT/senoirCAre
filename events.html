@@ -7,8 +7,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+     <!-- 1. ADD: Mobile Overlay -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- 2. ADD: Top Bar Navigation -->
+    <header id="topbar">
+    <button id="hamburger-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    
+    <!-- Reverted text to original, keeping your custom logo -->
+    <div class="brand">
+        <img src="care.png" alt="Senior Care Logo" class="brand-img">
+        SENIOR-CARE
+    </div>
+</header>
+
+    <!-- 3. UPDATE: Sidebar (Removed .brand div from inside here) -->
     <nav id="sidebar">
-        <div class="brand">SENIOR-CARE</div>
         <div class="nav flex-column">
             <a href="dashboard.html" class="nav-link"> <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
             <a href="profiling.html" class="nav-link"> <i class="fa-solid fa-users"></i> <span>Senior Profiling</span></a>
