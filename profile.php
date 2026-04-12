@@ -36,7 +36,9 @@ $age = (new DateTime($row['Birthday']))->diff(new DateTime('today'))->y;
             </div>
             <div class="mt-4 d-flex gap-2 no-print">
                 <button onclick="window.print()" class="btn btn-forest flex-grow-1">PRINT PROFILE</button>
-                <a href="login.php" class="btn btn-outline-secondary px-4">LOGOUT</a>
+                <a href="logout.php" class="btn btn-outline-secondary px-4 no-print">
+                    LOGOUT
+                </a>
             </div>
         </div>
     </div></div>
