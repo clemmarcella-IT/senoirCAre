@@ -90,7 +90,7 @@ $statusClass = ($row['CitezenStatus'] == 'active') ? 'active-bg' : 'inactive-bg'
 
                         <div class="row">
                             <div class="col-12">
-                                <label class="label-tag">OscaIDNo. (System Primary Key)</label>
+                                <label class="label-tag">OscaIDNo. (Primary ID)</label>
                                 <div class="data-box text-primary fs-5 fw-bold"><?php echo $row['OscaIDNo']; ?></div>
                             </div>
 
