@@ -1,66 +1,117 @@
+<?php require_once('includes/session.php'); 
+
+// Handle QR Scan AJAX Request (Duplication Constraint)
+if(isset($_POST['scanned_id'])) {
+    $id = mysqli_real_escape_string($conn, $_POST['scanned_id']);
+    $purpose = mysqli_real_escape_string($conn, $_POST['purpose']);
+    $date = date('Y-m-d');
+    $time = date('H:i:s');
+
+    // 1. Check if ID exists
+    $checkUser = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo='$id'");
+    if(mysqli_num_rows($checkUser) == 0) {
+        echo "<script>alert('Error: Unregistered QR Code.'); window.location='health.php';</script>";
+        exit;
+    }
+
+    // 2. DUPLICATION CONSTRAINT CHECK (Cannot scan twice for health on the same day)
+    $checkDup = mysqli_query($conn, "SELECT * FROM healthrecords WHERE OscaIDNo='$id' AND HealthDate='$date'");
+    if(mysqli_num_rows($checkDup) > 0) {
+        echo "<script>alert('Duplicate: This Senior has already been recorded for Health today.'); window.location='health.php';</script>";
+    } else {
+        // 3. Insert Record
+        mysqli_query($conn, "INSERT INTO healthrecords (OscaIDNo, HealthDate, HealthPurpose, HealthAttendanceStatus, HealthTimeIn) 
+                             VALUES ('$id', '$date', '$purpose', 'present', '$time')");
+        echo "<script>alert('Success: Health Record Added for $id.'); window.location='health.php';</script>";
+    }
+    exit;
+}
+
+// Delete Logic
+if(isset($_GET['delete'])) {
+    mysqli_query($conn, "DELETE FROM healthrecords WHERE HealthRecordID='".$_GET['delete']."'");
+    header("Location: health.php");
+}
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8"><title>SENIOR-CARE | Health</title>
+    <title>Health Records</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/html5-qrcode"></script> <!-- QR Scanner Library -->
 </head>
-<body>
-     <!-- 1. ADD: Mobile Overlay -->
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<body class="d-flex">
+    <?php include('includes/sidebar.php'); ?>
 
-    <!-- 2. ADD: Top Bar Navigation -->
-   <header id="topbar">
-    <button id="hamburger-btn" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-    
-    <!-- Reverted text to original, keeping your custom logo -->
-    <div class="brand">
-        <img src="care.png" alt="Senior Care Logo" class="brand-img">
-        SENIOR-CARE
+    <div class="flex-grow-1 p-4 bg-light">
+        <h2>Health Check-up & Medication Records</h2>
+        
+        <div class="card mt-4 mb-4">
+            <div class="card-header bg-success text-white fw-bold">Take Attendance via QR</div>
+            <div class="card-body row">
+                <!-- Camera Window -->
+                <div class="col-md-6 text-center">
+                    <div id="reader" style="width: 100%; max-width: 400px; margin: 0 auto;"></div>
+                </div>
+                <!-- Manual Data Form -->
+                <div class="col-md-6">
+                    <form method="POST" id="qrForm">
+                        <div class="mb-3">
+                            <label>Scanned OscaIDNo</label>
+                            <input type="text" name="scanned_id" id="scanned_id" class="form-control" readonly required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Health Purpose</label>
+                            <select name="purpose" class="form-select" required>
+                                <option value="Routine Check-up">Routine Check-up</option>
+                                <option value="X-Ray">X-Ray</option>
+                                <option value="Maintenance Capsule Issuance">Maintenance Capsule Issuance</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" id="submitBtn" disabled>Record Attendance (Present)</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead><tr><th>Record ID</th><th>OscaIDNo</th><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>
+                        <?php
+                        $q = mysqli_query($conn, "SELECT * FROM healthrecords ORDER BY HealthDate DESC");
+                        while($row = mysqli_fetch_assoc($q)): ?>
+                        <tr>
+                            <td><?php echo $row['HealthRecordID']; ?></td>
+                            <td><span class="badge bg-primary"><?php echo $row['OscaIDNo']; ?></span></td>
+                            <td><?php echo $row['HealthDate']; ?></td>
+                            <td><?php echo $row['HealthTimeIn']; ?></td>
+                            <td><?php echo $row['HealthPurpose']; ?></td>
+                            <td><span class="text-success fw-bold"><?php echo $row['HealthAttendanceStatus']; ?></span></td>
+                            <td><a href="health.php?delete=<?php echo $row['HealthRecordID']; ?>" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-</header>
 
-    <!-- 3. UPDATE: Sidebar (Removed .brand div from inside here) -->
-    <nav id="sidebar">
-        <div class="nav flex-column">
-            <a href="dashboard.html" class="nav-link"> <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
-            <a href="profiling.html" class="nav-link"> <i class="fa-solid fa-users"></i> <span>Senior Profiling</span></a>
-            <a href="health.html" class="nav-link"> <i class="fa-solid fa-heart-pulse"></i> <span>Health Records</span></a>
-            <a href="assistance.html" class="nav-link"> <i class="fa-solid fa-hand-holding-heart"></i> <span>Assistance</span></a>
-            <a href="events.html" class="nav-link"> <i class="fa-solid fa-calendar-check"></i> <span>Events & Log</span></a>
-            <a href="reports.html" class="nav-link"> <i class="fa-solid fa-file-export"></i> <span>Reports</span></a>
-        </div>
-    </nav>
-    <main id="main-content">
-        <h2>Health Record Monitoring</h2>
-        <div class="row">
-            <div class="col-md-7">
-                <div class="card p-4">
-                    <h5>Medical Checkup Timeline</h5>
-                    <div class="timeline">
-                        <div class="timeline-item"><h6>Annual Physical Exam</h6><small>Oct 12, 2023</small></div>
-                        <div class="timeline-item"><h6>Vaccination</h6><small>Aug 05, 2023</small></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="card p-4 border-danger bg-light">
-                    <h5 class="text-danger">Medical Alert</h5>
-                    <p><strong>Ricardo Gomez</strong>: High Blood Pressure</p>
-                </div>
-                <div class="card p-4">
-                    <h5>Vital Signs</h5>
-                    <div class="row text-center">
-                        <div class="col-6"><h6>BP</h6><h4>120/80</h4></div>
-                        <div class="col-6"><h6>HR</h6><h4>72 bpm</h4></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <script src="scripts.js"></script>
+    <!-- QR Scanner Logic -->
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Put the scanned text into the input box
+            document.getElementById('scanned_id').value = decodedText;
+            document.getElementById('submitBtn').disabled = false; // Enable submit button
+            
+            // Optional: Auto-submit form when scanned
+            // document.getElementById('qrForm').submit(); 
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
 </body>
 </html>

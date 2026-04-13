@@ -1,61 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8"><title>SENIOR-CARE | Profiling</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- 1. ADD: Mobile Overlay -->
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<?php
+include("../includes/db_connection.php");
 
-    <!-- 2. ADD: Top Bar Navigation -->
-    <header id="topbar">
-    <button id="hamburger-btn" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-    
-    <!-- Reverted text to original, keeping your custom logo -->
-    <div class="brand">
-        <img src="care.png" alt="Senior Care Logo" class="brand-img">
-        SENIOR-CARE
+$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
+
+$query = "SELECT * FROM seniors WHERE (LastName LIKE '%$search%' OR OscaIDNo LIKE '%$search%')";
+if($status_filter != '') { $query .= " AND CitezenStatus = '$status_filter'"; }
+
+$result = mysqli_query($conn, $query);
+?>
+
+<!-- Add to HTML inside #content -->
+<div class="card p-4">
+    <div class="d-flex justify-content-between mb-3">
+        <form class="d-flex gap-2">
+            <input type="text" name="search" class="form-control" placeholder="Search ID or Name..." value="<?php echo $search; ?>">
+            <select name="status" class="form-select" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+            <button class="btn btn-forest">Search</button>
+        </form>
     </div>
-</header>
 
-    <!-- 3. UPDATE: Sidebar (Removed .brand div from inside here) -->
-    <nav id="sidebar">
-        <div class="nav flex-column">
-            <a href="dashboard.html" class="nav-link"> <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
-            <a href="profiling.html" class="nav-link"> <i class="fa-solid fa-users"></i> <span>Senior Profiling</span></a>
-            <a href="health.html" class="nav-link"> <i class="fa-solid fa-heart-pulse"></i> <span>Health Records</span></a>
-            <a href="assistance.html" class="nav-link"> <i class="fa-solid fa-hand-holding-heart"></i> <span>Assistance</span></a>
-            <a href="events.html" class="nav-link"> <i class="fa-solid fa-calendar-check"></i> <span>Events & Log</span></a>
-            <a href="reports.html" class="nav-link"> <i class="fa-solid fa-file-export"></i> <span>Reports</span></a>
-        </div>
-    </nav>
-    <main id="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Senior Profiling</h2>
-            <button class="btn btn-success">Add New Senior</button>
-        </div>
-        <div class="card p-3 mb-4">
-            <div class="search-container">
-                <input type="text" class="form-control" placeholder="Search by name or ID..." onfocus="showSuggestions()" onblur="hideSuggestions()">
-                <div class="suggestion-palette" id="suggestionPalette">
-                    <div class="suggestion-item">Juan Dela Cruz - #SR-001</div>
-                    <div class="suggestion-item">Maria Clara - #SR-042</div>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light"><tr><th>QR</th><th>Name</th><th>Age</th><th>Gender</th><th>Status</th></tr></thead>
-                <tbody><tr><td><i class="fa fa-qrcode"></i></td><td>Juan Dela Cruz</td><td>72</td><td>M</td><td><span class="badge bg-success">Active</span></td></tr></tbody>
-            </table>
-        </div>
-    </main>
-    <button class="fab"><i class="fa fa-plus"></i></button>
-    <script src="scripts.js"></script>
-</body>
-</html>
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th>OscaIDNo.</th>
+                <th>Full Name</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while($row = mysqli_fetch_assoc($result)): ?>
+            <tr>
+                <td><?php echo $row['OscaIDNo']; ?></td>
+                <td><?php echo $row['LastName'] . ", " . $row['FirstName']; ?></td>
+                <td>
+                    <span class="badge <?php echo ($row['CitezenStatus'] == 'active') ? 'bg-success' : 'bg-danger'; ?>">
+                        <?php echo $row['CitezenStatus']; ?>
+                    </span>
+                </td>
+                <td>
+                    <a href="edit_senior.php?id=<?php echo $row['OscaIDNo']; ?>" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="delete_senior.php?id=<?php echo $row['OscaIDNo']; ?>" onclick="return confirm('Delete this record?')" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
