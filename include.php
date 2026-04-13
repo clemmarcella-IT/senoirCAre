@@ -1,14 +1,6 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "seniorcaredb";
-
-
-$conn = mysqli_connect($host, $username, $password, $database);
-
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+$conn=mysqli_connect("localhost","root","","seniorcaredb");
+if(!$conn){
+	("Connection Failed:" . mysqli_connect_error());
 }
 ?>
