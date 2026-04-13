@@ -1,5 +1,5 @@
 <?php
-require_once('include.php');
+include("../includes/db_connection.php");
 
 if (!isset($_GET['id'])) { header("Location: login.php"); exit; }
 
@@ -21,7 +21,7 @@ $age = $bday->diff($today)->y;
     <title>Profile - OscaIDNo. <?php echo $id; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="userStyle.css">
+    <link rel="stylesheet" href="css/userStyle.css">
 </head>
 <body>
 
@@ -36,14 +36,15 @@ $age = $bday->diff($today)->y;
                 <div class="row g-0">
                     <!-- LEFT SIDE: PHOTO & QR -->
                     <div class="col-md-4 id-side">
-                        <img src="uploads/<?php echo $row['Picture']; ?>" class="display-pic shadow" alt="Profile">
+                       <img src="../uploads/<?php echo $row['Picture']; ?>" class="display-pic">
                         <h5 class="fw-bold mb-0"><?php echo $row['FirstName']; ?></h5>
+                        <!-- Added Prefix -->
                         <p class="small opacity-75 mb-3">OscaIDNo. <?php echo $id; ?></p>
                         
                         <div id="qrcode-target"></div>
                         
                         <div class="mt-4 px-2 no-print small opacity-75">
-                            Screenshot or Download QR
+                            <i class="fa fa-camera"></i> Screenshot or Download QR
                         </div>
                     </div>
 
@@ -56,7 +57,7 @@ $age = $bday->diff($today)->y;
 
                         <div class="row flex-grow-1">
                             <div class="col-12">
-                                <label class="label-tag">OscaIDNo.</label>
+                                <label class="label-tag">OscaIDNo. (Primary System ID)</label>
                                 <div class="data-box text-primary fs-5 fw-bold"><?php echo $id; ?></div>
                             </div>
                             <div class="col-12">
@@ -69,7 +70,7 @@ $age = $bday->diff($today)->y;
                             </div>
                             <div class="col-md-4 col-4">
                                 <label class="label-tag">Age</label>
-                                <div class="data-box text-success fw-bold"><?php echo $age; ?> Years Old</div>
+                                <div class="data-box text-success fw-bold"><?php echo $age; ?> Yrs</div>
                             </div>
                             <div class="col-md-4 col-4">
                                 <label class="label-tag">Birthday</label>
@@ -100,35 +101,27 @@ $age = $bday->diff($today)->y;
     </div>
 </div>
 
-<!-- Essential Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="UserQRGenerate.js"></script>
+<script src="js/UserQRGenerate.js"></script>
 
 <script>
-    // 1. Generate the QR Code when page loads
     window.onload = function() {
         renderProfileQR("<?php echo $id; ?>");
     };
 
-    // 2. THE PRINT LOGIC (Opens 800x600 Window)
     function printPage() {
         var cardContent = document.getElementById("profileCard");
-        
-        // Clone the card to remove the buttons from the printed version
         var printClone = cardContent.cloneNode(true);
         var buttons = printClone.querySelectorAll('.no-print');
         buttons.forEach(btn => btn.remove());
 
-        // YOUR EXACT REQUESTED WINDOW SIZE
         var newWindow = window.open("", "", "width=800,height=600");
-        
         newWindow.document.write("<html><head><title>Print Official Profile</title>");
         
-        // Add your styles to the new window so it's organized
+        // Corrected CSS path for the new window
         newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
-        newWindow.document.write('<link rel="stylesheet" href="userStyle.css">');
+        newWindow.document.write('<link rel="stylesheet" href="css/userStyle.css">');
         
-        // Custom print styles for the popup window
         newWindow.document.write(`
             <style>
                 body { background: white !important; padding: 30px; }
@@ -138,23 +131,17 @@ $age = $bday->diff($today)->y;
                 .data-box { border-bottom: 1px solid #000 !important; font-weight: bold; }
             </style>
         `);
-        
         newWindow.document.write("</head><body>");
-        
-        // Insert the profile card content
         newWindow.document.write('<div class="profile-card">' + printClone.innerHTML + '</div>');
-        
         newWindow.document.write("</body></html>");
         newWindow.document.close();
         
-        // Wait for CSS/Images to load, then print and close popup
         newWindow.focus();
         setTimeout(function() {
             newWindow.print();
             newWindow.close();
-        }, 700);
+        }, 750);
     }
 </script>
-
 </body>
 </html>

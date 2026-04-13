@@ -1,5 +1,5 @@
 <?php
-require_once('include.php');
+include("../includes/db_connection.php");
 
 // Handle Login Logic
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom Style -->
-    <link rel="stylesheet" href="userStyle.css">
+   <link rel="stylesheet" href="css/userStyle.css">
 </head>
 <body>
 
