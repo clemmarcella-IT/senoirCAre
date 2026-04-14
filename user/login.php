@@ -70,6 +70,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </a>
                         </div>
                     </form>
+                    <!-- Find the end of your form and add this before the </div> of the card -->
+                    <div class="text-center mt-3 pt-3 border-top">
+                        <p class="small text-muted mb-2">Staff or Administrator?</p>
+                        <a href="../admin/login.php" class="btn btn-outline-dark btn-sm w-100 py-2 shadow-sm">
+                            <i class="fa-solid fa-user-shield me-2"></i> GO TO ADMIN LOGIN
+                        </a>
+                        </div>
                 </div>
 
                 <!-- Simple Footer Note -->

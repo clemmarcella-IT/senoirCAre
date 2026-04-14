@@ -1,39 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>SENIOR-CARE | Assistance</title>
+    <meta charset="UTF-8">
+    <title>Assistance | Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-     <!-- 1. ADD: Mobile Overlay -->
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <?php include('includes/header.php'); ?>
+    <?php include('includes/sidebar.php'); ?>
 
-    <!-- 2. ADD: Top Bar Navigation -->
-    <header id="topbar">
-    <button id="hamburger-btn" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-    
-    <!-- Reverted text to original, keeping your custom logo -->
-    <div class="brand">
-        <img src="care.png" alt="Senior Care Logo" class="brand-img">
-        SENIOR-CARE
-    </div>
-</header>
-
-    <!-- 3. UPDATE: Sidebar (Removed .brand div from inside here) -->
-    <nav id="sidebar">
-        <div class="nav flex-column">
-            <a href="dashboard.html" class="nav-link"> <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
-            <a href="profiling.html" class="nav-link"> <i class="fa-solid fa-users"></i> <span>Senior Profiling</span></a>
-            <a href="health.html" class="nav-link"> <i class="fa-solid fa-heart-pulse"></i> <span>Health Records</span></a>
-            <a href="assistance.html" class="nav-link"> <i class="fa-solid fa-hand-holding-heart"></i> <span>Assistance</span></a>
-            <a href="events.html" class="nav-link"> <i class="fa-solid fa-calendar-check"></i> <span>Events & Log</span></a>
-            <a href="reports.html" class="nav-link"> <i class="fa-solid fa-file-export"></i> <span>Reports</span></a>
-        </div>
-    </nav>
     <main id="main-content">
         <h2>Assistance & Benefits Tracking</h2>
         <div class="row mb-4">
@@ -48,6 +26,6 @@
             </table>
         </div>
     </main>
-    <script src="scripts.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>

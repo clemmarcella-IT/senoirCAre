@@ -35,17 +35,20 @@ if(isset($_GET['delete'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Pension Records</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-<body class="d-flex">
+<body>
+    <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
-    <div class="flex-grow-1 p-4 bg-light">
+    <main id="main-content">
         <h2 class="text-success fw-bold"><i class="fa fa-wallet me-2"></i> Pension Distribution Records</h2>
         
         <div class="card mt-4 mb-4 shadow-sm">
@@ -117,9 +120,10 @@ if(isset($_GET['delete'])) {
                 </table>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- QR Scanner Logic -->
+    <script src="js/scripts.js"></script>
     <script>
         function onScanSuccess(decodedText, decodedResult) {
             document.getElementById('scanned_id').value = decodedText;

@@ -1,54 +1,48 @@
+<?php require_once('includes/session.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>SENIOR-CARE | Reports</title>
+    <meta charset="UTF-8">
+    <title>Reports | Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-     <!-- 1. ADD: Mobile Overlay -->
-    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <?php include('includes/header.php'); ?>
+    <?php include('includes/sidebar.php'); ?>
 
-    <!-- 2. ADD: Top Bar Navigation -->
-   <header id="topbar">
-    <button id="hamburger-btn" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-    
-    <!-- Reverted text to original, keeping your custom logo -->
-    <div class="brand">
-        <img src="care.png" alt="Senior Care Logo" class="brand-img">
-        SENIOR-CARE
-    </div>
-</header>
-
-    <!-- 3. UPDATE: Sidebar (Removed .brand div from inside here) -->
-    <nav id="sidebar">
-        <div class="nav flex-column">
-            <a href="dashboard.html" class="nav-link"> <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
-            <a href="profiling.html" class="nav-link"> <i class="fa-solid fa-users"></i> <span>Senior Profiling</span></a>
-            <a href="health.html" class="nav-link"> <i class="fa-solid fa-heart-pulse"></i> <span>Health Records</span></a>
-            <a href="assistance.html" class="nav-link"> <i class="fa-solid fa-hand-holding-heart"></i> <span>Assistance</span></a>
-            <a href="events.html" class="nav-link"> <i class="fa-solid fa-calendar-check"></i> <span>Events & Log</span></a>
-            <a href="reports.html" class="nav-link"> <i class="fa-solid fa-file-export"></i> <span>Reports</span></a>
-        </div>
-    </nav>
     <main id="main-content">
-        <h2>Reports & Analytics</h2>
-        <div class="card p-4 mb-4">
-            <h5>Filter Data</h5>
-            <div class="row g-3">
-                <div class="col-md-4"><input type="date" class="form-control"></div>
-                <div class="col-md-4"><select class="form-select"><option>All Categories</option></select></div>
-                <div class="col-md-4"><button class="btn btn-primary w-100">Apply Filters</button></div>
+        <h2 class="mb-4">Reports Generation</h2>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card p-4 text-center">
+                    <i class="fa fa-file-invoice text-success fs-1 mb-3"></i>
+                    <h5>Summary Report</h5>
+                    <p class="small text-muted">Overall citizen statistics and demographic breakdown.</p>
+                    <button class="btn btn-success">Download PDF</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 text-center">
+                    <i class="fa fa-exchange-alt text-primary fs-1 mb-3"></i>
+                    <h5>Transaction Report</h5>
+                    <p class="small text-muted">History of all assistance and pension distributions.</p>
+                    <button class="btn btn-primary">Download PDF</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 text-center">
+                    <i class="fa fa-gauge-high text-warning fs-1 mb-3"></i>
+                    <h5>Performance Report</h5>
+                    <p class="small text-muted">Participation rates and medical activity monitoring.</p>
+                    <button class="btn btn-warning">Download PDF</button>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4"><div class="card text-center p-4"><i class="fa fa-file-pdf fa-3x text-danger"></i><button class="btn btn-outline-danger mt-3">Export PDF</button></div></div>
-            <div class="col-md-4"><div class="card text-center p-4"><i class="fa fa-file-excel fa-3x text-success"></i><button class="btn btn-outline-success mt-3">Export Excel</button></div></div>
-        </div>
     </main>
-    <script src="scripts.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
