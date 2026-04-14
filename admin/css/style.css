@@ -1,3 +1,6 @@
+/* ==========================================
+   PALETTE & VARIABLES 
+   ========================================== */
 :root {
     --bg-light: #F4FFFC;
     --accent-mint: #91EAAF;
@@ -7,7 +10,7 @@
     --header-height: 60px;
     --sidebar-width: 240px;
     --sidebar-mini-width: 80px;
-    --transition-speed: 0.2s;
+    --transition-speed: 0.3s; /* Smoother transitions */
 }
 
 /* GLOBAL STYLES */
@@ -52,7 +55,7 @@ body {
     align-items: center;
     font-size: 1.3rem;
     font-weight: 700;
-    color: rgb(225, 218, 218);
+    color: white; /* Changed from RGB to White for better contrast */
     letter-spacing: 0.5px;
     user-select: none;
 }
@@ -88,6 +91,7 @@ body {
     align-items: center;
     text-decoration: none;
     white-space: nowrap;
+    transition: 0.2s;
 }
 
 #sidebar .nav-link i { margin-right: 20px; width: 24px; text-align: center; font-size: 1.2rem; }
@@ -95,6 +99,7 @@ body {
 #sidebar .nav-link:hover, #sidebar .nav-link.active {
     color: var(--lime-highlight);
     background: rgba(255,255,255,0.1);
+    border-left: 4px solid var(--lime-highlight);
 }
 
 /* DESKTOP COLLAPSED STATE (YouTube Style) */
@@ -111,7 +116,7 @@ body.sidebar-collapsed #sidebar span { display: block; text-align: center; }
 #main-content {
     margin-top: var(--header-height);
     margin-left: var(--sidebar-width);
-    padding: min(30px, 5vw);
+    padding: 40px;
     transition: margin-left var(--transition-speed);
 }
 body.sidebar-collapsed #main-content { margin-left: var(--sidebar-mini-width); }
@@ -133,9 +138,36 @@ body.sidebar-collapsed #main-content { margin-left: var(--sidebar-mini-width); }
     box-shadow: 0 8px 24px rgba(31, 75, 44, 0.08);
     margin-bottom: 20px;
 }
-.stat-card { border-left: 5px solid var(--accent-mint); }
+.stat-card { border-left: 6px solid var(--accent-mint); }
 
-/* CUSTOM SAVE BUTTON DESIGN */
+/* ==========================================
+   BUTTONS DESIGN 
+   ========================================== */
+
+/* 1. REGISTER NEW SENIOR BUTTON (The one you requested) */
+.btn-register-main {
+    background-color: var(--forest-deep) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    border: none !important;
+    padding: 12px 28px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(31, 75, 44, 0.2);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-register-main:hover {
+    background-color: var(--olive-dark) !important;
+    color: var(--lime-highlight) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(31, 75, 44, 0.3);
+}
+
+/* 2. CUSTOM SAVE BUTTON (For Settings/Modals) */
 .btn-save-custom {
     background: linear-gradient(135deg, var(--forest-deep) 0%, #163620 100%);
     color: white;
@@ -153,8 +185,8 @@ body.sidebar-collapsed #main-content { margin-left: var(--sidebar-mini-width); }
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    width: 100%;
 }
+
 .btn-save-custom:hover {
     background: var(--olive-dark);
     color: var(--lime-highlight);
@@ -169,5 +201,5 @@ canvas { max-height: 280px; width: 100% !important; }
     #sidebar { transform: translateX(-100%); width: var(--sidebar-width) !important; }
     body.sidebar-mobile-open #sidebar { transform: translateX(0); }
     body.sidebar-mobile-open #sidebar-overlay { display: block; }
-    #main-content, body.sidebar-collapsed #main-content { margin-left: 0; }
+    #main-content, body.sidebar-collapsed #main-content { margin-left: 0; padding: 20px; }
 }
