@@ -1,54 +1,153 @@
-<?php
-include("../includes/db_connection.php");
+<?php require_once('includes/session.php'); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Senior Profiling | Admin</title>
+    
+    <!-- External CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    
+    <!-- YOUR MASTER DESIGN CSS -->
+    <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
+    
+    <!-- Required Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="sb-nav-fixed">
 
-$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
-$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
+    <!-- Design: Topbar and Mobile Overlay -->
+    <?php include('includes/header.php'); ?>
 
-$query = "SELECT * FROM seniors WHERE (LastName LIKE '%$search%' OR OscaIDNo LIKE '%$search%')";
-if($status_filter != '') { $query .= " AND CitezenStatus = '$status_filter'"; }
+    <!-- Design: Sidebar Menu -->
+    <?php include('includes/sidebar.php'); ?>
 
-$result = mysqli_query($conn, $query);
-?>
+    <!-- UX: Main Content Wrapper -->
+    <main id="main-content">
+        <div class="container-fluid px-4">
+            <h2 class="mt-4 fw-bold text-success"><i class="fa fa-users me-2"></i> Senior Citizen Profiling</h2>
+            
+            <!-- Action Bar -->
+            <div class="card mb-4 border-0 shadow-sm mt-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted small fw-bold">MASTER LIST MANAGEMENT</span>
+                        <div>
+                            <!-- Design: Your requested Forest Green Register Button -->
+                            <button type="button" class="btn btn-register-main" onclick="window.location.href='register_senior.php'">
+                                 <i class="fa fa-user-plus me-2"></i> Register New Senior
+                            </button>
+                            <!-- Design: Green Print Button -->
+                            <button type="button" class="btn btn-success fw-bold ms-2 px-4 shadow-sm" style="border-radius: 8px; padding: 10px;" onclick="printTable()">
+                                <i class="fa fa-print me-2"></i> Print Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<!-- Add to HTML inside #content -->
-<div class="card p-4">
-    <div class="d-flex justify-content-between mb-3">
-        <form class="d-flex gap-2">
-            <input type="text" name="search" class="form-control" placeholder="Search ID or Name..." value="<?php echo $search; ?>">
-            <select name="status" class="form-select" onchange="this.form.submit()">
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-            </select>
-            <button class="btn btn-forest">Search</button>
-        </form>
-    </div>
+            <!-- Table Card -->
+            <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
+                <div class="card-header py-3">
+                    <i class="fas fa-table me-1"></i> Official Master List of Enrolled Seniors
+                </div>
+                <div class="card-body bg-white">
+                    <!-- UX: Search and Pagination are handled by 'datatablesSimple' ID -->
+                    <table id="datatablesSimple" class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Photo</th>
+                                <th>OscaIDNo.</th>
+                                <th>Full Name</th>
+                                <th>Sex</th>
+                                <th>Purok</th>
+                                <th>Status</th>
+                                <th class="no-print">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $query = mysqli_query($conn, "SELECT * FROM seniors ORDER BY GenerateDate DESC");
+                            while ($row = mysqli_fetch_array($query)) {
+                                $id = $row['OscaIDNo'];
+                            ?>
+                            <tr>
+                                <td>
+                                    <!-- UX: Clicking photo opens full details page -->
+                                    <a href="view_senior_details.php?id=<?php echo $id; ?>">
+                                        <img src="../uploads/<?php echo $row['Picture']; ?>" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--forest-deep);">
+                                    </a>
+                                </td>
+                                <td class="fw-bold text-primary"><?php echo $id; ?></td>
+                                <td>
+                                    <a href="view_senior_details.php?id=<?php echo $id; ?>" class="text-dark fw-bold text-decoration-none text-uppercase">
+                                        <?php echo $row['LastName'].", ".$row['FirstName']; ?>
+                                    </a>
+                                </td>
+                                <td><?php echo $row['Sex']; ?></td>
+                                <td><?php echo $row['Purok']; ?></td>
+                                <td>
+                                    <span class="badge <?php echo ($row['CitezenStatus'] == 'active') ? 'bg-success' : 'bg-danger'; ?>" style="font-size: 0.75rem; padding: 6px 12px;">
+                                        <?php echo strtoupper($row['CitezenStatus']); ?>
+                                    </span>
+                                </td>
+                                <td class="no-print">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $id; ?>"><i class="fa fa-edit"></i></button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_<?php echo $id; ?>"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                </td>
+                                <!-- Load Update/Delete Popups -->
+                                <?php include("includes/senior_modals.php"); ?>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
 
-    <table class="table">
-        <thead class="table-dark">
-            <tr>
-                <th>OscaIDNo.</th>
-                <th>Full Name</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while($row = mysqli_fetch_assoc($result)): ?>
-            <tr>
-                <td><?php echo $row['OscaIDNo']; ?></td>
-                <td><?php echo $row['LastName'] . ", " . $row['FirstName']; ?></td>
-                <td>
-                    <span class="badge <?php echo ($row['CitezenStatus'] == 'active') ? 'bg-success' : 'bg-danger'; ?>">
-                        <?php echo $row['CitezenStatus']; ?>
-                    </span>
-                </td>
-                <td>
-                    <a href="edit_senior.php?id=<?php echo $row['OscaIDNo']; ?>" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="delete_senior.php?id=<?php echo $row['OscaIDNo']; ?>" onclick="return confirm('Delete this record?')" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
-</div>
+    <!-- UX: Sidebar Toggle and Link Highlighting -->
+    <script src="js/scripts.js"></script>
+    
+    <!-- UX: DataTables Search/Pagination Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="js/datatables-simple-demo.js"></script>
+
+    <!-- UX: Professional Report Printing Logic -->
+    <script>
+    function printTable() {
+        var table = document.getElementById("datatablesSimple");
+        var tableClone = table.cloneNode(true);
+        
+        // Remove 'Action' column from the printed version
+        var rows = tableClone.rows;
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].deleteCell(-1); 
+        }
+
+        var newWindow = window.open("", "", "width=900,height=800");
+        newWindow.document.write("<html><head><title>Print Report</title>");
+        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
+        newWindow.document.write("<style>body{padding:40px; font-family: sans-serif;} table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #ddd; padding:10px; text-align:left;} th{background:#1F4B2C !important; color:white !important; text-transform: uppercase; font-size: 12px;}</style>");
+        newWindow.document.write("</head><body>");
+        newWindow.document.write("<div style='text-align:center; border-bottom: 2px solid #1F4B2C; padding-bottom:10px; margin-bottom:20px;'><h2>BARANGAY KALAWAG 1</h2><p style='margin:0;'>Senior Citizen Master List Enrollment Report</p></div>");
+        newWindow.document.write(tableClone.outerHTML);
+        newWindow.document.write("</body></html>");
+        newWindow.document.close();
+        
+        newWindow.focus();
+        setTimeout(function() {
+            newWindow.print();
+            newWindow.close();
+        }, 750);
+    }
+    </script>
+</body>
+</html>
