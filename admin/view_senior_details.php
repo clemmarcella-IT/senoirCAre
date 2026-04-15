@@ -1,23 +1,25 @@
 <?php 
 require_once('includes/session.php'); 
 
-// Check if an ID was passed in the URL
+// Simple check for ID
 if (!isset($_GET['id'])) { 
     header("Location: profiling.php"); 
     exit; 
 }
 
-$id = mysqli_real_escape_string($conn, $_GET['id']);
+// Simplified ID assignment
+$id = $_GET['id']; 
+
+// Simple Query
 $query = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo = '$id'");
 $data = mysqli_fetch_assoc($query);
 
-// If ID doesn't exist, go back
 if(!$data) { 
     echo "<script>alert('Record not found.'); window.location='profiling.php';</script>"; 
     exit; 
 }
 
-// Calculate the Age to display
+// Calculate Age
 $bday = new DateTime($data['Birthday']);
 $today = new DateTime('today');
 $age = $bday->diff($today)->y;
@@ -43,7 +45,6 @@ $age = $bday->diff($today)->y;
             <a href="profiling.php" class="btn btn-outline-dark"><i class="fa fa-arrow-left"></i> Back to Master List</a>
         </div>
 
-        <!-- This ID "printArea" is what the script will grab -->
         <div class="card shadow border-0" id="printArea">
             <div class="row g-0">
                 <!-- LEFT SIDE: Profile Image & QR -->
@@ -57,7 +58,7 @@ $age = $bday->diff($today)->y;
                     </div>
                 </div>
 
-                <!-- RIGHT SIDE: Complete Information -->
+                <!-- RIGHT SIDE: Information -->
                 <div class="col-md-8 p-5 bg-white data-side">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
                         <h4 class="fw-bold text-success">Personal Data</h4>
@@ -96,7 +97,6 @@ $age = $bday->diff($today)->y;
                     </div>
 
                     <div class="mt-5 no-print text-end">
-                        <!-- Button triggers the function below -->
                         <button onclick="printCitizenRecord()" class="btn btn-success fw-bold px-4 py-2">
                             <i class="fa fa-print me-2"></i> Print Official Record
                         </button>
@@ -110,7 +110,6 @@ $age = $bday->diff($today)->y;
     <script src="js/scripts.js"></script>
     
     <script>
-        // Generate QR code on load
         window.onload = function() {
             new QRCode(document.getElementById("qrcode-target"), {
                 text: "<?php echo $id; ?>", 
@@ -120,13 +119,11 @@ $age = $bday->diff($today)->y;
             });
         };
 
-        // YOUR REQUESTED PRINT METHOD (Modified for this Card)
         function printCitizenRecord() {
             var content = document.getElementById("printArea").innerHTML;
             var newWindow = window.open("", "", "width=800,height=600");
             
-            newWindow.document.write("<html><head><title>Senior Citizen Record - <?php echo $id; ?></title>");
-            // Include Bootstrap and CSS so the print window matches the design
+            newWindow.document.write("<html><head><title>Senior Profile - <?php echo $id; ?></title>");
             newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
             newWindow.document.write('<link rel="stylesheet" href="css/style.css">');
             newWindow.document.write(`
@@ -141,13 +138,8 @@ $age = $bday->diff($today)->y;
                 </style>
             `);
             newWindow.document.write("</head><body>");
-            
-            // Add an official header for the printed page
             newWindow.document.write("<div class='text-center mb-3'><h2>BARANGAY KALAWAG 1</h2><p>Official Senior Citizen Profile</p></div>");
-            
-            // Insert the HTML
             newWindow.document.write('<div class="card">' + content + '</div>');
-            
             newWindow.document.write("</body></html>");
             newWindow.document.close();
             
