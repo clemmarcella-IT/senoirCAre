@@ -1,121 +1,138 @@
-<?php require_once('includes/session.php'); 
-
-// Handle QR Scan AJAX Request (Duplication Constraint)
-if(isset($_POST['scanned_id'])) {
-    $id = mysqli_real_escape_string($conn, $_POST['scanned_id']);
-    $purpose = mysqli_real_escape_string($conn, $_POST['purpose']);
-    $date = date('Y-m-d');
-    $time = date('H:i:s');
-
-    // 1. Check if ID exists
-    $checkUser = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo='$id'");
-    if(mysqli_num_rows($checkUser) == 0) {
-        echo "<script>alert('Error: Unregistered QR Code.'); window.location='health.php';</script>";
-        exit;
-    }
-
-    // 2. DUPLICATION CONSTRAINT CHECK (Cannot scan twice for health on the same day)
-    $checkDup = mysqli_query($conn, "SELECT * FROM healthrecords WHERE OscaIDNo='$id' AND HealthDate='$date'");
-    if(mysqli_num_rows($checkDup) > 0) {
-        echo "<script>alert('Duplicate: This Senior has already been recorded for Health today.'); window.location='health.php';</script>";
-    } else {
-        // 3. Insert Record
-        mysqli_query($conn, "INSERT INTO healthrecords (OscaIDNo, HealthDate, HealthPurpose, HealthAttendanceStatus, HealthTimeIn) 
-                             VALUES ('$id', '$date', '$purpose', 'present', '$time')");
-        echo "<script>alert('Success: Health Record Added for $id.'); window.location='health.php';</script>";
-    }
-    exit;
-}
-
-// Delete Logic
-if(isset($_GET['delete'])) {
-    mysqli_query($conn, "DELETE FROM healthrecords WHERE HealthRecordID='".$_GET['delete']."'");
-    header("Location: health.php");
-}
-?>
+<?php require_once('includes/session.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Health Records</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <title>Health Events | SENIOR-CARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
-    <main id="main-content">
-        <h2>Health Check-up & Medication Records</h2>
-        
-        <div class="card mt-4 mb-4">
-            <div class="card-header bg-success text-white fw-bold">Take Attendance via QR</div>
-            <div class="card-body row">
-                <!-- Camera Window -->
-                <div class="col-md-6 text-center">
-                    <div id="reader" style="width: 100%; max-width: 400px; margin: 0 auto;"></div>
+    <div id="layoutSidenav_content">
+        <main id="main-content">
+            <div class="container-fluid px-4">
+                <h2 class="mt-4 fw-bold text-success">Health Activity Management</h2>
+                
+                <!-- Top Action Bar -->
+                <div class="card mb-4 border-0 shadow-sm mt-3">
+                    <div class="card-body">
+                        <span style="float: right;">
+                            <button type="button" class="btn btn-register-main" data-toggle="modal" data-target="#addhealth">
+                                <i class="fa fa-plus"></i> Create Health Event
+                            </button>
+                            
+                        </span>
+                    </div>
                 </div>
-                <!-- Manual Data Form -->
-                <div class="col-md-6">
-                    <form method="POST" id="qrForm">
-                        <div class="mb-3">
-                            <label>Scanned OscaIDNo</label>
-                            <input type="text" name="scanned_id" id="scanned_id" class="form-control" readonly required>
+
+                <!-- Events Table -->
+                <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
+                    <div class="card-header bg-dark text-white fw-bold">Scheduled Health Activities</div>
+                    <div class="card-body bg-white">
+                        <table id="datatablesSimple" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Event Name</th>
+                                    <th>Date</th>
+                                    <th>Purpose</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                // Grouping by Name and Date to treat them as an Event
+                                $query = mysqli_query($conn, "SELECT HealthName, HealthDate, HealthPurpose, HealthEventStatus, MIN(HealthRecordID) as first_id 
+                                                              FROM healthrecords 
+                                                              GROUP BY HealthName, HealthDate 
+                                                              ORDER BY HealthDate DESC");
+                                while ($row = mysqli_fetch_array($query)) {
+                                    $uniqueID = $row['first_id'];
+                                ?>
+                                <tr>
+                                    <td class="fw-bold"><?php echo $row['HealthName']; ?></td>
+                                    <td><?php echo date("M d, Y", strtotime($row['HealthDate'])); ?></td>
+                                    <td><?php echo $row['HealthPurpose']; ?></td>
+                                    <td>
+                                        <span class="badge <?php echo ($row['HealthEventStatus'] == 'Active') ? 'badge-success' : 'badge-danger'; ?>">
+                                            <?php echo strtoupper($row['HealthEventStatus']); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <!-- Go to Attendance/Scanner -->
+                                            <a href="health_attendance.php?name=<?php echo urlencode($row['HealthName']); ?>&date=<?php echo $row['HealthDate']; ?>&purpose=<?php echo urlencode($row['HealthPurpose']); ?>" class="btn btn-sm btn-info" title="Scan QR">
+                                                <i class="fa fa-qrcode"></i>
+                                            </a>
+                                            <!-- Edit Event Details -->
+                                            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#edit_event_<?php echo $uniqueID; ?>">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <!-- Delete Whole Event -->
+                                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#del_event_<?php echo $uniqueID; ?>">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <!-- Include Modals for this row -->
+                                    <?php include("includes/health_modals.php"); ?>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: ADD NEW HEALTH EVENT -->
+    <div class="modal fade" id="addhealth" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title font-weight-bold">Register Health Event</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+                <form method="GET" action="health_attendance.php">
+                    <div class="modal-body p-4">
+                        <div class="form-group">
+                            <label class="small fw-bold text-muted">EVENT NAME</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. Annual Medical Checkup" required>
                         </div>
-                        <div class="mb-3">
-                            <label>Health Purpose</label>
-                            <select name="purpose" class="form-select" required>
-                                <option value="Routine Check-up">Routine Check-up</option>
-                                <option value="X-Ray">X-Ray</option>
-                                <option value="Maintenance Capsule Issuance">Maintenance Capsule Issuance</option>
+                        <div class="form-group">
+                            <label class="small fw-bold text-muted">DATE</label>
+                            <input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="small fw-bold text-muted">PURPOSE</label>
+                            <select name="purpose" class="form-control" required>
+                                <option value="Check up">Check up</option>
+                                <option value="Giving a medicine">Giving a medicine</option>
+                                <option value="Both">Both (Checkup & Medicine)</option>
+                                <option value="Others medication">Others medication</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100" id="submitBtn" disabled>Record Attendance (Present)</button>
-                    </form>
-                </div>
+                        <input type="hidden" name="time" value="<?php echo date('H:i'); ?>">
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-4">Start Scanning</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-striped">
-                    <thead><tr><th>Record ID</th><th>OscaIDNo</th><th>Date</th><th>Time</th><th>Purpose</th><th>Status</th><th>Action</th></tr></thead>
-                    <tbody>
-                        <?php
-                        $q = mysqli_query($conn, "SELECT * FROM healthrecords ORDER BY HealthDate DESC");
-                        while($row = mysqli_fetch_assoc($q)): ?>
-                        <tr>
-                            <td><?php echo $row['HealthRecordID']; ?></td>
-                            <td><span class="badge bg-primary"><?php echo $row['OscaIDNo']; ?></span></td>
-                            <td><?php echo $row['HealthDate']; ?></td>
-                            <td><?php echo $row['HealthTimeIn']; ?></td>
-                            <td><?php echo $row['HealthPurpose']; ?></td>
-                            <td><span class="text-success fw-bold"><?php echo $row['HealthAttendanceStatus']; ?></span></td>
-                            <td><a href="health.php?delete=<?php echo $row['HealthRecordID']; ?>" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a></td>
-                        </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-
-    <!-- QR Scanner Logic -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="js/datatables-simple-demo.js"></script>
     <script src="js/scripts.js"></script>
-    <script>
-        function onScanSuccess(decodedText, decodedResult) {
-            // Put the scanned text into the input box
-            document.getElementById('scanned_id').value = decodedText;
-            document.getElementById('submitBtn').disabled = false; // Enable submit button
-            
-            // Optional: Auto-submit form when scanned
-            // document.getElementById('qrForm').submit(); 
-        }
-
-        var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-        html5QrcodeScanner.render(onScanSuccess);
-    </script>
 </body>
 </html>
