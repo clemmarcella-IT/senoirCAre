@@ -92,6 +92,7 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
                         <div class="card shadow-sm border-0">
                             <div class="card-header bg-dark text-white font-weight-bold">Present Attendees</div>
                             <div class="card-body">
+                                <div class="table-responsive">
                                 <table id="datatablesSimple" class="table table-hover">
                                     <thead>
                                         <tr>
@@ -123,6 +124,7 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
                                         ?>
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                         </div>
                     </div>

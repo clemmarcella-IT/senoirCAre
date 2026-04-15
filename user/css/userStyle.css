@@ -18,6 +18,8 @@ body {
     background: linear-gradient(135deg, #F4FFFC 0%, #D6F1DF 50%, #E9FCEF 100%);
     background-attachment: fixed;
     min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* NAVIGATION BAR */
@@ -204,4 +206,47 @@ body {
         border-bottom: 1px solid #000 !important; 
         color: black !important;
     }
+}
+
+/* ==========================================
+   SCROLLBAR & RESPONSIVE UI ENFORCEMENTS
+   ========================================== */
+
+/* 1. Responsive table scrolling */
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-responsive > .table-bordered {
+  border: 0;
+}
+
+/* 2. Modal scroll behavior */
+.modal-open {
+  overflow: hidden;
+}
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.modal-dialog-scrollable .modal-body {
+  overflow-y: auto;
+}
+
+/* 3. Custom UI Scrollbar for modern look */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(31, 75, 44, 0.4);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(31, 75, 44, 0.7);
 }

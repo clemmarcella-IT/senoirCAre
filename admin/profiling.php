@@ -10,7 +10,7 @@
     <!-- External CSS -->
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- YOUR MASTER DESIGN CSS -->
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
@@ -35,15 +35,15 @@
             <!-- Action Bar -->
             <div class="card mb-4 border-0 shadow-sm mt-3">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-muted small fw-bold">MASTER LIST MANAGEMENT</span>
-                        <div>
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">MASTER LIST MANAGEMENT</span>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
                             <!-- Design: Your requested Forest Green Register Button -->
-                            <button type="button" class="btn btn-register-main" onclick="window.location.href='register_senior.php'">
+                            <button type="button" class="btn btn-forest shadow-sm w-100" onclick="window.location.href='register_senior.php'">
                                  <i class="fa fa-user-plus me-2"></i> Register New Senior
                             </button>
                             <!-- Design: Green Print Button -->
-                            <button type="button" class="btn btn-success fw-bold ms-2 px-4 shadow-sm" style="border-radius: 8px; padding: 10px;" onclick="printTable()">
+                            <button type="button" class="btn btn-success fw-bold shadow-sm w-100" style="border-radius: 8px;" onclick="printTable()">
                                 <i class="fa fa-print me-2"></i> Print Report
                             </button>
                         </div>
@@ -58,8 +58,9 @@
                 </div>
                 <div class="card-body bg-white">
                     <!-- UX: Search and Pagination are handled by 'datatablesSimple' ID -->
-                    <table id="datatablesSimple" class="table table-hover align-middle">
-                        <thead class="table-light">
+                    <div class="table-responsive">
+                        <table id="datatablesSimple" class="table table-hover align-middle">
+                            <thead class="table-light">
                             <tr>
                                 <th>Photo</th>
                                 <th>OscaIDNo.</th>
@@ -108,6 +109,7 @@
                             <?php } ?>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -45,14 +45,15 @@ if(isset($_GET['del_att'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Events & Attendance</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-<body>
+<body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
@@ -130,6 +131,7 @@ if(isset($_GET['del_att'])) {
         <div class="card shadow-sm">
             <div class="card-header bg-white fw-bold">Recent Attendance Logs</div>
             <div class="card-body">
+                <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr><th>Log ID</th><th>Event Name</th><th>OscaIDNo.</th><th>Time In</th><th>Status</th><th>Action</th></tr>
@@ -161,6 +163,7 @@ if(isset($_GET['del_att'])) {
                         <?php endwhile; ?>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 

@@ -37,14 +37,15 @@ if(isset($_GET['delete'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Pension Records</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-<body>
+<body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
@@ -91,6 +92,7 @@ if(isset($_GET['delete'])) {
         <div class="card shadow-sm">
             <div class="card-header bg-white fw-bold">Recent Pension Logs</div>
             <div class="card-body">
+                <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr><th>Log ID</th><th>OscaIDNo.</th><th>Payout Period</th><th>Time Received</th><th>Status</th><th>Action</th></tr>
@@ -118,6 +120,7 @@ if(isset($_GET['delete'])) {
                         <?php endwhile; ?>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </main>

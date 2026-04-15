@@ -3,11 +3,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Health Events | SENIOR-CARE</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
@@ -19,17 +20,18 @@
                 
                 <div class="card mb-4 border-0 shadow-sm mt-3">
                     <div class="card-body">
-                        <span style="float: right;">
-                            <button type="button" class="btn btn-register-main" data-toggle="modal" data-target="#addhealth">
-                                <i class="fa fa-plus"></i> Create Health Event
+                        <div class="text-right d-block d-sm-flex justify-content-sm-end">
+                            <button type="button" class="btn btn-forest shadow-sm w-100 w-sm-auto" style="max-width: 300px;" data-toggle="modal" data-target="#addhealth">
+                                <i class="fa fa-plus me-2"></i> Create Health Event
                             </button>
-                        </span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
                     <div class="card-header bg-dark text-white fw-bold">Scheduled Health Activities</div>
                     <div class="card-body bg-white">
+                        <div class="table-responsive">
                         <table id="datatablesSimple" class="table table-hover">
                             <thead>
                                 <tr>
@@ -86,6 +88,7 @@
                                 ?>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

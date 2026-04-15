@@ -57,19 +57,19 @@
             <div class="col-lg-8">
                 <div class="card chart-card">
                     <div class="chart-title">Monthly Attendance Trend</div>
-                    <div style="height: 190px;"><canvas id="seniorAreaChart"></canvas></div>
+                    <div style="height: 150px;"><canvas id="seniorAreaChart"></canvas></div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="card chart-card">
                     <div class="chart-title">Citizen Status Ratio</div>
-                    <div style="height: 190px;"><canvas id="seniorPieChart"></canvas></div>
+                    <div style="height: 150px;"><canvas id="seniorPieChart"></canvas></div>
                 </div>
             </div>
         </div>
 
         <!-- Row 3: Age Groups -->
-        <div class="row g-3">
+        <div class="row g-3 mb-5">
             <div class="col-lg-12">
                 <div class="card chart-card" style="height: 220px;">
                     <div class="chart-title">Age Group Distribution (For Program Planning)</div>
@@ -77,6 +77,7 @@
                 </div>
             </div>
         </div>
+        <br>
     </main>
 
     <!-- Prepare Chart Data for JS -->
