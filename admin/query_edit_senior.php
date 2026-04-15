@@ -1,8 +1,10 @@
 <?php
 	include("../includes/db_connection.php");
+
+	// 1. Get the ID of the senior we are editing from the URL
 	$id = $_GET['id'];
 	
-	// Collect text data
+	// 2. Collect all the text information from the form
 	$fname  = $_POST['fname'];
 	$mi     = $_POST['mi'];
 	$lname  = $_POST['lname'];
@@ -11,43 +13,54 @@
 	$purok  = $_POST['purok'];
 	$status = $_POST['status'];
 
-	// 1. Build the basic UPDATE query for text
-	$updateQuery = "UPDATE seniors SET FirstName='$fname', MiddleName='$mi', LastName='$lname', Sex='$sex', Birthday='$bday', Purok='$purok', CitezenStatus='$status'";
+	// 3. Start building the SQL command (Text part)
+	$sql = "UPDATE seniors SET 
+			FirstName = '$fname', 
+			MiddleName = '$mi', 
+			LastName = '$lname', 
+			Sex = '$sex', 
+			Birthday = '$bday', 
+			Purok = '$purok', 
+			CitezenStatus = '$status'";
 
-	// 2. Check for newly uploaded files (Only update if a file was chosen)
-	$targetDir = "../uploads/";
+	// 4. Set where we want to save the photos
+	$folder = "../uploads/";
 
-	// Profile Picture
-	if($_FILES['pic']['name'] != '') {
-		$picName = $id . "_profile_updated_" . time() . ".jpg";
-		move_uploaded_file($_FILES['pic']['tmp_name'], $targetDir . $picName);
-		$updateQuery .= ", Picture='$picName'";
+	// 5. PROFILE PICTURE: Check if the admin chose a new file
+	if($_FILES['pic']['name'] != "") {
+		$picName = $id . "_updated_profile.jpg";
+		move_uploaded_file($_FILES['pic']['tmp_name'], $folder . $picName);
+		// Add this new filename to our SQL command
+		$sql .= ", Picture = '$picName'";
 	}
 
-	// 3 Signatures
+	// 6. SIGNATURES: Check all 3 signature boxes
 	for($i=1; $i<=3; $i++) {
-		$sigKey = 'sig'.$i;
-		if($_FILES[$sigKey]['name'] != '') {
-			$sigName = $id . "_sig{$i}_updated_" . time() . ".jpg";
-			move_uploaded_file($_FILES[$sigKey]['tmp_name'], $targetDir . $sigName);
-			$updateQuery .= ", SignaturePicture{$i}='$sigName'";
+		$inputName = "sig" . $i; // sig1, sig2, sig3
+		if($_FILES[$inputName]['name'] != "") {
+			$fileName = $id . "_updated_sig" . $i . ".jpg";
+			move_uploaded_file($_FILES[$inputName]['tmp_name'], $folder . $fileName);
+			$sql .= ", SignaturePicture$i = '$fileName'";
 		}
 	}
 
-	// 3 Thumbmarks
+	// 7. THUMBMARKS: Check all 3 thumbmark boxes
 	for($i=1; $i<=3; $i++) {
-		$thumbKey = 'thumb'.$i;
-		if($_FILES[$thumbKey]['name'] != '') {
-			$thumbName = $id . "_thumb{$i}_updated_" . time() . ".jpg";
-			move_uploaded_file($_FILES[$thumbKey]['tmp_name'], $targetDir . $thumbName);
-			$updateQuery .= ", thumbNailPicture{$i}='$thumbName'";
+		$inputName = "thumb" . $i; // thumb1, thumb2, thumb3
+		if($_FILES[$inputName]['name'] != "") {
+			$fileName = $id . "_updated_thumb" . $i . ".jpg";
+			move_uploaded_file($_FILES[$inputName]['tmp_name'], $folder . $fileName);
+			$sql .= ", thumbNailPicture$i = '$fileName'";
 		}
 	}
 
-	// 3. Finalize and execute the query
-	$updateQuery .= " WHERE OscaIDNo='$id'";
-	mysqli_query($conn, $updateQuery);
+	// 8. Finish the SQL command by telling it which Senior to update
+	$sql .= " WHERE OscaIDNo = '$id'";
+
+	// 9. Run the command in the database
+	mysqli_query($conn, $sql);
 	
+	// 10. Show a simple alert and go back to the list
 	?>
 		<script>
 			window.alert('Senior Citizen Profile updated successfully!');

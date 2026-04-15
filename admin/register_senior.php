@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="d-flex bg-light">
-
+<body class="sb-nav-fixed">
+    <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
-    <main id="main-content" class="flex-grow-1 p-4">
+    <main id="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-success"><i class="fa fa-user-plus me-2"></i> Register New Citizen</h2>
             <a href="profiling.php" class="btn btn-outline-dark"><i class="fa fa-arrow-left"></i> Cancel</a>

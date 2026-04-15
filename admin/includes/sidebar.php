@@ -1,12 +1,3 @@
-<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
-<header id="topbar">
-    <button id="hamburger-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-    <div class="brand">
-        <img src="../care.png" alt="Logo" class="brand-img">
-        SENIOR-CARE ADMIN
-    </div>
-</header>
-
 <nav id="sidebar">
     <div class="nav flex-column">
         <a href="dashboard.php" class="nav-link"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>

@@ -8,7 +8,7 @@
     </button>
 
     <div class="brand">
-        <img src="../care.png" alt="Senior Care Logo" class="brand-img">
-        SENIOR-CARE ADMIN
+        <img src="../care.png" class="brand-img">
+        SENIOR-CARE
     </div>
 </header>

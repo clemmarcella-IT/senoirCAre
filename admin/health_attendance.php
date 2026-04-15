@@ -26,6 +26,7 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body class="sb-nav-fixed">
+    <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
     <div id="layoutSidenav_content">
@@ -100,23 +101,26 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
                                             <th>Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                   <tbody>
                                         <?php
-                                        // THE JOIN: Seniors + HealthRecords
-                                        $list = mysqli_query($conn, "SELECT s.FirstName, s.LastName, h.OscaIDNo, h.HealthTimeIn 
-                                                                    FROM healthrecords h 
-                                                                    JOIN seniors s ON h.OscaIDNo = s.OscaIDNo 
-                                                                    WHERE h.HealthName = '$hName' AND h.HealthDate = '$hDate'
-                                                                    ORDER BY h.HealthTimeIn DESC");
-                                        while($row = mysqli_fetch_assoc($list)){
+                                            include("../includes/db_connection.php");
+                                            $list = mysqli_query($conn, "SELECT *
+                                                                        FROM  healthrecords
+                                                                        inner JOIN seniors on seniors.OscaIDNo = healthrecords.OscaIDNo
+                                                                        WHERE healthrecords.HealthName = '$hName'
+                                                                        AND healthrecords.HealthDate = '$hDate'
+                                                                        ORDER BY healthrecords.HealthTimeIn DESC");
+                                            while($display = mysqli_fetch_array($list)){
+                                                ?>
+                                                <tr>
+                                                    <td><?php echo $display['OscaIDNo']; ?></td>
+                                                    <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
+                                                    <td><?php echo date("h:i A", strtotime($display['HealthTimeIn'])); ?></td>
+                                                    <td><span class="badge badge-success"><?php echo $display['HealthAttendanceStatus']; ?></span></td>
+                                                </tr>
+                                            <?php
+                                            }
                                         ?>
-                                        <tr>
-                                            <td class="fw-bold text-primary"><?php echo $row['OscaIDNo']; ?></td>
-                                            <td class="text-uppercase"><?php echo $row['LastName'].", ".$row['FirstName']; ?></td>
-                                            <td><?php echo date("h:i A", strtotime($row['HealthTimeIn'])); ?></td>
-                                            <td><span class="text-success small fw-bold"><i class="fa fa-check-circle"></i> PRESENT</span></td>
-                                        </tr>
-                                        <?php } ?>
                                     </tbody>
                                 </table>
                             </div>

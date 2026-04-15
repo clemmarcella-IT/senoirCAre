@@ -19,10 +19,11 @@ if(isset($_POST['update_admin'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="d-flex bg-light">
+<body class="sb-nav-fixed">
+    <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
-    <main id="main-content" class="flex-grow-1">
+    <main id="main-content">
         <h2 class="fw-bold mb-4" style="color: var(--forest-deep);">System Settings</h2>
         
         <div class="row justify-content-start">

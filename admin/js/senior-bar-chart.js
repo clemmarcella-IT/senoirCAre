@@ -1,20 +1,19 @@
 var ctx = document.getElementById("seniorBarChart");
-var myBarChart = new Chart(ctx, {
+new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["60-65", "66-70", "71-75", "76+"],
+    labels: ["60-65 yrs", "66-70 yrs", "71-75 yrs", "76+ yrs"],
     datasets: [{
       label: "Seniors",
       backgroundColor: "#91EAAF",
       borderColor: "#1F4B2C",
-      data: php_ageData, // Uses PHP variable
+      borderWidth: 1,
+      data: php_ageData,
     }],
   },
   options: {
-    scales: {
-      xAxes: [{ gridLines: { display: false } }],
-      yAxes: [{ ticks: { min: 0, maxTicksLimit: 5 } }],
-    },
+    maintainAspectRatio: false,
+    scales: { yAxes: [{ ticks: { beginAtZero: true, maxTicksLimit: 3 } }], xAxes: [{ gridLines: { display: false } }] },
     legend: { display: false }
   }
 });

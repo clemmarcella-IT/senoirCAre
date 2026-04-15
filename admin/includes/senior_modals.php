@@ -1,4 +1,4 @@
-<!-- EDIT MODAL FORM (Beautiful UI Design) -->
+<!-- EDIT MODAL FORM -->
 <div class="modal fade" id="edit_<?php echo $id; ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content border-0 shadow-lg">
@@ -6,7 +6,6 @@
             <!-- Modal Header -->
             <div class="modal-header text-white" style="background-color: #1F4B2C;">
                 <h5 class="modal-title fw-bold"><i class="fa fa-user-edit mr-2"></i> Update Profile: <?php echo $id; ?></h5>
-                <!-- Updated data-bs-dismiss -->
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -64,7 +63,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="small text-danger font-weight-bold">Citizen Status</label>
-                                    <select name="status" class="form-control border-danger font-weight-bold text-danger">
+                                    <select name="status" class="form-control border-danger font-weight-bold">
                                         <option value="active" <?php if($row['CitezenStatus']=='active') echo 'selected'; ?>>Active</option>
                                         <option value="inactive" <?php if($row['CitezenStatus']=='inactive') echo 'selected'; ?>>Inactive</option>
                                     </select>
@@ -73,76 +72,57 @@
                         </div>
                     </div>
 
-                    <!-- 3. Photo Updates Card (Optional) -->
+                    <!-- 3. Photo Updates Card -->
                     <div class="card border-0 shadow-sm rounded-lg">
                         <div class="card-header bg-white fw-bold" style="color: #1F4B2C;">
-                            <i class="fa fa-camera mr-1"></i> Update Photos <span class="text-muted font-weight-normal">(Optional)</span>
+                            <i class="fa fa-camera mr-1"></i> Update Photos (Optional)
                         </div>
                         <div class="card-body">
-                            <p class="small text-danger mb-3"><i class="fa fa-exclamation-triangle"></i> Leave the file boxes blank if you do not want to change the current photos.</p>
-                            
-                            <div class="mb-3">
-                                <label class="small font-weight-bold">Update Profile Picture</label>
-                                <input type="file" name="pic" class="form-control-file" accept="image/*">
-                            </div>
-                            <hr>
+                            <input type="file" name="pic" class="form-control-file mb-3" accept="image/*">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label class="small font-weight-bold text-muted">Update 3 Signatures</label>
-                                    <input type="file" name="sig1" class="form-control-file mb-2" accept="image/*">
-                                    <input type="file" name="sig2" class="form-control-file mb-2" accept="image/*">
-                                    <input type="file" name="sig3" class="form-control-file" accept="image/*">
+                                    <label class="small font-weight-bold">3 Signatures</label>
+                                    <input type="file" name="sig1" class="form-control-file mb-1">
+                                    <input type="file" name="sig2" class="form-control-file mb-1">
+                                    <input type="file" name="sig3" class="form-control-file">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="small font-weight-bold text-muted">Update 3 Thumbmarks</label>
-                                    <input type="file" name="thumb1" class="form-control-file mb-2" accept="image/*">
-                                    <input type="file" name="thumb2" class="form-control-file mb-2" accept="image/*">
-                                    <input type="file" name="thumb3" class="form-control-file" accept="image/*">
+                                    <label class="small font-weight-bold">3 Thumbmarks</label>
+                                    <input type="file" name="thumb1" class="form-control-file mb-1">
+                                    <input type="file" name="thumb2" class="form-control-file mb-1">
+                                    <input type="file" name="thumb3" class="form-control-file">
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 
-                <!-- Modal Footer -->
                 <div class="modal-footer bg-white border-top-0">
-                    <!-- FIXED: data-bs-dismiss for Bootstrap 5 -->
-                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
-                        <i class="fa fa-times mr-1"></i> Cancel
-                    </button>
-                    <button type="submit" class="btn text-white px-4 font-weight-bold" style="background-color: #1F4B2C; border: none;">
-                        <i class="fa fa-save mr-1"></i> Save Updates
-                    </button>
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn text-white px-4 font-weight-bold" style="background-color: #1F4B2C; border: none;">Save Updates</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-
 <!-- DELETE MODAL FORM -->
 <div class="modal fade" id="delete_<?php echo $id; ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title"><i class="fa fa-exclamation-triangle mr-2"></i> Delete Record</h5>
-                <!-- Updated data-bs-dismiss -->
+                <h5 class="modal-title"><i class="fa fa-trash mr-2"></i> Delete Record</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center p-4">
-                <p class="mb-2">Are you sure you want to permanently delete the profile of:</p>
-                <h4 class="font-weight-bold text-dark"><?php echo strtoupper($row['LastName'].", ".$row['FirstName']); ?></h4>
-                <p class="text-danger small mt-3 px-3">
-                    <strong>Warning:</strong> This will also instantly delete all Health, Attendance, Assistance, and Pension records associated with this citizen.
-                </p>
+                <p>Are you sure you want to delete the profile of:</p>
+                <!-- REMOVED strtoupper HERE -->
+                <h4 class="font-weight-bold text-dark"><?php echo $row['LastName'].", ".$row['FirstName']; ?></h4>
+                <p class="text-danger small">This action is permanent.</p>
             </div>
             <div class="modal-footer justify-content-center bg-light border-0">
-                <!-- FIXED: data-bs-dismiss for Bootstrap 5 -->
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                <form method="POST" action="query_delete_senior.php?id=<?php echo $id; ?>">
-                    <button type="submit" class="btn btn-danger px-4"><i class="fa fa-trash mr-1"></i> Confirm Delete</button>
-                </form>
+                <a href="query_delete_senior.php?id=<?php echo $id; ?>" class="btn btn-danger px-4">Confirm Delete</a>
             </div>
         </div>
     </div>
