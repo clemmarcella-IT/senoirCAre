@@ -6,9 +6,8 @@
             <!-- Modal Header -->
             <div class="modal-header text-white" style="background-color: #1F4B2C;">
                 <h5 class="modal-title fw-bold"><i class="fa fa-user-edit mr-2"></i> Update Profile: <?php echo $id; ?></h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <!-- Updated data-bs-dismiss -->
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <!-- Form Start -->
@@ -106,10 +105,10 @@
 
                 </div>
                 
-                <!-- Modal Footer with Working Cancel Button -->
+                <!-- Modal Footer -->
                 <div class="modal-footer bg-white border-top-0">
-                    <!-- The data-dismiss="modal" is what makes the cancel button functional -->
-                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal">
+                    <!-- FIXED: data-bs-dismiss for Bootstrap 5 -->
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
                         <i class="fa fa-times mr-1"></i> Cancel
                     </button>
                     <button type="submit" class="btn text-white px-4 font-weight-bold" style="background-color: #1F4B2C; border: none;">
@@ -122,15 +121,14 @@
 </div>
 
 
-<!-- DELETE MODAL FORM (Cleaned up) -->
+<!-- DELETE MODAL FORM -->
 <div class="modal fade" id="delete_<?php echo $id; ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title"><i class="fa fa-exclamation-triangle mr-2"></i> Delete Record</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <!-- Updated data-bs-dismiss -->
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center p-4">
                 <p class="mb-2">Are you sure you want to permanently delete the profile of:</p>
@@ -140,7 +138,8 @@
                 </p>
             </div>
             <div class="modal-footer justify-content-center bg-light border-0">
-                <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Cancel</button>
+                <!-- FIXED: data-bs-dismiss for Bootstrap 5 -->
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
                 <form method="POST" action="query_delete_senior.php?id=<?php echo $id; ?>">
                     <button type="submit" class="btn btn-danger px-4"><i class="fa fa-trash mr-1"></i> Confirm Delete</button>
                 </form>
