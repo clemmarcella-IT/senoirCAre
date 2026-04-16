@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Assistance | Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
@@ -20,12 +21,14 @@
         </div>
         <div class="card">
             <div class="card-header bg-white">Transaction History</div>
-            <table class="table mb-0">
+            <table id="datatablesSimple" class="table mb-0">
                 <thead><tr><th>Date</th><th>Name</th><th>Benefit</th><th>Status</th></tr></thead>
                 <tbody><tr><td>2023-10-20</td><td>Juan Dela Cruz</td><td>Rice</td><td><span class="badge bg-success">Done</span></td></tr></tbody>
             </table>
         </div>
     </main>
     <script src="js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="js/datatables-simple-demo.js"></script>
 </body>
 </html>
