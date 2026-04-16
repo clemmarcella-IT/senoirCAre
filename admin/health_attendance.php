@@ -16,12 +16,20 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Attendance | <?php echo $hName; ?></title>
+    
     <!-- CSS Dependencies -->
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
+    
+    <!-- Required Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
     <!-- QR Library -->
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
@@ -29,32 +37,31 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
     <?php include('includes/header.php'); ?>
     <?php include('includes/sidebar.php'); ?>
 
-    <div id="layoutSidenav_content">
-        <main id="main-content">
-            <div class="container-fluid px-4">
+    <main id="main-content">
+        <div class="container-fluid px-4">
                 
                 <!-- Header Section -->
-                <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-4 mb-4 gap-3">
                     <div>
                         <h2 class="fw-bold text-success m-0"><?php echo $hName; ?></h2>
                         <p class="text-muted mb-0"><?php echo date("F d, Y", strtotime($hDate)); ?> | <?php echo $hPurpose; ?></p>
-                        <span class="badge <?php echo $isStopped ? 'badge-danger' : 'badge-success'; ?>">
+                        <span class="badge <?php echo $isStopped ? 'bg-danger' : 'bg-success'; ?>">
                             <?php echo $isStopped ? 'CLOSED (VIEW ONLY)' : 'ACTIVE SESSION'; ?>
                         </span>
                     </div>
-                    <div class="no-print">
-                        <a href="health.php" class="btn btn-secondary shadow-sm">Back</a>
+                    <div class="no-print d-flex flex-column flex-sm-row gap-2">
+                        <a href="health.php" class="btn btn-secondary shadow-sm w-100">Back</a>
                         
                         <!-- Print Report Button -->
-                        <button class="btn btn-success shadow-sm ml-2" onclick="printAttendance()">
+                        <button class="btn btn-success shadow-sm w-100" onclick="printAttendance()">
                             <i class="fa fa-print"></i> Print Report
                         </button>
 
                         <?php if(!$isStopped): ?>
                             <a href="query_stop_health.php?name=<?php echo urlencode($hName); ?>&date=<?php echo $hDate; ?>" 
-                               class="btn btn-danger font-weight-bold shadow-sm ml-2" 
+                               class="btn btn-danger fw-bold shadow-sm w-100" 
                                onclick="return confirm('Stop attendance permanently?')">
-                               STOP ATTENDANCE
+                                STOP ATTENDANCE
                             </a>
                         <?php endif; ?>
                     </div>
@@ -129,13 +136,11 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
                         </div>
                     </div>
                 </div> <!-- End Row -->
-            </div>
-        </main>
-    </div>
+        </div>
+    </main>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="js/datatables-simple-demo.js"></script>
     
@@ -151,7 +156,7 @@ $isStopped = ($rowStatus && $rowStatus['HealthEventStatus'] == 'Stopped');
         var newWindow = window.open("", "", "width=800,height=600");
         
         newWindow.document.write("<html><head><title>Attendance Report</title>");
-        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">');
+        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
         newWindow.document.write("<style>body{padding:40px; font-family:sans-serif;} table{width:100%; border-collapse:collapse;} th,td{border:1px solid #ddd; padding:8px;} th{background:#1F4B2C !important; color:white !important; text-transform:uppercase;}</style>");
         newWindow.document.write("</head><body>");
         
