@@ -14,7 +14,7 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Assistance Claimed | <?php echo $event['AssistanceName']; ?></title>
+    <title>Assistance Distribution | <?php echo $event['AssistanceName']; ?></title>
     
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -35,19 +35,27 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
                 <div>
                     <h3 class="fw-bold text-success m-0"><?php echo $event['AssistanceName']; ?></h3>
                     <p class="text-muted mb-1"><?php echo $event['TypeAssistance']; ?> | <?php echo date("M d, Y", strtotime($adate)); ?></p>
-                    <span class="badge <?php echo $isStopped ? 'bg-danger' : 'bg-success'; ?>">
-                        <?php echo $isStopped ? 'CLOSED (VIEW ONLY)' : 'ACTIVE DISTRIBUTION'; ?>
+                    <span class="badge <?php echo $isStopped ? 'bg-warning text-dark' : 'bg-success'; ?>">
+                        <?php echo $isStopped ? 'PAUSED (LOCKED)' : 'ACTIVE DISTRIBUTION'; ?>
                     </span>
                 </div>
                 <div class="no-print d-flex flex-column flex-sm-row gap-2">
                     <a href="assistance.php" class="btn btn-secondary shadow-sm w-100">Back</a>
                     <button onclick="printTable()" class="btn btn-success shadow-sm w-100"><i class="fa fa-print"></i> Print</button>
+                    
+                    <!-- THE FIX: PAUSE AND RESUME TOGGLE BUTTONS -->
                     <?php if(!$isStopped): ?>
-                        <a href="assistance_attendance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>" 
-                           class="btn btn-danger fw-bold shadow-sm w-100" onclick="return confirm('Stop permanently?')">
-                           STOP DISTRIBUTION
+                        <a href="query_toggle_assistance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>&status=Stopped" 
+                           class="btn btn-warning fw-bold shadow-sm w-100" onclick="return confirm('Pause distribution for now?')">
+                           <i class="fa fa-pause"></i> PAUSE
+                        </a>
+                    <?php else: ?>
+                        <a href="query_toggle_assistance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>&status=Active" 
+                           class="btn btn-primary fw-bold shadow-sm w-100" onclick="return confirm('Resume distribution for late office claims?')">
+                           <i class="fa fa-play"></i> RESUME
                         </a>
                     <?php endif; ?>
+
                 </div>
             </div>
 
@@ -66,46 +74,54 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
                     </form>
                 </div>
             <?php else: ?>
-                <div class="alert alert-dark text-center py-5 shadow-sm">
-                    <i class="fa fa-lock fa-3x mb-3 opacity-50"></i>
-                    <h5 class="fw-bold">Distribution Closed</h5>
+                <div class="alert alert-warning text-center py-5 shadow-sm border-0">
+                    <i class="fa fa-pause-circle fa-3x mb-3 text-warning"></i>
+                    <h5 class="fw-bold text-dark">Distribution is Paused</h5>
+                    <p class="small text-dark m-0">Click the <b>RESUME</b> button at the top to re-open the scanner for office claiming.</p>
                 </div>
             <?php endif; ?>
         </div>
 
-        <!-- RIGHT: ATTENDANCE LIST -->
+        <!-- RIGHT: MASTER LIST (ALL ACTIVE SENIORS) -->
         <div class="col-md-8">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white font-weight-bold">Claimed Master List</div>
+                <div class="card-header bg-dark text-white font-weight-bold">Assistance Master List (Active Seniors)</div>
                 <div class="card-body">
                     <div class="table-responsive">
-                    <table class="table table-bordered" id="datatablesSimple" width="100%" cellspacing="0">
-                        <thead>
+                    <table class="table table-bordered table-hover align-middle" id="datatablesSimple" width="100%" cellspacing="0">
+                        <thead class="table-light">
                             <tr>
                                 <th>OscaIDNo.</th>
                                 <th>Senior Name</th>
-                                <th>Time Claim</th>
-                                <th>Status Attendance</th>
+                                <th>Time Claimed</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                              <?php
-                                 // Using your preferred LEFT JOIN format and avoiding mysqli_num_rows
-                                 $clem=mysqli_query($conn, "SELECT *
-                                 FROM assistance
-                                 LEFT JOIN seniors ON seniors.OscaIDNo = assistance.OscaIDNo 
-                                 WHERE assistance.AssistanceName = '$aname' 
-                                 AND assistance.AssistanceDate = '$adate' 
-                                 AND assistance.OscaIDNo IS NOT NULL
-                                 ORDER BY assistance.AssistanceTimeIn DESC");
+                                 $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, assistance.AssistanceTimeIn 
+                                                              FROM seniors 
+                                                              LEFT JOIN assistance ON seniors.OscaIDNo = assistance.OscaIDNo 
+                                                              AND assistance.AssistanceName = '$aname' 
+                                                              AND assistance.AssistanceDate = '$adate' 
+                                                              WHERE seniors.CitezenStatus = 'active'
+                                                              ORDER BY assistance.AssistanceTimeIn DESC, seniors.LastName ASC");
                                  
                                 while($display = mysqli_fetch_array($clem)){
+                                    
+                                    if ($display['AssistanceTimeIn'] != NULL) {
+                                        $status = '<span class="badge bg-success">CLAIMED</span>';
+                                        $time = date("h:i A", strtotime($display['AssistanceTimeIn']));
+                                    } else {
+                                        $status = '<span class="badge bg-danger">UNCLAIMED</span>';
+                                        $time = '-- : --';
+                                    }
                                     ?>
                                     <tr>
-                                    <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
-                                     <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                     <td><?php echo date("h:i A", strtotime($display['AssistanceTimeIn'])); ?></td>
-                                     <td><span class="text-success fw-bold">CLAIMED</span></td>
+                                        <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
+                                        <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
+                                        <td><?php echo $time; ?></td>
+                                        <td><?php echo $status; ?></td>
                                     </tr>
                                 <?php
                                 }
