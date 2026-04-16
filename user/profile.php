@@ -20,7 +20,7 @@ $age = $bday->diff($today)->y;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Profile - OscaIDNo. <?php echo $id; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/userStyle.css">
 </head>
@@ -120,7 +120,7 @@ $age = $bday->diff($today)->y;
         newWindow.document.write("<html><head><title>Print Official Profile</title>");
         
         // Corrected CSS path for the new window
-        newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+        newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">');
         newWindow.document.write('<link rel="stylesheet" href="css/userStyle.css">');
         
         newWindow.document.write(`

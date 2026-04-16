@@ -40,9 +40,12 @@ if(isset($_GET['delete'])) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Pension Records</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body class="sb-nav-fixed">
@@ -93,7 +96,7 @@ if(isset($_GET['delete'])) {
             <div class="card-header bg-white fw-bold">Recent Pension Logs</div>
             <div class="card-body">
                 <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table id="datatablesSimple" class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr><th>Log ID</th><th>OscaIDNo.</th><th>Payout Period</th><th>Time Received</th><th>Status</th><th>Action</th></tr>
                     </thead>
@@ -127,6 +130,8 @@ if(isset($_GET['delete'])) {
 
     <!-- QR Scanner Logic -->
     <script src="js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="js/datatables-simple-demo.js"></script>
     <script>
         function onScanSuccess(decodedText, decodedResult) {
             document.getElementById('scanned_id').value = decodedText;
