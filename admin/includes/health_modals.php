@@ -6,10 +6,8 @@
         <div class="modal-content border-0 shadow-lg">
             
             <div class="modal-header text-white" style="background-color: #1F4B2C;">
-                <h5 class="modal-title fw-bold"><i class="fa fa-edit mr-2"></i> Edit Health Activity</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title fw-bold"><i class="fa fa-edit me-2"></i> Edit Health Activity</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <!-- Action passes old name/date via GET to identify the records -->
@@ -17,19 +15,19 @@
                 <div class="modal-body p-4" style="background-color: #f4f7f6;">
                     
                     <div class="card border-0 shadow-sm rounded-lg p-3">
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="small fw-bold text-muted">RENAME ACTIVITY</label>
                             <input type="text" name="new_name" class="form-control" value="<?php echo $row['HealthName']; ?>" required>
                         </div>
 
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="small fw-bold text-muted">CHANGE DATE</label>
                             <input type="date" name="new_date" class="form-control" value="<?php echo $row['HealthDate']; ?>" required>
                         </div>
 
-                        <div class="form-group">
+                        <div class="mb-3">
                             <label class="small fw-bold text-muted">UPDATE PURPOSE</label>
-                            <select name="new_purpose" class="form-control" required>
+                            <select name="new_purpose" class="form-select" required>
                                 <option value="Check up" <?php if($row['HealthPurpose']=='Check up') echo 'selected'; ?>>Check up</option>
                                 <option value="Giving a medicine" <?php if($row['HealthPurpose']=='Giving a medicine') echo 'selected'; ?>>Giving a medicine</option>
                                 <option value="Both" <?php if($row['HealthPurpose']=='Both') echo 'selected'; ?>>Both</option>
@@ -41,7 +39,7 @@
                 </div>
                 
                 <div class="modal-footer bg-white border-0">
-                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success px-4 fw-bold">Save All Changes</button>
                 </div>
             </form>
@@ -58,16 +56,14 @@
         <div class="modal-content border-0 shadow-lg">
             
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title fw-bold"><i class="fa fa-trash mr-2"></i> Delete Health Event</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title fw-bold"><i class="fa fa-trash me-2"></i> Delete Health Event</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body text-center p-4">
                 <p class="mb-1 text-muted">Are you sure you want to delete the entire event:</p>
-                <h4 class="font-weight-bold text-dark"><?php echo $row['HealthName']; ?></h4>
-                <p class="small badge badge-light border"><?php echo date("F d, Y", strtotime($row['HealthDate'])); ?></p>
+                <h4 class="fw-bold text-dark"><?php echo $row['HealthName']; ?></h4>
+                <p class="small badge bg-light text-dark border"><?php echo date("F d, Y", strtotime($row['HealthDate'])); ?></p>
                 
                 <div class="alert alert-warning small mt-3">
                     <i class="fa fa-exclamation-triangle"></i> <strong>Warning:</strong> This will permanently erase ALL attendance logs for this day.
@@ -75,7 +71,7 @@
             </div>
 
             <div class="modal-footer justify-content-center border-0 bg-light">
-                <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
                 
                 <!-- Link follows your requested SIMPLE DELETE format -->
                 <a href="query_delete_health_event.php?name=<?php echo urlencode($row['HealthName']); ?>&date=<?php echo $row['HealthDate']; ?>" class="btn btn-danger px-4 fw-bold">

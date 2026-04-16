@@ -30,9 +30,9 @@ $age = $bday->diff($today)->y;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Citizen Profile | <?php echo $id; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
     <style>
         .doc-img { height: 80px; width: 30%; object-fit: cover; border: 1px solid #ccc; margin-right: 5px; }
     </style>
@@ -126,7 +126,7 @@ $age = $bday->diff($today)->y;
             var newWindow = window.open("", "", "width=800,height=600");
             
             newWindow.document.write("<html><head><title>Senior Profile - <?php echo $id; ?></title>");
-            newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+            newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">');
             newWindow.document.write('<link rel="stylesheet" href="css/style.css">');
             newWindow.document.write(`
                 <style>
