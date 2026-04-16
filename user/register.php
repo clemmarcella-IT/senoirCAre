@@ -68,10 +68,8 @@
                             </div>
 
                             <div class="col-md-6 mt-3">
-                                <label class="fw-bold text-success">2. THREE (3) SIGNATURES</label>
-                                <input type="file" class="form-control mb-1" name="sig1" required/>
-                                <input type="file" class="form-control mb-1" name="sig2" required/>
-                                <input type="file" class="form-control" name="sig3" required/>
+                                <label class="fw-bold text-success">2. SIGNATURES</label>
+                                <input type="file" class="form-control" name="sig1" required/>
                                 <div class="upload-instruction">Note: Sign on <strong>white paper</strong>, take a picture and upload.</div>
                             </div>
 

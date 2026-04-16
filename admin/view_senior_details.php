@@ -81,11 +81,9 @@ $age = $bday->diff($today)->y;
                     <h5 class="fw-bold border-bottom pb-2 mb-3 mt-5 text-success">Documentary Verifications</h5>
                     <div class="row g-3 text-center">
                         <div class="col-6">
-                            <label class="small text-muted fw-bold mb-2">3 SIGNATURES</label>
+                            <label class="small text-muted fw-bold mb-2">SIGNATURE</label>
                             <div class="d-flex justify-content-center">
-                                <img src="../uploads/<?php echo $data['SignaturePicture1']; ?>" class="doc-img rounded">
-                                <img src="../uploads/<?php echo $data['SignaturePicture2']; ?>" class="doc-img rounded">
-                                <img src="../uploads/<?php echo $data['SignaturePicture3']; ?>" class="doc-img rounded">
+                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="doc-img rounded">
                             </div>
                         </div>
                         <div class="col-6">

@@ -34,17 +34,13 @@
 		$sql .= ", Picture = '$picName'";
 	}
 
-	// 6. SIGNATURES: Check all 3 signature boxes
-	for($i=1; $i<=3; $i++) {
-		$inputName = "sig" . $i; // sig1, sig2, sig3
-		if($_FILES[$inputName]['name'] != "") {
-			$fileName = $id . "_updated_sig" . $i . ".jpg";
-			move_uploaded_file($_FILES[$inputName]['tmp_name'], $folder . $fileName);
-			$sql .= ", SignaturePicture$i = '$fileName'";
-		}
+	// 6. SIGNATURE: Check updated signature upload
+	if($_FILES['sig1']['name'] != "") {
+		$fileName = $id . "_updated_sig.jpg";
+		move_uploaded_file($_FILES['sig1']['tmp_name'], $folder . $fileName);
+		$sql .= ", SignaturePicture = '$fileName'";
 	}
 
-	// 7. THUMBMARKS: Check all 3 thumbmark boxes
 	for($i=1; $i<=3; $i++) {
 		$inputName = "thumb" . $i; // thumb1, thumb2, thumb3
 		if($_FILES[$inputName]['name'] != "") {

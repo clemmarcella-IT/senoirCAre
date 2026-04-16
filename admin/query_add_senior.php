@@ -20,10 +20,8 @@ if(isset($_POST['oscaID'])){
     $pic = $oscaID . "_profile.jpg";
     move_uploaded_file($_FILES["pic"]["tmp_name"], $target . $pic);
 
-    // 2. Signatures
-    $s1 = $oscaID."_sig1.jpg"; move_uploaded_file($_FILES["sig1"]["tmp_name"], $target.$s1);
-    $s2 = $oscaID."_sig2.jpg"; move_uploaded_file($_FILES["sig2"]["tmp_name"], $target.$s2);
-    $s3 = $oscaID."_sig3.jpg"; move_uploaded_file($_FILES["sig3"]["tmp_name"], $target.$s3);
+    // 2. Signature
+    $s1 = $oscaID."_sig.jpg"; move_uploaded_file($_FILES["sig1"]["tmp_name"], $target.$s1);
 
     // 3. Thumbmarks
     $t1 = $oscaID."_th1.jpg"; move_uploaded_file($_FILES["thumb1"]["tmp_name"], $target.$t1);
@@ -31,8 +29,8 @@ if(isset($_POST['oscaID'])){
     $t3 = $oscaID."_th3.jpg"; move_uploaded_file($_FILES["thumb3"]["tmp_name"], $target.$t3);
 
     // Insert
-    $query = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, Picture, QRCode, CitezenStatus, SignaturePicture1, SignaturePicture2, SignaturePicture3, thumbNailPicture1, thumbNailPicture2, thumbNailPicture3, GenerateDate) 
-              VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$pic', '$oscaID', '$status', '$s1', '$s2', '$s3', '$t1', '$t2', '$t3', NOW())";
+    $query = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, Picture, QRCode, CitezenStatus, SignaturePicture, thumbNailPicture1, thumbNailPicture2, thumbNailPicture3, GenerateDate) 
+              VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$pic', '$oscaID', '$status', '$s1', '$t1', '$t2', '$t3', NOW())";
 
     if(mysqli_query($conn, $query)){
         echo "<script>alert('Senior Citizen Successfully Registered!'); window.location='profiling.php';</script>";
