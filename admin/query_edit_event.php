@@ -1,9 +1,13 @@
 <?php
 include("../includes/db_connection.php");
 $id = $_GET['id'];
-$name = $_POST['ename']; $date = $_POST['edate']; $time = $_POST['etime'];
+$ename = $_POST['ename'];
+$edate = $_POST['edate'];
+$etime = $_POST['etime'];
 
-mysqli_query($conn, "UPDATE events SET EventName='$name', eventDate='$date', EventTime='$time' WHERE EventID='$id'");
-
-header("location:events.php");
+mysqli_query($conn, "UPDATE events SET EventName='$ename', eventDate='$edate', EventTime='$etime' WHERE EventID='$id'");
 ?>
+<script>
+    window.alert('Event Activity updated successfully!');
+    window.location="events.php";
+</script>

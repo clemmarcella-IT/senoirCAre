@@ -6,6 +6,8 @@ $type = $_POST['atype'];
 
 mysqli_query($conn, "INSERT INTO assistance (OscaIDNo, AssistanceName, TypeAssistance, AssistanceDate, AssistanceEventStatus) 
 VALUES (NULL, '$name', '$type', '$date', 'Active')");
-
-header("location:assistance.php");
 ?>
+<script>
+    window.alert('Assistance Record added successfully!');
+    window.location="assistance.php";
+</script>

@@ -13,6 +13,8 @@ mysqli_query($conn, "UPDATE healthrecords SET
     HealthDate = '$new_date', 
     HealthPurpose = '$new_purpose' 
     WHERE HealthName = '$old_name' AND HealthDate = '$old_date'");
-
-header("location:health.php");
 ?>
+<script>
+    window.alert('Health Event updated successfully!');
+    window.location="health.php";
+</script>
