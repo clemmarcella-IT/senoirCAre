@@ -50,47 +50,42 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php
-                            $query = mysqli_query($conn, "SELECT DISTINCT AssistanceName, AssistanceDate, TypeAssistance, AssistanceEventStatus FROM assistance WHERE OscaIDNo IS NULL ORDER BY AssistanceDate DESC");
-                            while ($display = mysqli_fetch_array($query)) {
-                                $aname = $display['AssistanceName'];
-                                $adate = $display['AssistanceDate'];
-                                $uniqueID = md5($aname . $adate);
-                            ?>
-                            <tr>
-                                <td class="fw-bold"><?php echo $display['AssistanceName']; ?></td>
-                                <td><?php echo $display['TypeAssistance']; ?></td>
-                                <td><?php echo date("M d, Y", strtotime($display['AssistanceDate'])); ?></td>
-                                <td>
-                                    <span class="badge <?php echo ($display['AssistanceEventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
-                                        <?php echo $display['AssistanceEventStatus']; ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <!-- ATTENDANCE / QR SCANNER BUTTON -->
-                                        <a href="assistance_attendance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>" class="btn btn-sm btn-info" title="Attendance">
-                                            <i class="fa fa-qrcode"></i>
-                                        </a>
-                                        
-                                        <!-- EDIT BUTTON -->
-                                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_ast_<?php echo $uniqueID; ?>" title="Edit Assistance">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        
-                                        <!-- DELETE BUTTON -->
-                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_ast_<?php echo $uniqueID; ?>" title="Delete Assistance">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                                
-                                <!-- CALLING THE MODALS FOR EDIT AND DELETE -->
-                                <?php include("includes/assistance_modals.php"); ?>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
+                       <tbody>
+    <?php
+    $query = mysqli_query($conn, "SELECT DISTINCT AssistanceName, AssistanceDate, TypeAssistance, AssistanceEventStatus FROM assistance WHERE OscaIDNo IS NULL ORDER BY AssistanceDate DESC");
+    while ($display = mysqli_fetch_array($query)) {
+        $aname = $display['AssistanceName'];
+        $adate = $display['AssistanceDate'];
+        $uniqueID = md5($aname . $adate);
+    ?>
+    <tr>
+        <td class="fw-bold"><?php echo $display['AssistanceName']; ?></td>
+        <td><?php echo $display['TypeAssistance']; ?></td>
+        <td><?php echo date("M d, Y", strtotime($display['AssistanceDate'])); ?></td>
+        <td>
+            <span class="badge <?php echo ($display['AssistanceEventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
+                <?php echo $display['AssistanceEventStatus']; ?>
+            </span>
+        </td>
+        <td>
+            <div class="btn-group">
+                <a href="assistance_attendance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>" class="btn btn-sm btn-info" title="Attendance">
+                    <i class="fa fa-qrcode"></i>
+                </a>
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_ast_<?php echo $uniqueID; ?>" title="Edit Assistance">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_ast_<?php echo $uniqueID; ?>" title="Delete Assistance">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            
+            <!-- THE FIX: PUT INCLUDE INSIDE THIS TD TAG -->
+            <?php include("includes/assistance_modals.php"); ?>
+        </td>
+    </tr>
+    <?php } ?>
+</tbody>
                     </table>
                     </div>
                 </div>

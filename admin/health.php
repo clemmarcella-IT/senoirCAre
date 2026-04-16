@@ -18,86 +18,81 @@
     <?php include('includes/sidebar.php'); ?>
 
     <main id="main-content">
-            <div class="container-fluid px-4">
-                <h2 class="mt-4 fw-bold text-success">Health Activity Management</h2>
-                
-                <div class="card mb-4 border-0 shadow-sm mt-3">
-                    <div class="card-body">
-                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-                            <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">HEALTH EVENTS MANAGEMENT</span>
-                            <div class="d-flex flex-column flex-sm-row gap-2">
-                                <button type="button" class="btn btn-forest shadow-sm w-100" data-bs-toggle="modal" data-bs-target="#addhealth">
-                                    <i class="fa fa-plus me-2"></i> Create Health Event
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
-                    <div class="card-header bg-dark text-white fw-bold">Scheduled Health Activities</div>
-                    <div class="card-body bg-white">
-                        <div class="table-responsive">
-                        <table id="datatablesSimple" class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Event Name</th>
-                                    <th>Date</th>
-                                    <th>Purpose</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                    // 1. Connect to database
-                                    include("../includes/db_connection.php");
-
-                                    // 2. SQL to get the list of events
-                                    $query = mysqli_query($conn, "SELECT HealthName, HealthDate, HealthPurpose, HealthEventStatus, MIN(HealthRecordID) as first_id 
-                                                                  FROM healthrecords 
-                                                                  GROUP BY HealthName, HealthDate 
-                                                                  ORDER BY HealthDate DESC");
-                                    
-                                    // 3. Simple loop to show data
-                                    while($display = mysqli_fetch_array($query)){
-                                        $uniqueID = $display['first_id'];
-                                        $row = $display; // This helps your modals file work correctly
-                                    ?>
-                                    <tr>
-                                        <td class="fw-bold"><?php echo $display['HealthName']; ?></td>
-                                        <td><?php echo date("M d, Y", strtotime($display['HealthDate'])); ?></td>
-                                        <td><?php echo $display['HealthPurpose']; ?></td>
-                                        <td>
-                                        <span class="badge <?php echo ($display['HealthEventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
-                                            <?php echo $display['HealthEventStatus']; ?>
-                                        </span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="health_attendance.php?name=<?php echo urlencode($display['HealthName']); ?>&date=<?php echo $display['HealthDate']; ?>&purpose=<?php echo urlencode($display['HealthPurpose']); ?>" class="btn btn-sm btn-info">
-                                                    <i class="fa fa-qrcode"></i>
-                                                </a>
-                                                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_event_<?php echo $uniqueID; ?>">
-                                                    <i class="fa fa-edit"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_event_<?php echo $uniqueID; ?>">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <?php include("includes/health_modals.php"); ?>
-                                    </tr>
-                                <?php
-                                    } // End of while loop
-                                ?>
-                            </tbody>
-                        </table>
+        <div class="container-fluid px-4">
+            <h2 class="mt-4 fw-bold text-success">Health Activity Management</h2>
+            
+            <div class="card mb-4 border-0 shadow-sm mt-3">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">HEALTH EVENTS MANAGEMENT</span>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="button" class="btn btn-forest shadow-sm w-100" data-bs-toggle="modal" data-bs-target="#addhealth">
+                                <i class="fa fa-plus me-2"></i> Create Health Event
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+
+            <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
+                <div class="card-header bg-dark text-white fw-bold">Scheduled Health Activities</div>
+                <div class="card-body bg-white">
+                    <div class="table-responsive">
+                    <table id="datatablesSimple" class="table table-bordered table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Date</th>
+                                <th>Purpose</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                       <tbody>
+    <?php
+        $query = mysqli_query($conn, "SELECT DISTINCT HealthName, HealthDate, HealthPurpose, HealthEventStatus FROM healthrecords WHERE OscaIDNo IS NULL ORDER BY HealthDate DESC");
+        
+        while($display = mysqli_fetch_array($query)){
+            $hname = $display['HealthName'];
+            $hdate = $display['HealthDate'];
+            $uniqueID = md5($hname . $hdate);
+        ?>
+        <tr>
+            <td class="fw-bold"><?php echo $display['HealthName']; ?></td>
+            <td><?php echo date("M d, Y", strtotime($display['HealthDate'])); ?></td>
+            <td><?php echo $display['HealthPurpose']; ?></td>
+            <td>
+            <span class="badge <?php echo ($display['HealthEventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
+                <?php echo $display['HealthEventStatus']; ?>
+            </span>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a href="health_attendance.php?name=<?php echo $hname; ?>&date=<?php echo $hdate; ?>" class="btn btn-sm btn-info" title="Attendance">
+                        <i class="fa fa-qrcode"></i>
+                    </a>
+                    <!-- NOTE THE TARGET ID IS edit_health_ -->
+                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_health_<?php echo $uniqueID; ?>" title="Edit">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    <!-- NOTE THE TARGET ID IS del_health_ -->
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_health_<?php echo $uniqueID; ?>" title="Delete">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+                
+                <!-- THE FIX: INCLUDE IS NOW INSIDE THE TD TAG -->
+                <?php include("includes/health_modals.php"); ?>
+            </td>
+        </tr>
+    <?php } ?>
+</tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <!-- MODAL: ADD NEW HEALTH EVENT -->
     <div class="modal fade" id="addhealth" tabindex="-1" role="dialog" aria-hidden="true">
@@ -107,19 +102,19 @@
                     <h5 class="modal-title fw-bold">Register Health Event</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="GET" action="health_attendance.php">
+                <form method="POST" action="query_add_health.php">
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="small fw-bold text-muted">EVENT NAME</label>
-                            <input type="text" name="name" class="form-control" required>
+                            <input type="text" name="hname" class="form-control" required placeholder="e.g. Free Checkup">
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold text-muted">DATE</label>
-                            <input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                            <input type="date" name="hdate" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold text-muted">PURPOSE</label>
-                            <select name="purpose" class="form-select" required>
+                            <select name="hpurpose" class="form-select" required>
                                 <option value="Check up">Check up</option>
                                 <option value="Giving a medicine">Giving a medicine</option>
                                 <option value="Both">Both</option>
@@ -127,9 +122,9 @@
                             </select>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success px-4">Start Scanning</button>
+                    <div class="modal-footer border-0 bg-light">
+                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success px-4 fw-bold">Save Health Event</button>
                     </div>
                 </form>
             </div>

@@ -50,38 +50,40 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                $query = mysqli_query($conn, "SELECT * FROM events ORDER BY eventDate DESC");
-                                while ($display = mysqli_fetch_array($query)) {
-                                    $eid = $display['EventID'];
-                                ?>
-                                <tr>
-                                    <td class="fw-bold"><?php echo $display['EventName']; ?></td>
-                                    <td><?php echo date("M d, Y", strtotime($display['eventDate'])); ?></td>
-                                    <td><?php echo date("h:i A", strtotime($display['EventTime'])); ?></td>
-                                    <td>
-                                        <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'badge-success' : 'badge-danger'; ?>">
-                                            <?php echo $display['EventStatus']; ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="event_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info" title="Attendance">
-                                                <i class="fa fa-qrcode"></i>
-                                            </a>
-                                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_event_<?php echo $eid; ?>">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_event_<?php echo $eid; ?>">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <?php include("includes/event_modals.php"); ?>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
+                           <tbody>
+    <?php
+    $query = mysqli_query($conn, "SELECT * FROM events ORDER BY eventDate DESC");
+    while ($display = mysqli_fetch_array($query)) {
+        $eid = $display['EventID'];
+    ?>
+    <tr>
+        <td class="fw-bold"><?php echo $display['EventName']; ?></td>
+        <td><?php echo date("M d, Y", strtotime($display['eventDate'])); ?></td>
+        <td><?php echo date("h:i A", strtotime($display['EventTime'])); ?></td>
+        <td>
+            <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
+                <?php echo $display['EventStatus']; ?>
+            </span>
+        </td>
+        <td>
+            <div class="btn-group">
+                <a href="event_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info" title="Attendance">
+                    <i class="fa fa-qrcode"></i>
+                </a>
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_event_<?php echo $eid; ?>">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_event_<?php echo $eid; ?>">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            
+            <!-- THE FIX: INCLUDE IS NOW INSIDE THE TD TAG -->
+            <?php include("includes/event_modals.php"); ?>
+        </td>
+    </tr>
+    <?php } ?>
+</tbody>
                         </table>
                         </div>
                     </div>
