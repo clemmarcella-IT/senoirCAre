@@ -235,6 +235,48 @@ body.sidebar-collapsed #main-content {
 }
 
 /* ==========================================
+   DOCUMENT VIEWER (Images & Modals)
+   ========================================== */
+
+.doc-img { 
+    height: 80px; 
+    width: 30%; 
+    object-fit: cover; 
+    border: 1px solid #ccc; 
+    margin-right: 5px; 
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.doc-img:hover {
+    transform: scale(1.05);
+    border-color: var(--forest-deep);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.custom-close-btn {
+    background-color: white !important; /* Changed to white so black X is visible */
+    padding: 10px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1; /* Full visibility */
+    z-index: 1060;
+    transition: all 0.2s ease;
+    border: none !important; /* Removed the white border */
+}
+
+/* Keep your hover effect */
+.custom-close-btn:hover {
+    opacity: 1;
+    background-color: #e74c3c !important; /* Turns red on hover */
+    transform: scale(1.1);
+}
+
+/* ==========================================
    MOBILE RESPONSIVENESS
    ========================================== */
 
@@ -321,4 +363,19 @@ body.sidebar-collapsed #main-content {
 }
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(31, 75, 44, 0.7);
+}
+/* --- QR CODE STYLING --- */
+
+/* This ensures the QR looks the same size on every page */
+#qrcode-target {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+#qrcode-target img, 
+#qrcode-target canvas {
+    width: 180px !important;  /* This is the "Screen Size" */
+    height: 180px !important; /* This is the "Screen Size" */
 }
