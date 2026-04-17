@@ -13,7 +13,7 @@
                     <input type="hidden" name="pdate" value="<?php echo $pdate; ?>">
                     
                     <label class="small fw-bold text-muted">Reason for Not Attending:</label>
-                    <input type="text" name="new_reason" class="form-control" placeholder="e.g. Bedridden" required>
+                    <input type="text" name="new_reason" class="form-control card shadow border border-1 border-black" placeholder="e.g. Bedridden" required>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary w-100">Save Reason</button>

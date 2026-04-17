@@ -98,9 +98,9 @@
                 <div class="modal-header bg-success text-white"><h5>New Event Registration</h5></div>
                 <form method="POST" action="query_add_event.php">
                     <div class="modal-body">
-                        <div class="mb-3"><label class="small fw-bold mb-1">Event Name</label><input type="text" name="ename" class="form-control" required></div>
-                        <div class="mb-3"><label class="small fw-bold mb-1">Date</label><input type="date" name="edate" class="form-control" value="<?php echo date('Y-m-d'); ?>" required></div>
-                        <div class="mb-3"><label class="small fw-bold mb-1">Time Start</label><input type="time" name="etime" class="form-control" required></div>
+                        <div class="mb-3"><label class="small fw-bold mb-1">Event Name</label><input type="text" name="ename" class="form-control card shadow border border-1 border-black" required></div>
+                        <div class="mb-3"><label class="small fw-bold mb-1">Date</label><input type="date" name="edate" class="form-control card shadow border border-1 border-black" value="<?php echo date('Y-m-d'); ?>" required></div>
+                        <div class="mb-3"><label class="small fw-bold mb-1">Time Start</label><input type="time" name="etime" class="form-control card shadow border border-1 border-black" required></div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -10,15 +10,15 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="small fw-bold">Assistance Name</label>
-                        <input type="text" name="aname" class="form-control" value="<?php echo $display['AssistanceName']; ?>" required>
+                        <input type="text" name="aname" class="form-control card shadow border border-1 border-black" value="<?php echo $display['AssistanceName']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Date</label>
-                        <input type="date" name="adate" class="form-control" value="<?php echo $display['AssistanceDate']; ?>" required>
+                        <input type="date" name="adate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['AssistanceDate']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Type of Assistance</label>
-                        <select name="atype" class="form-select" required>
+                        <select name="atype" class="form-select card shadow border border-1 border-black" required>
                             <option value="Food Packs" <?php if($display['TypeAssistance'] == 'Food Packs') echo 'selected'; ?>>Food Packs</option>
                             <option value="Non-Food" <?php if($display['TypeAssistance'] == 'Non-Food') echo 'selected'; ?>>Non-Food</option>
                         </select>

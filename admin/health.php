@@ -106,15 +106,15 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="small fw-bold text-muted">EVENT NAME</label>
-                            <input type="text" name="hname" class="form-control" required placeholder="e.g. Free Checkup">
+                            <input type="text" name="hname" class="form-control card shadow border border-1 border-black" required placeholder="e.g. Free Checkup">
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold text-muted">DATE</label>
-                            <input type="date" name="hdate" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                            <input type="date" name="hdate" class="form-control card shadow border border-1 border-black" value="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold text-muted">PURPOSE</label>
-                            <select name="hpurpose" class="form-select" required>
+                            <select name="hpurpose" class="form-select card shadow border border-1 border-black" required>
                                 <option value="Check up">Check up</option>
                                 <option value="Giving a medicine">Giving a medicine</option>
                                 <option value="Both">Both</option>

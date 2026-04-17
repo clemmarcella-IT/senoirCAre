@@ -93,12 +93,11 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="small fw-bold text-muted mb-1">Payout Date</label>
-                            <input type="date" name="pdate" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                            <input type="date" name="pdate" class="form-control card shadow border border-1 border-black" value="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold text-muted mb-1">Cash Amount (₱)</label>
-                            <input type="number" step="0.01" name="pamount" class="form-control" required>
-                        </div>
+                            <input type="number" step="0.01" name="pamount" class="form-control card shadow border border-1 border-black" required>
                     </div>
                     <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-success px-4 fw-bold">Create Session</button></div>
                 </form>

@@ -11,15 +11,15 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="small fw-bold">Payout Name</label>
-                        <input type="text" name="pname" class="form-control" value="<?php echo $reason; ?>" required>
+                        <input type="text" name="pname" class="form-control card shadow border border-1 border-black" value="<?php echo $reason; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Date</label>
-                        <input type="date" name="pdate" class="form-control" value="<?php echo $date; ?>" required>
+                        <input type="date" name="pdate" class="form-control card shadow border border-1 border-black" value="<?php echo $date; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Cash Amount (₱)</label>
-                        <input type="number" step="0.01" name="pamount" class="form-control" value="<?php echo $display['PensionCashAmount']; ?>" required>
+                        <input type="number" step="0.01" name="pamount" class="form-control card shadow border border-1 border-black" value="<?php echo $display['PensionCashAmount']; ?>" required>
                     </div>
                 </div>
                 <div class="modal-footer">

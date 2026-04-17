@@ -1,7 +1,7 @@
 <!-- EDIT MODAL FORM -->
 <div class="modal fade" id="edit_<?php echo $id; ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content border border-black shadow-lg">
             
             <!-- Modal Header: Matching Registration Style -->
             <div class="modal-header text-white py-3" style="background-color: #1F4B2C;">
@@ -17,28 +17,28 @@
                         <!-- Row 1: Names -->
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">First Name</label>
-                            <input type="text" name="fname" class="form-control" value="<?php echo $row['FirstName']; ?>" required>
+                            <input type="text" name="fname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['FirstName']; ?>" required>
                         </div>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Middle Name</label>
-                            <input type="text" name="mi" class="form-control" value="<?php echo $row['MiddleName']; ?>">
+                            <input type="text" name="mi" class="form-control card shadow border border-1 border-black" value="<?php echo $row['MiddleName']; ?>">
                         </div>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Last Name</label>
-                            <input type="text" name="lname" class="form-control" value="<?php echo $row['LastName']; ?>" required>
+                            <input type="text" name="lname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['LastName']; ?>" required>
                         </div>
 
                         <!-- Row 2: Sex, Purok, Birthday with Live Age -->
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Sex</label>
-                            <select name="sex" class="form-select" required>
+                            <select name="sex" class="form-select card shadow border border-1 border-black" required>
                                 <option value="Male" <?php if($row['Sex']=='Male') echo 'selected'; ?>>Male</option>
                                 <option value="Female" <?php if($row['Sex']=='Female') echo 'selected'; ?>>Female</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Purok (Zone)</label>
-                            <select name="purok" class="form-select" required>
+                            <select name="purok" class="form-select card shadow border border-1 border-black" required>
                                 <?php for($i=1; $i<=6; $i++): ?>
                                     <option value="Zone <?php echo $i; ?>" <?php if($row['Purok']=="Zone $i") echo 'selected'; ?>>Zone <?php echo $i; ?></option>
                                 <?php endfor; ?>
@@ -52,43 +52,43 @@
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Birthday</label>
                             <!-- Note the dynamic ID and the parameter in calculateAge() -->
-                            <input type="date" name="bday" id="bdayInput_<?php echo $id; ?>" class="form-control" value="<?php echo $row['Birthday']; ?>" onchange="calculateAge('<?php echo $id; ?>')" required>
+                            <input type="date" name="bday" id="bdayInput_<?php echo $id; ?>" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Birthday']; ?>" onchange="calculateAge('<?php echo $id; ?>')" required>
                             <div id="ageDisplay_<?php echo $id; ?>" class="mt-1 text-primary fw-bold small">Derived Age: <?php echo $currentAge; ?> Years Old</div>
                         </div>
 
                         <!-- Row 3: Status and Barangay -->
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Citizen Status</label>
-                            <select name="status" class="form-select">
+                            <select name="status" class="form-select card shadow border border-1 border-black">
                                 <option value="active" <?php if($row['CitezenStatus']=='active') echo 'selected'; ?>>Active</option>
                                 <option value="inactive" <?php if($row['CitezenStatus']=='inactive') echo 'selected'; ?>>Inactive</option>
                             </select>
                         </div>
                         <div class="col-md-8">
                             <label class="small fw-bold text-muted">Barangay</label>
-                            <input type="text" class="form-control" value="<?php echo $row['Barangay']; ?>" readonly>
+                            <input type="text" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Barangay']; ?>" readonly>
                         </div>
 
                         <!-- Row 4: Profile Picture -->
                         <div class="col-12 mt-4 border-top pt-3">
                             <label class="fw-bold text-success">1. PROFILE PICTURE</label>
-                            <input type="file" name="pic" class="form-control" accept="image/*">
+                            <input type="file" name="pic" class="form-control card shadow border border-1 border-black" accept="image/*">
                             <div class="upload-instruction">Note: Picture must have a plain <strong>white background</strong>.</div>
                         </div>
 
                         <!-- Row 5: Signature & Thumbmarks (Stacked vertically) -->
                         <div class="col-md-6 mt-3">
                             <label class="fw-bold text-success">2. SIGNATURE</label>
-                            <input type="file" name="sig1" class="form-control">
+                            <input type="file" name="sig1" class="form-control card shadow border border-1 border-black">
                             <div class="upload-instruction">Note: Sign on <strong>white paper</strong> and upload.</div>
                         </div>
 
                         <div class="col-md-6 mt-3">
                             <label class="fw-bold text-success">3. THUMBMARKS</label>
                             <!-- Stacked vertically with mb-2 spacing -->
-                            <input type="file" name="thumb1" class="form-control mb-2">
-                            <input type="file" name="thumb2" class="form-control mb-2">
-                            <input type="file" name="thumb3" class="form-control">
+                            <input type="file" name="thumb1" class="form-control card shadow border border-1 border-black mb-2">
+                            <input type="file" name="thumb2" class="form-control card shadow border border-1 border-black mb-2">
+                            <input type="file" name="thumb3" class="form-control card shadow border border-1 border-black">
                             <div class="upload-instruction">Note: Upload all three thumbprints.</div>
                         </div>
                     </div>

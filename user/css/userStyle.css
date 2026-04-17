@@ -63,10 +63,11 @@ body {
     font-size: 0.8rem;
     padding: 10px;
     margin-top: 5px;
-    background: #fff;
+    background: #fff5f5;
     border-left: 4px solid #d9534f;
     border-radius: 5px;
-    color: #555;
+    color: #842029;
+    box-shadow: 0 1px 6px rgba(217, 83, 79, 0.12);
 }
 
 .upload-instruction strong {
@@ -156,6 +157,24 @@ body {
     transform: translateY(-1px);
 }
 
+.border-black {
+    border-color: #000 !important;
+}
+.form-control.card,
+.form-select.card {
+    border-color: rgba(0, 0, 0, 0.35) !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08) !important;
+    background-color: #ffffff !important;
+    border-radius: 0.75rem !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control.card:focus,
+.form-select.card:focus {
+    border-color: rgba(0, 0, 0, 0.45) !important;
+    box-shadow: 0 0 0 0.15rem rgba(31, 75, 44, 0.14) !important;
+    outline: none;
+}
 /* ALERT MESSAGES */
 .admin-notice {
     background-color: #fff3cd;

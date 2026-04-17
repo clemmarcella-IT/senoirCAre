@@ -105,15 +105,15 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="small fw-bold text-muted mb-1">Assistance Name</label>
-                            <input type="text" name="aname" class="form-control" required placeholder="e.g. Relief Goods Distribution">
+                            <input type="text" name="aname" class="form-control card shadow border border-1 border-black" required placeholder="e.g. Relief Goods Distribution">
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold text-muted mb-1">Date</label>
-                            <input type="date" name="adate" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
+                            <input type="date" name="adate" class="form-control card shadow border border-1 border-black" value="<?php echo date('Y-m-d'); ?>" required>
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold text-muted mb-1">Type of Assistance</label>
-                            <select name="atype" class="form-select" required>
+                            <select name="atype" class="form-select card shadow border border-1 border-black" required>
                                 <option value="Food Packs">Food Packs</option>
                                 <option value="Non-Food">Non-Food</option>
                             </select>
