@@ -17,32 +17,38 @@
         <h2 class="mb-4">Reports Generation</h2>
         
         <div class="row">
+            <!-- Report 1: Active Seniors -->
             <div class="col-md-4">
-                <div class="card p-4 text-center">
-                    <i class="fa fa-file-invoice text-success fs-1 mb-3"></i>
-                    <h5>Summary Report</h5>
-                    <p class="small text-muted">Overall citizen statistics and demographic breakdown.</p>
-                    <button class="btn btn-success">Download PDF</button>
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="fa fa-user-check text-success fs-1 mb-3"></i>
+                    <h5>Active Seniors</h5>
+                    <p class="small text-muted">List of all active citizens.</p>
+                    <a href="report_active_seniors.php" class="btn btn-success">Open Report</a>
                 </div>
             </div>
+
+            <!-- Report 2: Most Attended -->
             <div class="col-md-4">
-                <div class="card p-4 text-center">
-                    <i class="fa fa-exchange-alt text-primary fs-1 mb-3"></i>
-                    <h5>Transaction Report</h5>
-                    <p class="small text-muted">History of all assistance and pension distributions.</p>
-                    <button class="btn btn-primary">Download PDF</button>
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="fa fa-star text-warning fs-1 mb-3"></i>
+                    <h5>Most Attended</h5>
+                    <p class="small text-muted">Ranking of most popular events.</p>
+                    <a href="report_event_popularity.php" class="btn btn-warning">Open Report</a>
                 </div>
             </div>
+
+            <!-- Report 3: Pension Summary -->
             <div class="col-md-4">
-                <div class="card p-4 text-center">
-                    <i class="fa fa-gauge-high text-warning fs-1 mb-3"></i>
-                    <h5>Performance Report</h5>
-                    <p class="small text-muted">Participation rates and medical activity monitoring.</p>
-                    <button class="btn btn-warning">Download PDF</button>
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="fa fa-money-check-alt text-info fs-1 mb-3"></i>
+                    <h5>Pension Summary</h5>
+                    <p class="small text-muted">Claim rates per person.</p>
+                    <a href="report_pension_rate.php" class="btn btn-info text-white">Open Report</a>
                 </div>
             </div>
         </div>
     </main>
+
     <script src="js/scripts.js"></script>
 </body>
 </html>

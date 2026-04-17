@@ -94,7 +94,7 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                                 </thead>
                                 <tbody>
                                      <?php
-                                         $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, pension.pensionTimeRecieve, pension.PensionAttendanceStatus, pension.PensionReason, pension.ControlNo, pension.PayOutNo 
+                                         $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, pension.pensionTimeRecieve, pension.PensionAttendanceStatus, pension.PensionReason, pension.ControlNo 
                                                                       FROM seniors 
                                                                       LEFT JOIN pension ON seniors.OscaIDNo = pension.OscaIDNo 
                                                                       AND pension.PensionReason = '$preason' 
