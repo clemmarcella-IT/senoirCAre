@@ -104,7 +104,7 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
                                                               LEFT JOIN assistance ON seniors.OscaIDNo = assistance.OscaIDNo 
                                                               AND assistance.AssistanceName = '$aname' 
                                                               AND assistance.AssistanceDate = '$adate' 
-                                                              WHERE seniors.CitezenStatus = 'active'
+                                                              WHERE seniors.CitizenStatus = 'active'
                                                               ORDER BY assistance.AssistanceTimeIn DESC, seniors.LastName ASC");
                                  
                                 while($display = mysqli_fetch_array($clem)){

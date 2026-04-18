@@ -2,15 +2,20 @@
 include("includes/session.php");
 
 if(isset($_POST['oscaID'])){
-    $oscaID = $_POST['oscaID']; 
-    $fname  = $_POST['fname'];
-    $mi     = $_POST['mi'];
-    $lname  = $_POST['lname'];
-    $sex    = $_POST['sex'];
-    $purok  = $_POST['purok']; 
+    $oscaID = mysqli_real_escape_string($conn, $_POST['oscaID']); 
+    $fname  = mysqli_real_escape_string($conn, $_POST['fname']);
+    $mi     = mysqli_real_escape_string($conn, $_POST['mi']);
+    $lname  = mysqli_real_escape_string($conn, $_POST['lname']);
+    $sex    = mysqli_real_escape_string($conn, $_POST['sex']);
+    $purok  = mysqli_real_escape_string($conn, $_POST['purok']); 
     $brgy   = "Kalawag 1";
-    $bday   = $_POST['bday'];
-    $status = $_POST['status'];
+    $bday   = mysqli_real_escape_string($conn, $_POST['bday']);
+    $status = mysqli_real_escape_string($conn, $_POST['status']);
+
+    // Calculate Age
+    $birthDate = new DateTime($bday);
+    $today = new DateTime();
+    $age = $today->diff($birthDate)->y;
 
     if(!is_dir('../uploads')) { mkdir('../uploads', 0777, true); }
 
@@ -29,8 +34,8 @@ if(isset($_POST['oscaID'])){
     $t3 = $oscaID."_th3.jpg"; move_uploaded_file($_FILES["thumb3"]["tmp_name"], $target.$t3);
 
     // Insert
-    $query = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, Picture, QRCode, CitezenStatus, SignaturePicture, thumbNailPicture1, thumbNailPicture2, thumbNailPicture3, GenerateDate) 
-              VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$pic', '$oscaID', '$status', '$s1', '$t1', '$t2', '$t3', NOW())";
+    $query = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, Age, Picture, QRCode, CitizenStatus, SignaturePicture, thumbNailPicture1, thumbNailPicture2, thumbNailPicture3, GenerateDate) 
+              VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$age', '$pic', '$oscaID', '$status', '$s1', '$t1', '$t2', '$t3', NOW())";
 
     if(mysqli_query($conn, $query)){
         echo "<script>alert('Senior Citizen Successfully Registered!'); window.location='profiling.php';</script>";

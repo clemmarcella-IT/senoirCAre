@@ -60,8 +60,8 @@
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Citizen Status</label>
                             <select name="status" class="form-select card shadow border border-1 border-black">
-                                <option value="active" <?php if($row['CitezenStatus']=='active') echo 'selected'; ?>>Active</option>
-                                <option value="inactive" <?php if($row['CitezenStatus']=='inactive') echo 'selected'; ?>>Inactive</option>
+                                <option value="active" <?php if($row['CitizenStatus']=='active') echo 'selected'; ?>>Active</option>
+                                <option value="inactive" <?php if($row['CitizenStatus']=='inactive') echo 'selected'; ?>>Inactive</option>
                             </select>
                         </div>
                         <div class="col-md-8">

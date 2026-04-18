@@ -55,7 +55,7 @@ $age = $bday->diff($today)->y;
                     <div class="col-md-8 data-side d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="section-title">Official Registry Details</span>
-                            <span class="badge bg-success no-print px-3"><?php echo strtoupper($row['CitezenStatus']); ?></span>
+                            <span class="badge bg-success no-print px-3"><?php echo strtoupper($row['CitizenStatus']); ?></span>
                         </div>
 
                         <div class="row flex-grow-1">
@@ -91,7 +91,7 @@ $age = $bday->diff($today)->y;
 
                         <!-- ACTIONS (Hidden during print) -->
                         <div class="mt-4 d-flex gap-2 no-print">
-                            <button onclick="printPage()" class="btn btn-forest flex-grow-1 py-2 shadow-sm">
+                            <button onclick="printCitizenRecord()" class="btn btn-forest flex-grow-1 py-2 shadow-sm">
                                 <i class="fa fa-print me-2"></i> PRINT FULL PROFILE
                             </button>
                             <a href="logout.php" class="btn btn-outline-secondary px-4 py-2">LOGOUT</a>
@@ -150,6 +150,117 @@ $age = $bday->diff($today)->y;
         </html>
     `);
     newWindow.document.close();
+}
+
+function printCitizenRecord() {
+    // 1. Get the content
+    var content = document.getElementById("profileCard").innerHTML;
+    var newWindow = window.open("", "", "width=900,height=800");
+    
+    newWindow.document.write("<html><head><title>Senior Profile - <?php echo $id; ?></title>");
+    newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">');
+    newWindow.document.write('<link rel="stylesheet" href="css/userStyle.css">');
+    
+    // 2. PREMIUM DESIGN CSS
+    newWindow.document.write(`
+        <style>
+            /* Force colors to print */
+            * { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+            }
+
+            body { 
+                background: white !important; 
+                padding: 0 !important; 
+                margin: 0 !important; 
+                font-family: 'Inter', sans-serif; 
+            }
+            
+            /* The Card Container */
+            .profile-card { 
+                border: none !important; 
+                box-shadow: none !important; 
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
+
+            /* LEFT SIDE (Dark Green) */
+            .id-side { 
+                background-color: #1F4B2C !important; 
+                color: white !important; 
+                padding: 40px 20px !important; 
+                text-align: center;
+            }
+
+            /* PROFILE PIC STYLE */
+            .display-pic {
+                width: 150px !important; 
+                height: 150px !important; 
+                object-fit: cover !important;
+                border: 4px solid #91EAAF !important; /* Mint Border */
+                border-radius: 50% !important;
+                margin-bottom: 15px !important;
+            }
+
+            /* RIGHT SIDE (Data) */
+            .data-side { 
+                padding: 40px !important; 
+                background: white !important;
+            }
+
+            /* DATA STYLING */
+            .section-title { 
+                font-size: 0.85rem !important;
+                font-weight: 800 !important;
+                color: #1F4B2C !important;
+                text-transform: uppercase !important;
+                border-bottom: 2px solid #91EAAF !important;
+                display: inline-block !important;
+                margin-bottom: 20px !important;
+            }
+
+            .label-tag { 
+                font-size: 0.7rem !important; 
+                color: #6c757d !important; 
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                display: block !important;
+            }
+
+            .data-box { 
+                font-size: 1.1rem !important; 
+                font-weight: 600 !important; 
+                color: #1a1a1a !important;
+                border-bottom: 1px solid #f0f0f0 !important;
+                margin-bottom: 15px !important;
+            }
+
+            /* Hide buttons and navigation */
+            .no-print, .btn, .navbar-custom { 
+                display: none !important; 
+            }
+
+            @media print {
+                @page { margin: 10mm; }
+            }
+        </style>
+    `);
+    
+    newWindow.document.write("</head><body>");
+    // Professional Header
+    newWindow.document.write("<div class='text-center mb-4'><h2>BARANGAY KALAWAG 1</h2><p class='text-muted'>Official Senior Citizen Profile</p></div>");
+    newWindow.document.write('<div class="profile-card">' + content + '</div>');
+    newWindow.document.write("</body></html>");
+    newWindow.document.close();
+    
+    newWindow.focus();
+    
+    // Wait for images/styles to load before printing
+    setTimeout(function() {
+        newWindow.print();
+        newWindow.close();
+    }, 800);
 }
 </script>
 </body>

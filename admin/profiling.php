@@ -93,8 +93,8 @@
                                 <td><?php echo $row['Sex']; ?></td>
                                 <td><?php echo $row['Purok']; ?></td>
                                 <td>
-                                    <span class="badge <?php echo ($row['CitezenStatus'] == 'active') ? 'bg-success' : 'bg-danger'; ?>" style="font-size: 0.75rem; padding: 6px 12px;">
-                                        <?php echo strtoupper($row['CitezenStatus']); ?>
+                                    <span class="badge <?php echo ($row['CitizenStatus'] == 'active') ? 'bg-success' : 'bg-danger'; ?>" style="font-size: 0.75rem; padding: 6px 12px;">
+                                        <?php echo strtoupper($row['CitizenStatus']); ?>
                                     </span>
                                 </td>
                                 <td class="no-print">

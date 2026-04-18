@@ -42,7 +42,7 @@
                         <tbody>
                             <?php
                             include("../includes/db_connection.php");
-                            $query = mysqli_query($conn, "SELECT FirstName, LastName, OscaIDNo FROM seniors WHERE CitezenStatus = 'active'");
+                            $query = mysqli_query($conn, "SELECT FirstName, LastName, OscaIDNo FROM seniors WHERE CitizenStatus = 'active'");
                             
                             $clem = 1; 
 

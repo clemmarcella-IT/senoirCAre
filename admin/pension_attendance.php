@@ -99,7 +99,7 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                                                                       LEFT JOIN pension ON seniors.OscaIDNo = pension.OscaIDNo 
                                                                       AND pension.PensionReason = '$preason' 
                                                                       AND pension.PensionDate = '$pdate' 
-                                                                      WHERE seniors.CitezenStatus = 'active'
+                                                                      WHERE seniors.CitizenStatus = 'active'
                                                                       ORDER BY pension.pensionTimeRecieve DESC, seniors.LastName ASC");
                                          
                                          $counter = 1; // Initialize sequence counter

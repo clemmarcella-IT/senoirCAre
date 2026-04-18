@@ -55,7 +55,7 @@ $age = $bday->diff($today)->y;
                 <div class="col-md-8 p-5 bg-white data-side">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
                         <h4 class="fw-bold text-success">Personal Data</h4>
-                        <span class="badge bg-success fs-6"><?php echo strtoupper($data['CitezenStatus']); ?></span>
+                        <span class="badge bg-success fs-6"><?php echo strtoupper($data['CitizenStatus']); ?></span>
                     </div>
 
                     <div class="row mb-4 g-3">

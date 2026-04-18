@@ -83,7 +83,7 @@
     <!-- Prepare Chart Data for JS -->
     <?php
         // Pie Data
-        $stQ = mysqli_query($conn, "SELECT CitezenStatus, COUNT(*) FROM seniors GROUP BY CitezenStatus");
+        $stQ = mysqli_query($conn, "SELECT CitizenStatus, COUNT(*) FROM seniors GROUP BY CitizenStatus");
         $p_act = 0; $p_inact = 0;
         while($r = mysqli_fetch_array($stQ)){
             if($r[0] == 'active') $p_act = $r[1]; else $p_inact = $r[1];

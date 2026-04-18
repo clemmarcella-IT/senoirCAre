@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 16, 2026 at 05:51 PM
+-- Generation Time: Apr 18, 2026 at 04:05 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -81,13 +81,6 @@ CREATE TABLE `attendance` (
   `attendanceTimeIn` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `attendance`
---
-
-INSERT INTO `attendance` (`AttendanceID`, `OscaIDNo`, `EventID`, `EventAttendanceStatus`, `attendanceTimeIn`) VALUES
-(1, '055455', 1, 'present', '08:06:02');
-
 -- --------------------------------------------------------
 
 --
@@ -101,14 +94,6 @@ CREATE TABLE `events` (
   `EventTime` time NOT NULL,
   `EventStatus` enum('Active','Stopped') DEFAULT 'Active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `events`
---
-
-INSERT INTO `events` (`EventID`, `EventName`, `eventDate`, `EventTime`, `EventStatus`) VALUES
-(1, 'wewr', '2026-04-16', '14:05:00', 'Stopped'),
-(2, 'wewr', '2026-04-16', '15:47:00', 'Stopped');
 
 -- --------------------------------------------------------
 
@@ -153,6 +138,14 @@ CREATE TABLE `pension` (
   `PensionEventStatus` enum('Active','Stopped') DEFAULT 'Active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `pension`
+--
+
+INSERT INTO `pension` (`PensionID`, `OscaIDNo`, `PensionReason`, `PensionDate`, `PensionCashAmount`, `ControlNo`, `PensionAttendanceStatus`, `pensionTimeRecieve`, `PensionEventStatus`) VALUES
+(12, NULL, '2026-04-17', '2026-04-17', 3000.00, NULL, 'claimed', NULL, 'Stopped'),
+(13, '055455', '2026-04-17', '2026-04-17', 3000.00, NULL, 'Claimed', '15:25:57', 'Stopped');
+
 -- --------------------------------------------------------
 
 --
@@ -171,7 +164,7 @@ CREATE TABLE `seniors` (
   `Age` int(3) DEFAULT NULL,
   `Picture` varchar(255) DEFAULT NULL,
   `QRCode` varchar(255) DEFAULT NULL,
-  `CitezenStatus` enum('active','inactive') DEFAULT 'active',
+  `CitizenStatus` enum('active','inactive') DEFAULT 'active',
   `SignaturePicture` varchar(255) DEFAULT NULL,
   `thumbNailPicture1` varchar(255) DEFAULT NULL,
   `thumbNailPicture2` varchar(255) DEFAULT NULL,
@@ -183,9 +176,9 @@ CREATE TABLE `seniors` (
 -- Dumping data for table `seniors`
 --
 
-INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `Age`, `Picture`, `QRCode`, `CitezenStatus`, `SignaturePicture`, `thumbNailPicture1`, `thumbNailPicture2`, `thumbNailPicture3`, `GenerateDate`) VALUES
-('055455', 'Reyes', 'Luz', 'B', 'Female', 'Zone 1', 'Kalawag 1', '1961-01-12', 65, '055455_profile.jpg', '055455', 'active', '055455_sig1.jpg', '055455_thumb1.jpg', '055455_thumb2.jpg', '055455_thumb3.jpg', '2026-04-16 13:36:30'),
-('123456', 'Dela Cruz', 'Juan', 'P', 'Male', 'Zone 3', 'Kalawag 1', '1955-05-20', 71, '123456_profile.jpg', '123456', 'active', '123456_sig1.jpg', '123456_thumb1.jpg', '123456_thumb2.jpg', '123456_thumb3.jpg', '2026-04-16 13:36:30');
+INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `Age`, `Picture`, `QRCode`, `CitizenStatus`, `SignaturePicture`, `thumbNailPicture1`, `thumbNailPicture2`, `thumbNailPicture3`, `GenerateDate`) VALUES
+('00123', 'MARCELLA', 'CLEM', 'A', 'Female', 'Zone 6', 'Kalawag 1', '1945-06-18', 80, '00123_profile.jpg', '00123', 'active', '00123_sig.jpg', '00123_thumb1.jpg', '00123_thumb2.jpg', '00123_thumb3.jpg', '2026-04-18 09:46:47'),
+('055455', 'Reyes', 'Luz', 'B', 'Female', 'Zone 1', 'Kalawag 1', '1961-01-12', 65, '055455_profile.jpg', '055455', 'active', '055455_sig1.jpg', '055455_thumb1.jpg', '055455_thumb2.jpg', '055455_thumb3.jpg', '2026-04-16 13:36:30');
 
 --
 -- Indexes for dumped tables
@@ -252,7 +245,7 @@ ALTER TABLE `admin_users`
 -- AUTO_INCREMENT for table `assistance`
 --
 ALTER TABLE `assistance`
-  MODIFY `AssistanceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `AssistanceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `attendance`
@@ -264,7 +257,7 @@ ALTER TABLE `attendance`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `healthrecords`
@@ -276,7 +269,7 @@ ALTER TABLE `healthrecords`
 -- AUTO_INCREMENT for table `pension`
 --
 ALTER TABLE `pension`
-  MODIFY `PensionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `PensionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables
