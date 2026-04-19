@@ -5,6 +5,14 @@ $hdate = $_GET['date'];
 
 $res = mysqli_query($conn, "SELECT * FROM healthrecords WHERE HealthName = '$hname' AND HealthDate = '$hdate' AND OscaIDNo IS NULL");
 $event = mysqli_fetch_array($res);
+if (!$event) {
+    $event = [
+        'HealthName' => $hname,
+        'HealthPurpose' => 'Unknown',
+        'HealthDate' => $hdate,
+        'HealthEventStatus' => 'Active'
+    ];
+}
 
 $isStopped = ($event['HealthEventStatus'] == 'Stopped');
 ?>
@@ -133,7 +141,11 @@ $isStopped = ($event['HealthEventStatus'] == 'Stopped');
         var newWindow = window.open("", "", "width=800,height=600");
         newWindow.document.write("<html><head><title>Print Report</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
         newWindow.document.write("<h3 class='text-center'>Health Activity: <?php echo $event['HealthName']; ?></h3>");
-        newWindow.document.write(table.outerHTML);
+        if (table) {
+            newWindow.document.write(table.outerHTML);
+        } else {
+            newWindow.document.write("<p class='text-center mt-4'>No records found to print.</p>");
+        }
         newWindow.document.write("</body></html>");
         newWindow.document.close();
         setTimeout(() => { newWindow.print(); newWindow.close(); }, 500);

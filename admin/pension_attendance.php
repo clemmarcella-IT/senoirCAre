@@ -5,6 +5,14 @@ $pdate = $_GET['date'];
 
 $res = mysqli_query($conn, "SELECT * FROM pension WHERE PensionReason = '$preason' AND PensionDate = '$pdate' AND OscaIDNo IS NULL");
 $event = mysqli_fetch_array($res);
+if (!$event) {
+    $event = [
+        'PensionReason' => $preason,
+        'PensionDate' => $pdate,
+        'PensionCashAmount' => 0,
+        'PensionEventStatus' => 'Active'
+    ];
+}
 
 $isStopped = ($event['PensionEventStatus'] == 'Stopped');
 ?>

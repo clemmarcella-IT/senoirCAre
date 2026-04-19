@@ -3,6 +3,12 @@ require_once('includes/session.php');
 $eid = $_GET['id'];
 $res = mysqli_query($conn, "SELECT * FROM events WHERE EventID = '$eid'");
 $event = mysqli_fetch_array($res);
+if (!$event) {
+    $event = [
+        'EventName' => 'Unknown Event',
+        'EventStatus' => 'Active'
+    ];
+}
 
 $isStopped = ($event['EventStatus'] == 'Stopped');
 ?>
@@ -124,7 +130,11 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
         var newWindow = window.open("", "", "width=800,height=600");
         newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
         newWindow.document.write("<h3 class='text-center'>Attendance: <?php echo $event['EventName']; ?></h3>");
-        newWindow.document.write(table.outerHTML);
+        if (table) {
+            newWindow.document.write(table.outerHTML);
+        } else {
+            newWindow.document.write("<p class='text-center mt-4'>No records found to print.</p>");
+        }
         newWindow.document.write("</body></html>");
         newWindow.document.close();
         setTimeout(() => { newWindow.print(); newWindow.close(); }, 500);

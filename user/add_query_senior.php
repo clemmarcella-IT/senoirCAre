@@ -13,6 +13,13 @@
 		$bday   = $_POST['bday'];
 		$status = $_POST['status'];
 
+		// Check if this ID already exists
+		$check = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo = '$oscaID'");
+		if (mysqli_fetch_array($check)) {
+			echo "<script>alert('Error: OscaIDNo $oscaID already exists.'); window.location='register.php';</script>";
+			exit;
+		}
+
 		// Calculate Age
 		$birthDate = new DateTime($bday);
 		$today = new DateTime();
