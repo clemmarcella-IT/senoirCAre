@@ -5,13 +5,13 @@
 	$id = $_GET['id'];
 	
 	// 2. Collect all the text information from the form
-	$fname  = mysqli_real_escape_string($conn, $_POST['fname']);
-	$mi     = mysqli_real_escape_string($conn, $_POST['mi']);
-	$lname  = mysqli_real_escape_string($conn, $_POST['lname']);
-	$sex    = mysqli_real_escape_string($conn, $_POST['sex']);
-	$bday   = mysqli_real_escape_string($conn, $_POST['bday']);
-	$purok  = mysqli_real_escape_string($conn, $_POST['purok']);
-	$status = mysqli_real_escape_string($conn, $_POST['status']);
+	$fname  = $_POST['fname'];
+	$mi     = $_POST['mi'];
+	$lname  = $_POST['lname'];
+	$sex    = $_POST['sex'];
+	$bday   = $_POST['bday'];
+	$purok  = $_POST['purok'];
+	$status = $_POST['status'];
 
 	// Calculate Age
 	$birthDate = new DateTime($bday);

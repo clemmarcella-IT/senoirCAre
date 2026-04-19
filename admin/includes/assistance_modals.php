@@ -6,7 +6,7 @@
                 <h5 class="modal-title fw-bold">Update Assistance Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="query_edit_assistance.php?old_name=<?php echo urlencode($aname); ?>&old_date=<?php echo $adate; ?>">
+            <form method="POST" action="query_edit_assistance.php?old_name=<?php echo $aname; ?>&old_date=<?php echo $adate; ?>">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="small fw-bold">Assistance Name</label>
@@ -48,7 +48,7 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="query_delete_assistance.php?name=<?php echo urlencode($aname); ?>&date=<?php echo $adate; ?>" class="btn btn-danger px-4">Yes, Delete</a>
+                <a href="query_delete_assistance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>" class="btn btn-danger px-4">Yes, Delete</a>
             </div>
         </div>
     </div>

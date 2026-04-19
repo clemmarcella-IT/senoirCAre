@@ -8,12 +8,12 @@ $error = "";
 
 // STEP 1: Request OTP Logic
 if (isset($_POST['request_otp'])) {
-    $admin_osca = mysqli_real_escape_string($conn, $_POST['admin_osca']);
+    $admin_osca = $_POST['admin_osca'];
     
     $query = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminOscaID='$admin_osca' LIMIT 1");
+    $admin = mysqli_fetch_array($query);
     
-    if (mysqli_num_rows($query) > 0) {
-        $admin = mysqli_fetch_assoc($query);
+    if ($admin) {
         $phone = $admin['ContactNumber'];
         
         $otp = rand(100000, 999999);
@@ -39,12 +39,13 @@ if (isset($_POST['verify_otp'])) {
         exit();
     }
 
-    $user_code = mysqli_real_escape_string($conn, $_POST['otp_code']);
+    $user_code = $_POST['otp_code'];
     $admin_osca = $_SESSION['reset_admin_id'];
 
     $query = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminOscaID='$admin_osca' AND ResetCode='$user_code' AND CodeExpiry > NOW()");
+    $row = mysqli_fetch_array($query);
 
-    if (mysqli_num_rows($query) > 0) {
+    if ($row) {
         $step = 3;
     } else {
         $error = "Invalid or Expired OTP Code!";
@@ -59,7 +60,7 @@ if (isset($_POST['save_password'])) {
         exit();
     }
 
-    $new_pass = mysqli_real_escape_string($conn, $_POST['new_pass']);
+    $new_pass = $_POST['new_pass'];
     $admin_osca = $_SESSION['reset_admin_id'];
 
     mysqli_query($conn, "UPDATE admin_users SET Password='$new_pass', ResetCode=NULL, CodeExpiry=NULL WHERE AdminOscaID='$admin_osca'");

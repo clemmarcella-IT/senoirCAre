@@ -2,8 +2,8 @@
 require_once('includes/session.php'); 
 
 if(isset($_POST['update_admin'])) {
-    $new_osca = mysqli_real_escape_string($conn, $_POST['admin_osca']);
-    $new_pass = mysqli_real_escape_string($conn, $_POST['admin_pass']);
+    $new_osca = $_POST['admin_osca'];
+    $new_pass = $_POST['admin_pass'];
     
     mysqli_query($conn, "UPDATE admin_users SET AdminOscaID='$new_osca', Password='$new_pass' WHERE AdminID=1");
     $_SESSION['admin_osca'] = $new_osca;

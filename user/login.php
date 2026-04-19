@@ -4,12 +4,13 @@ include("../includes/db_connection.php");
 // Handle Login Logic
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect ID as string to preserve leading zeros (e.g., 00123)
-    $id = mysqli_real_escape_string($conn, $_POST['login_osca']);
+    $id = $_POST['login_osca'];
     
     // Check if ID exists in the database
     $res = mysqli_query($conn, "SELECT OscaIDNo FROM seniors WHERE OscaIDNo = '$id'");
+    $row = mysqli_fetch_array($res);
     
-    if (mysqli_num_rows($res) > 0) {
+    if ($row) {
         // Redirect to profile page
         header("Location: profile.php?id=$id");
         exit;

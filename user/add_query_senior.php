@@ -3,15 +3,15 @@
 
 	if(isset($_POST['oscaID'])){
 		// 1. Collect Text Data (Variables match the register.php form)
-		$oscaID = mysqli_real_escape_string($conn, $_POST['oscaID']); // Preserves leading zeros (e.g., 00123)
-		$fname  = mysqli_real_escape_string($conn, $_POST['fname']);
-		$mi     = mysqli_real_escape_string($conn, $_POST['mi']);
-		$lname  = mysqli_real_escape_string($conn, $_POST['lname']);
-		$sex    = mysqli_real_escape_string($conn, $_POST['sex']);
-		$purok  = mysqli_real_escape_string($conn, $_POST['purok']); 
+		$oscaID = $_POST['oscaID']; // Preserves leading zeros (e.g., 00123)
+		$fname  = $_POST['fname'];
+		$mi     = $_POST['mi'];
+		$lname  = $_POST['lname'];
+		$sex    = $_POST['sex'];
+		$purok  = $_POST['purok']; 
 		$brgy   = "Kalawag 1";
-		$bday   = mysqli_real_escape_string($conn, $_POST['bday']);
-		$status = mysqli_real_escape_string($conn, $_POST['status']);
+		$bday   = $_POST['bday'];
+		$status = $_POST['status'];
 
 		// Calculate Age
 		$birthDate = new DateTime($bday);

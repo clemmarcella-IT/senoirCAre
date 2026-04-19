@@ -4,7 +4,7 @@ $id = $_POST['oscaID']; $eid = $_POST['event_id']; $time = date('H:i:s');
 
 // Constraint check for duplicate
 $check = mysqli_query($conn, "SELECT * FROM attendance WHERE OscaIDNo='$id' AND EventID='$eid'");
-if(mysqli_num_rows($check) > 0) {
+if(mysqli_fetch_array($check)) {
     echo "<script>alert('Duplicate: Already marked present.'); window.history.back();</script>";
 } else {
     mysqli_query($conn, "INSERT INTO attendance (OscaIDNo, EventID, EventAttendanceStatus, attendanceTimeIn) VALUES ('$id', '$eid', 'present', '$time')");

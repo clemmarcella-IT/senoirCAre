@@ -12,12 +12,12 @@ $displayCode = "";
 
 // --- LOGIC A: Standard Login (ID + Password) ---
 if (isset($_POST['login_btn'])) {
-    $id = mysqli_real_escape_string($conn, $_POST['admin_osca']);
-    $pass = mysqli_real_escape_string($conn, $_POST['password']);
+    $id = $_POST['admin_osca'];
+    $pass = $_POST['password'];
 
     $q = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminOscaID='$id' AND Password='$pass'");
-    if (mysqli_num_rows($q) > 0) {
-        $row = mysqli_fetch_assoc($q);
+    $row = mysqli_fetch_array($q);
+    if ($row) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_osca'] = $row['AdminOscaID'];
         header("Location: dashboard.php");
@@ -29,10 +29,11 @@ if (isset($_POST['login_btn'])) {
 
 // --- LOGIC B: Forgot Password (Step 1: Generate Handshake) ---
 if (isset($_POST['forgot_req'])) {
-    $id = mysqli_real_escape_string($conn, $_POST['osca_for_reset']);
+    $id = $_POST['osca_for_reset'];
     $q = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminOscaID='$id'");
 
-    if (mysqli_num_rows($q) > 0) {
+    $row = mysqli_fetch_array($q);
+    if ($row) {
         $otp = rand(100000, 999999);
         $expiry = date("Y-m-d H:i:s", strtotime("+10 minutes"));
         mysqli_query($conn, "UPDATE admin_users SET ResetCode='$otp', CodeExpiry='$expiry' WHERE AdminOscaID='$id'");
@@ -47,14 +48,14 @@ if (isset($_POST['forgot_req'])) {
 
 // --- LOGIC C: Verify Handshake (Step 2: Direct Login) ---
 if (isset($_POST['verify_otp_login'])) {
-    $id = mysqli_real_escape_string($conn, $_POST['temp_id']);
-    $code = mysqli_real_escape_string($conn, $_POST['otp_code']);
+    $id = $_POST['temp_id'];
+    $code = $_POST['otp_code'];
 
     $sql = "SELECT * FROM admin_users WHERE AdminOscaID='$id' AND ResetCode='$code' AND CodeExpiry >= '".date("Y-m-d H:i:s")."'";
     $result = mysqli_query($conn, $sql);
     
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
+    $row = mysqli_fetch_array($result);
+    if ($row) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_osca'] = $row['AdminOscaID'];
         mysqli_query($conn, "UPDATE admin_users SET ResetCode=NULL, CodeExpiry=NULL WHERE AdminOscaID='$id'");

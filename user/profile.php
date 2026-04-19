@@ -3,16 +3,11 @@ include("../includes/db_connection.php");
 
 if (!isset($_GET['id'])) { header("Location: login.php"); exit; }
 
-$id = mysqli_real_escape_string($conn, $_GET['id']);
+$id = $_GET['id'];
 $res = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo = '$id'");
-$row = mysqli_fetch_assoc($res);
+$row = mysqli_fetch_array($res);
 
 if (!$row) { header("Location: login.php"); exit; }
-
-// --- AGE CALCULATION (PHP) ---
-$bday = new DateTime($row['Birthday']);
-$today = new DateTime('today');
-$age = $bday->diff($today)->y;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,7 +50,7 @@ $age = $bday->diff($today)->y;
                     <div class="col-md-8 data-side d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="section-title">Official Registry Details</span>
-                            <span class="badge bg-success no-print px-3"><?php echo strtoupper($row['CitizenStatus']); ?></span>
+                            <span class="badge bg-success no-print px-3"><?php echo $row['CitizenStatus']; ?></span>
                         </div>
 
                         <div class="row flex-grow-1">
@@ -73,7 +68,7 @@ $age = $bday->diff($today)->y;
                             </div>
                             <div class="col-md-4 col-4">
                                 <label class="label-tag">Age</label>
-                                <div class="data-box text-success fw-bold"><?php echo $age; ?> Yrs</div>
+                                <div class="data-box text-success fw-bold"><?php echo $row['Age']; ?> Yrs</div>
                             </div>
                             <div class="col-md-4 col-4">
                                 <label class="label-tag">Birthday</label>

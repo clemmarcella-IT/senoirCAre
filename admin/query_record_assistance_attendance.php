@@ -16,6 +16,6 @@ if($row) {
     mysqli_query($conn, "INSERT INTO assistance (OscaIDNo, AssistanceName, TypeAssistance, AssistanceDate, AssistanceAttendanceStatus, AssistanceTimeIn, AssistanceEventStatus) 
     VALUES ('$id', '$aname', '$atype', '$adate', 'claimed', '$time', 'Active')");
     
-    header("location:assistance_attendance.php?name=" . urlencode($aname) . "&date=" . $adate);
+    header("location:assistance_attendance.php?name=" . $aname . "&date=" . $adate);
 }
 ?>

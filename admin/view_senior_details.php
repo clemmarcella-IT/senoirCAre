@@ -1,4 +1,5 @@
 <?php 
+include("../includes/db_connection.php");
 require_once('includes/session.php'); 
 
 if (!isset($_GET['id'])) { 
@@ -9,16 +10,12 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id']; 
 
 $query = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo = '$id'");
-$data = mysqli_fetch_assoc($query);
+$data = mysqli_fetch_array($query);
 
-if(!$data) { 
-    echo "<script>alert('Record not found.'); window.location='profiling.php';</script>"; 
-    exit; 
+if (!$data) {
+    echo "<script>alert('Record not found.'); window.location='profiling.php';</script>";
+    exit;
 }
-
-$bday = new DateTime($data['Birthday']);
-$today = new DateTime('today');
-$age = $bday->diff($today)->y;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,14 +52,14 @@ $age = $bday->diff($today)->y;
                 <div class="col-md-8 p-5 bg-white data-side">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
                         <h4 class="fw-bold text-success">Personal Data</h4>
-                        <span class="badge bg-success fs-6"><?php echo strtoupper($data['CitizenStatus']); ?></span>
+                        <span class="badge bg-success fs-6 text-uppercase"><?php echo $data['CitizenStatus']; ?></span>
                     </div>
 
                     <div class="row mb-4 g-3">
                         <div class="col-12"><label class="label-tag text-muted small fw-bold">OscaIDNo. (Primary ID)</label><div class="data-box fs-5 fw-bold text-primary"><?php echo $data['OscaIDNo']; ?></div></div>
                         <div class="col-12"><label class="label-tag text-muted small fw-bold">FULL LEGAL NAME</label><div class="data-box fs-5 fw-bold text-uppercase"><?php echo $data['LastName'].", ".$data['FirstName']." ".$data['MiddleName']; ?></div></div>
                         <div class="col-4"><label class="label-tag text-muted small fw-bold">SEX</label><div class="data-box"><?php echo $data['Sex']; ?></div></div>
-                        <div class="col-4"><label class="label-tag text-muted small fw-bold">DERIVED AGE</label><div class="data-box text-success fw-bold"><?php echo $age; ?> Years Old</div></div>
+                        <div class="col-4"><label class="label-tag text-muted small fw-bold">DERIVED AGE</label><div class="data-box text-success fw-bold"><?php echo $data['Age']; ?> Years Old</div></div>
                         <div class="col-4"><label class="label-tag text-muted small fw-bold">BIRTHDAY</label><div class="data-box"><?php echo date("F d, Y", strtotime($data['Birthday'])); ?></div></div>
                         <div class="col-6"><label class="label-tag text-muted small fw-bold">PUROK / ZONE</label><div class="data-box"><?php echo $data['Purok']; ?></div></div>
                         <div class="col-6"><label class="label-tag text-muted small fw-bold">BARANGAY</label><div class="data-box"><?php echo $data['Barangay']; ?></div></div>
