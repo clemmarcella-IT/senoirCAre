@@ -5,6 +5,14 @@ $adate = $_GET['date'];
 
 $res = mysqli_query($conn, "SELECT * FROM assistance WHERE AssistanceName = '$aname' AND AssistanceDate = '$adate' AND OscaIDNo IS NULL");
 $event = mysqli_fetch_array($res);
+if (!$event) {
+    $event = [
+        'AssistanceName' => $aname,
+        'TypeAssistance' => 'Unknown',
+        'AssistanceDate' => $adate,
+        'AssistanceEventStatus' => 'Active'
+    ];
+}
 
 $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
 ?>
@@ -150,7 +158,11 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
         var newWindow = window.open("", "", "width=800,height=600");
         newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
         newWindow.document.write("<h3 class='text-center'>Assistance: <?php echo $event['AssistanceName']; ?></h3>");
-        newWindow.document.write(table.outerHTML);
+        if (table) {
+            newWindow.document.write(table.outerHTML);
+        } else {
+            newWindow.document.write("<p class='text-center mt-4'>No records found to print.</p>");
+        }
         newWindow.document.write("</body></html>");
         newWindow.document.close();
         setTimeout(() => { newWindow.print(); newWindow.close(); }, 500);
