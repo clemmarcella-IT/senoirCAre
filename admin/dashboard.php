@@ -35,19 +35,21 @@
                 <div class="card stat-card border-blue">
                     <?php $query = mysqli_query($conn, "SELECT count(*) FROM events");
                     while($row = mysqli_fetch_array($query)){ ?>
-                    <h6>Active Events</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
+                    <h6>Total Events</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card border-lime">
-                    <h6>Assistance Issued</h6><h3>85%</h3>
+                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM assistance");
+                    while($row = mysqli_fetch_array($query)){ ?>
+                    <h6>Total Assistance</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card border-red">
                     <?php $query = mysqli_query($conn, "SELECT count(*) FROM healthrecords");
                     while($row = mysqli_fetch_array($query)){ ?>
-                    <h6>Medical Alerts</h6><h3>0<?php echo $row[0]; ?></h3><?php } ?>
+                    <h6>Total Medical Event</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
             </div>
         </div>
@@ -71,9 +73,9 @@
         <!-- Row 3: Age Groups -->
         <div class="row g-3 mb-5">
             <div class="col-lg-12">
-                <div class="card chart-card" style="height: 220px;">
+                <div class="card chart-card" style="height: 260px;">
                     <div class="chart-title">Age Group Distribution (For Program Planning)</div>
-                    <div style="height: 150px;"><canvas id="seniorBarChart" width="100%" height="40"></canvas></div>
+                    <div style="height: 160px;"><canvas id="seniorBarChart" width="100%" height="40"></canvas></div>
                 </div>
             </div>
         </div>
@@ -82,24 +84,54 @@
 
     <!-- Prepare Chart Data for JS -->
     <?php
-        // Pie Data
-        $stQ = mysqli_query($conn, "SELECT CitizenStatus, COUNT(*) FROM seniors GROUP BY CitizenStatus");
-        $p_act = 0; $p_inact = 0;
-        while($r = mysqli_fetch_array($stQ)){
-            if($r[0] == 'active') $p_act = $r[1]; else $p_inact = $r[1];
+        // Count Active Citizens
+        $active_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'active'");
+        $active_row = mysqli_fetch_array($active_query);
+        $p_act = $active_row[0];
+        
+        // Count Inactive Citizens
+        $inactive_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'inactive'");
+        $inactive_row = mysqli_fetch_array($inactive_query);
+        $p_inact = $inactive_row[0];
+        
+        // Count Seniors by Age Group
+        $seniors_query = mysqli_query($conn, "SELECT Birthday FROM seniors");
+        $age_60_65 = 0;
+        $age_66_70 = 0;
+        $age_71_75 = 0;
+        $age_76_plus = 0;
+        
+        while($senior_row = mysqli_fetch_array($seniors_query)){
+            $birth_year = substr($senior_row['Birthday'], 0, 4);
+            $current_year = date('Y');
+            $age = $current_year - $birth_year;
+            
+            if($age >= 60 && $age <= 65) {
+                $age_60_65++;
+            }
+            elseif($age >= 66 && $age <= 70) {
+                $age_66_70++;
+            }
+            elseif($age >= 71 && $age <= 75) {
+                $age_71_75++;
+            }
+            elseif($age >= 76) {
+                $age_76_plus++;
+            }
         }
-        // Bar Data (Ages)
-        $ageQ = mysqli_query($conn, "SELECT 
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, Birthday, CURDATE()) BETWEEN 60 AND 65 THEN 1 ELSE 0 END),
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, Birthday, CURDATE()) BETWEEN 66 AND 70 THEN 1 ELSE 0 END),
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, Birthday, CURDATE()) BETWEEN 71 AND 75 THEN 1 ELSE 0 END),
-            SUM(CASE WHEN TIMESTAMPDIFF(YEAR, Birthday, CURDATE()) >= 76 THEN 1 ELSE 0 END) FROM seniors");
-        $aRow = mysqli_fetch_array($ageQ);
-        $bar_vals = [(int)$aRow[0], (int)$aRow[1], (int)$aRow[2], (int)$aRow[3]];
-        // Area Data
-        $attQ = mysqli_query($conn, "SELECT MONTH(events.eventDate), COUNT(*) FROM attendance JOIN events ON events.EventID = attendance.EventID GROUP BY MONTH(events.eventDate)");
+        
+        $bar_vals = [$age_60_65, $age_66_70, $age_71_75, $age_76_plus];
+        
+        // Count Attendance by Month
+        $attendance_query = mysqli_query($conn, "SELECT eventDate FROM events JOIN attendance ON attendance.EventID = events.EventID");
         $area_vals = array_fill(0, 12, 0);
-        while($r = mysqli_fetch_array($attQ)){ if($r[0] > 0) $area_vals[$r[0]-1] = (int)$r[1]; }
+        
+        while($attendance_row = mysqli_fetch_array($attendance_query)){
+            $event_date = $attendance_row['eventDate'];
+            $month = substr($event_date, 5, 2);
+            $month_index = (int)$month - 1;
+            $area_vals[$month_index]++;
+        }
     ?>
 
     <script>

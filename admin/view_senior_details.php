@@ -52,7 +52,8 @@ if (!$data) {
                 <div class="col-md-8 p-5 bg-white data-side">
                     <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
                         <h4 class="fw-bold text-success">Personal Data</h4>
-                        <span class="badge bg-success fs-6 text-uppercase"><?php echo $data['CitizenStatus']; ?></span>
+                        <?php $statusClass = ($data['CitizenStatus'] == 'inactive') ? 'bg-danger' : 'bg-success'; ?>
+                        <span class="badge <?php echo $statusClass; ?> fs-6 text-uppercase"><?php echo $data['CitizenStatus']; ?></span>
                     </div>
 
                     <div class="row mb-4 g-3">

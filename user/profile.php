@@ -50,7 +50,8 @@ if (!$row) { header("Location: login.php"); exit; }
                     <div class="col-md-8 data-side d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="section-title">Official Registry Details</span>
-                            <span class="badge bg-success no-print px-3"><?php echo $row['CitizenStatus']; ?></span>
+                            <?php $statusClass = ($row['CitizenStatus'] == 'inactive') ? 'bg-danger' : 'bg-success'; ?>
+                            <span class="badge <?php echo $statusClass; ?> no-print px-3"><?php echo $row['CitizenStatus']; ?></span>
                         </div>
 
                         <div class="row flex-grow-1">
