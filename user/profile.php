@@ -376,19 +376,19 @@ function printCitizenRecord() {
                 </div>
                 <div class="field-row">
                     <div class="label"><span>LAST NAME/Apelyido</span><span>:</span></div>
-                    <div class="value-line"><?php echo htmlspecialchars($row['LastName']); ?></div>
+                    <div class="value-line"><?php echo $row['LastName']; ?></div>
                 </div>
                 <div class="field-row">
                     <div class="label"><span>GIVEN NAME/Pangalan</span><span>:</span></div>
-                    <div class="value-line"><?php echo htmlspecialchars($row['FirstName']); ?></div>
+                    <div class="value-line"><?php echo $row['FirstName']; ?></div>
                 </div>
                 <div class="field-row">
                     <div class="label"><span>MIDDLE NAME/Gitnang Apelyido</span><span>:</span></div>
-                    <div class="value-line"><?php echo htmlspecialchars($row['MiddleName']); ?></div>
+                    <div class="value-line"><?php echo $row['MiddleName']; ?></div>
                 </div>
                 <div class="field-row">
                     <div class="label"><span>ADDRESS/Tirahan</span><span>:</span></div>
-                    <div class="value-line"><?php echo htmlspecialchars($row['Purok'].", ".$row['Barangay']); ?></div>
+                    <div class="value-line"><?php echo $row['Purok'].", ".$row['Barangay']; ?></div>
                 </div>
                 
                 <div class="field-row">
@@ -416,7 +416,7 @@ function printCitizenRecord() {
             <!-- RIGHT SIDE: Picture Box -->
             <div class="picture-box">
                 <div class="inner-pic-box">
-                    <?php if (!empty($row['Picture'])) { ?>
+                    <?php if ($row['Picture'] != '') { ?>
                         <img src="../uploads/<?php echo $row['Picture']; ?>">
                     <?php } else { ?>
                         2X2 ID<br>PICTURE
@@ -434,12 +434,12 @@ function printCitizenRecord() {
             <!-- ROW 1 -->
             <tr>
                 <td>
-                    <?php if (!empty($row['SignaturePicture'])) { ?>
+                    <?php if ($row['SignaturePicture'] != '') { ?>
                         <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
                 <td>
-                    <?php if (!empty($row['thumbNailPicture1'])) { ?>
+                    <?php if ($row['thumbNailPicture1'] != '') { ?>
                         <img src="../uploads/<?php echo $row['thumbNailPicture1']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
@@ -447,12 +447,12 @@ function printCitizenRecord() {
             <!-- ROW 2 (Duplicate Signature) -->
             <tr>
                 <td>
-                    <?php if (!empty($row['SignaturePicture'])) { ?>
+                    <?php if ($row['SignaturePicture'] != '') { ?>
                         <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
                 <td>
-                    <?php if (!empty($row['thumbNailPicture2'])) { ?>
+                    <?php if ($row['thumbNailPicture2'] != '') { ?>
                         <img src="../uploads/<?php echo $row['thumbNailPicture2']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
@@ -460,12 +460,12 @@ function printCitizenRecord() {
             <!-- ROW 3 (Duplicate Signature) -->
             <tr>
                 <td>
-                    <?php if (!empty($row['SignaturePicture'])) { ?>
+                    <?php if ($row['SignaturePicture'] != '') { ?>
                         <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
                 <td>
-                    <?php if (!empty($row['thumbNailPicture3'])) { ?>
+                    <?php if ($row['thumbNailPicture3'] != '') { ?>
                         <img src="../uploads/<?php echo $row['thumbNailPicture3']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
@@ -476,7 +476,7 @@ function printCitizenRecord() {
         <div class="footer">
             <div class="footer-sig">
                 <!-- Changed to display Senior Citizen's full name in ALL CAPS -->
-                <div class="footer-line"><?php echo strtoupper(htmlspecialchars($row['FirstName'] . " " . $row['MiddleName'] . " " . $row['LastName'])); ?></div>
+                <div class="footer-line" style="text-transform: uppercase;"><?php echo $row['FirstName'] . " " . $row['MiddleName'] . " " . $row['LastName']; ?></div>
                 <div>Senior Citizen</div>
             </div>
             <div class="footer-sig">

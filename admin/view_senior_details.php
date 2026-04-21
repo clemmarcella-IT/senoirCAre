@@ -314,19 +314,19 @@ if (!$data) {
                         </div>
                         <div class="field-row">
                             <div class="label"><span>LAST NAME/Apelyido</span><span>:</span></div>
-                            <div class="value-line"><?php echo htmlspecialchars($data['LastName']); ?></div>
+                            <div class="value-line"><?php echo $data['LastName']; ?></div>
                         </div>
                         <div class="field-row">
                             <div class="label"><span>GIVEN NAME/Pangalan</span><span>:</span></div>
-                            <div class="value-line"><?php echo htmlspecialchars($data['FirstName']); ?></div>
+                            <div class="value-line"><?php echo $data['FirstName']; ?></div>
                         </div>
                         <div class="field-row">
                             <div class="label"><span>MIDDLE NAME/Gitnang Apelyido</span><span>:</span></div>
-                            <div class="value-line"><?php echo htmlspecialchars($data['MiddleName']); ?></div>
+                            <div class="value-line"><?php echo $data['MiddleName']; ?></div>
                         </div>
                         <div class="field-row">
                             <div class="label"><span>ADDRESS/Tirahan</span><span>:</span></div>
-                            <div class="value-line"><?php echo htmlspecialchars($data['Purok'].", ".$data['Barangay']); ?></div>
+                            <div class="value-line"><?php echo $data['Purok'].", ".$data['Barangay']; ?></div>
                         </div>
                         
                         <div class="field-row">
@@ -354,7 +354,7 @@ if (!$data) {
                     <!-- RIGHT SIDE: Picture Box -->
                     <div class="picture-box">
                         <div class="inner-pic-box">
-                            <?php if (!empty($data['Picture'])) { ?>
+                            <?php if ($data['Picture'] != '') { ?>
                                 <img src="../uploads/<?php echo $data['Picture']; ?>">
                             <?php } else { ?>
                                 2X2 ID<br>PICTURE
@@ -372,12 +372,12 @@ if (!$data) {
                     <!-- ROW 1 -->
                     <tr>
                         <td>
-                            <?php if (!empty($data['SignaturePicture'])) { ?>
+                            <?php if ($data['SignaturePicture'] != '') { ?>
                                 <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="sig-img">
                             <?php } ?>
                         </td>
                         <td>
-                            <?php if (!empty($data['thumbNailPicture1'])) { ?>
+                            <?php if ($data['thumbNailPicture1'] != '') { ?>
                                 <img src="../uploads/<?php echo $data['thumbNailPicture1']; ?>" class="sig-img">
                             <?php } ?>
                         </td>
@@ -385,12 +385,12 @@ if (!$data) {
                     <!-- ROW 2 (Duplicate Signature) -->
                     <tr>
                         <td>
-                            <?php if (!empty($data['SignaturePicture'])) { ?>
+                            <?php if ($data['SignaturePicture'] != '') { ?>
                                 <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="sig-img">
                             <?php } ?>
                         </td>
                         <td>
-                            <?php if (!empty($data['thumbNailPicture2'])) { ?>
+                            <?php if ($data['thumbNailPicture2'] != '') { ?>
                                 <img src="../uploads/<?php echo $data['thumbNailPicture2']; ?>" class="sig-img">
                             <?php } ?>
                         </td>
@@ -398,12 +398,12 @@ if (!$data) {
                     <!-- ROW 3 (Duplicate Signature) -->
                     <tr>
                         <td>
-                            <?php if (!empty($data['SignaturePicture'])) { ?>
+                            <?php if ($data['SignaturePicture'] != '') { ?>
                                 <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="sig-img">
                             <?php } ?>
                         </td>
                         <td>
-                            <?php if (!empty($data['thumbNailPicture3'])) { ?>
+                            <?php if ($data['thumbNailPicture3'] != '') { ?>
                                 <img src="../uploads/<?php echo $data['thumbNailPicture3']; ?>" class="sig-img">
                             <?php } ?>
                         </td>
@@ -414,7 +414,7 @@ if (!$data) {
                 <div class="footer">
                     <div class="footer-sig">
                         <!-- Changed to display Senior Citizen's full name in ALL CAPS -->
-                        <div class="footer-line"><?php echo strtoupper(htmlspecialchars($data['FirstName'] . " " . $data['MiddleName'] . " " . $data['LastName'])); ?></div>
+                        <div class="footer-line" style="text-transform: uppercase;"><?php echo $data['FirstName'] . " " . $data['MiddleName'] . " " . $data['LastName']; ?></div>
                         <div>Senior Citizen</div>
                     </div>
                     <div class="footer-sig">
