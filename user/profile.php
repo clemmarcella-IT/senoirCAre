@@ -88,7 +88,7 @@ if (!$row) { header("Location: login.php"); exit; }
     <div class="col-6">
         <label class="small text-muted fw-bold mb-2">SIGNATURE (Click to view)</label>
         <div class="d-flex justify-content-center">
-            <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="doc-img rounded shadow-sm" style="width: 150px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+            <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
         </div>
     </div>
     

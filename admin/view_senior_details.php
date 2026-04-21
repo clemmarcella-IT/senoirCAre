@@ -72,15 +72,15 @@ if (!$data) {
                         <div class="col-6">
                             <label class="small text-muted fw-bold mb-2">SIGNATURE (Click to view)</label>
                             <div class="d-flex justify-content-center">
-                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="doc-img rounded" onclick="viewImage(this)">
+                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="doc-img rounded" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
                             </div>
                         </div>
                         <div class="col-6">
                             <label class="small text-muted fw-bold mb-2">3 THUMBMARKS (Click to view)</label>
                             <div class="d-flex justify-content-center">
-                                <img src="../uploads/<?php echo $data['thumbNailPicture1']; ?>" class="doc-img rounded" onclick="viewImage(this)">
-                                <img src="../uploads/<?php echo $data['thumbNailPicture2']; ?>" class="doc-img rounded" onclick="viewImage(this)">
-                                <img src="../uploads/<?php echo $data['thumbNailPicture3']; ?>" class="doc-img rounded" onclick="viewImage(this)">
+                                <img src="../uploads/<?php echo $data['thumbNailPicture1']; ?>" class="doc-img rounded" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+                                <img src="../uploads/<?php echo $data['thumbNailPicture2']; ?>" class="doc-img rounded" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+                                <img src="../uploads/<?php echo $data['thumbNailPicture3']; ?>" class="doc-img rounded" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
                             </div>
                         </div>
                     </div>
