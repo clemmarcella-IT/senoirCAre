@@ -81,6 +81,29 @@ if (!$row) { header("Location: login.php"); exit; }
                             </div>
                         </div>
 
+                        <h5 class="fw-bold border-bottom pb-2 mb-3 mt-5 text-success">Documentary Verifications</h5>
+<div class="row g-3 text-center no-print">
+    
+    <!-- SIGNATURE SIDE -->
+    <div class="col-6">
+        <label class="small text-muted fw-bold mb-2">SIGNATURE (Click to view)</label>
+        <div class="d-flex justify-content-center">
+            <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="doc-img rounded shadow-sm" style="width: 150px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+        </div>
+    </div>
+    
+    <!-- THUMBMARKS SIDE -->
+    <div class="col-6">
+        <label class="small text-muted fw-bold mb-2">3 THUMBMARKS (Click to view)</label>
+        <div class="d-flex justify-content-center gap-2">
+            <img src="../uploads/<?php echo $row['thumbNailPicture1']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+            <img src="../uploads/<?php echo $row['thumbNailPicture2']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+            <img src="../uploads/<?php echo $row['thumbNailPicture3']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+        </div>
+    </div>
+    
+</div>
+
                         <div class="mt-2 text-muted small border-top pt-2">
                              Generated: <?php echo date("M d, Y h:i A", strtotime($row['GenerateDate'])); ?>
                         </div>
@@ -100,6 +123,20 @@ if (!$row) { header("Location: login.php"); exit; }
     </div>
 </div>
 
+<div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0 shadow-none">
+            <div class="modal-body p-0 text-center">
+                <div class="position-relative d-inline-block">
+                    <button type="button" class="btn-close custom-close-btn position-absolute top-0 end-0 m-3 shadow" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <img id="modalPreviewImage" src="" class="img-fluid rounded shadow-lg" style="max-height: 85vh; background: white; padding: 5px; border: 1px solid #ddd;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="js/UserQRGenerate.js"></script>
 
@@ -107,6 +144,12 @@ if (!$row) { header("Location: login.php"); exit; }
     window.onload = function() {
         renderProfileQR("<?php echo $id; ?>");
     };
+
+    function viewImage(imgElement) {
+        document.getElementById('modalPreviewImage').src = imgElement.src;
+        var myModal = new bootstrap.Modal(document.getElementById('imageViewerModal'));
+        myModal.show();
+    }
 
   function printQRCodeOnly() {
     // 1. Grab the QR container
@@ -149,114 +192,310 @@ if (!$row) { header("Location: login.php"); exit; }
 }
 
 function printCitizenRecord() {
-    // 1. Get the content
-    var content = document.getElementById("profileCard").innerHTML;
-    var newWindow = window.open("", "", "width=900,height=800");
-    
-    newWindow.document.write("<html><head><title>Senior Profile - <?php echo $id; ?></title>");
-    newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">');
-    newWindow.document.write('<link rel="stylesheet" href="css/userStyle.css">');
-    
-    // 2. PREMIUM DESIGN CSS
-    newWindow.document.write(`
-        <style>
-            /* Force colors to print */
-            * { 
-                -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important; 
-            }
+    var newWindow = window.open("", "", "width=900,height=1000");
 
-            body { 
-                background: white !important; 
-                padding: 0 !important; 
-                margin: 0 !important; 
-                font-family: 'Inter', sans-serif; 
+    var htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>SENIOR CITIZEN ID INFORMATION FORM</title>
+        <style>
+            @media print {
+                @page { margin: 10mm; size: A4 portrait; }
+                body { 
+                    -webkit-print-color-adjust: exact; 
+                    print-color-adjust: exact; 
+                }
+                /* FORCES CONTENT INTO ONE PAGE */
+                html, body {
+                    height: 100%;
+                    overflow: hidden; 
+                    page-break-inside: avoid;
+                }
+            }
+            body {
+                font-family: Arial, sans-serif;
+                color: black;
+                background: white;
+                margin: 0 auto;
+                padding: 15px 30px;
+                box-sizing: border-box;
+                width: 210mm; /* Strict A4 Width */
+                height: 297mm; /* Strict A4 Height */
+            }
+            /* Header Title */
+            .form-title {
+                text-align: center;
+                font-weight: bold;
+                font-size: 21px;
+                margin-bottom: 25px;
+                margin-top: 10px;
+                letter-spacing: 1px;
+            }
+            /* Top Layout: Fields on Left, Picture on Right */
+            .top-section {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+            .info-fields {
+                flex: 1;
+                padding-right: 30px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            /* Form Fields alignment */
+            .field-row {
+                display: flex;
+                align-items: flex-end;
+                margin-bottom: 16px;
+            }
+            .label {
+                width: 260px;
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                font-weight: normal;
+                padding-right: 15px;
+            }
+            .value-line {
+                flex: 1;
+                border-bottom: 1px solid black;
+                font-size: 15px;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-align: center;
+                padding-bottom: 2px;
+            }
+            /* 2x2 Picture Box */
+            .picture-box {
+                width: 180px;
+                height: 180px;
+                border: 1px solid black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 6px;
+                box-sizing: border-box;
+            }
+            .inner-pic-box {
+                width: 100%;
+                height: 100%;
+                border: 1px solid black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .inner-pic-box img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
             
-            /* The Card Container */
-            .profile-card { 
-                border: none !important; 
-                box-shadow: none !important; 
-                margin: 0 !important;
-                border-radius: 0 !important;
+            /* ==========================================
+               UPDATED TABLE & IMAGE SIZING (Maximized Height)
+               ========================================== */
+            .sig-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+                table-layout: fixed; 
             }
-
-            /* LEFT SIDE (Dark Green) */
-            .id-side { 
-                background-color: #1F4B2C !important; 
-                color: white !important; 
-                padding: 40px 20px !important; 
+            .sig-table th, .sig-table td {
+                border: 1px solid black;
                 text-align: center;
+                vertical-align: middle;
             }
-
-            /* PROFILE PIC STYLE */
-            .display-pic {
-                width: 150px !important; 
-                height: 150px !important; 
-                object-fit: cover !important;
-                border: 4px solid #91EAAF !important; /* Mint Border */
-                border-radius: 50% !important;
-                margin-bottom: 15px !important;
+            .sig-table th {
+                padding: 12px;
+                font-weight: bold;
+                font-size: 16px;
             }
-
-            /* RIGHT SIDE (Data) */
-            .data-side { 
-                padding: 40px !important; 
-                background: white !important;
+            .sig-table td {
+                height: 175px; 
+                padding: 5px; 
             }
-
-            /* DATA STYLING */
-            .section-title { 
-                font-size: 0.85rem !important;
-                font-weight: 800 !important;
-                color: #1F4B2C !important;
-                text-transform: uppercase !important;
-                border-bottom: 2px solid #91EAAF !important;
-                display: inline-block !important;
-                margin-bottom: 20px !important;
+            .sig-img {
+                width: 100%;
+                height: 165px; 
+                object-fit: contain; 
+                display: block;
+                margin: 0 auto;
             }
+            /* ========================================== */
 
-            .label-tag { 
-                font-size: 0.7rem !important; 
-                color: #6c757d !important; 
-                font-weight: 700 !important;
-                text-transform: uppercase !important;
-                display: block !important;
+            /* Footer Signatures */
+            .footer {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 40px; 
             }
-
-            .data-box { 
-                font-size: 1.1rem !important; 
-                font-weight: 600 !important; 
-                color: #1a1a1a !important;
-                border-bottom: 1px solid #f0f0f0 !important;
-                margin-bottom: 15px !important;
+            .footer-sig {
+                text-align: center;
+                font-size: 14px;
             }
-
-            /* Hide buttons and navigation */
-            .no-print, .btn, .navbar-custom { 
-                display: none !important; 
+            .footer-line {
+                border-bottom: 1px solid black;
+                width: 280px;
+                margin-bottom: 5px;
+                text-align: center;
+                font-weight: bold;
+                padding-bottom: 3px;
             }
-
-            @media print {
-                @page { margin: 10mm; }
+            /* Custom Checkboxes */
+            .checkbox-container {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .checkbox {
+                width: 30px;
+                height: 18px;
+                border: 1px solid black;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                font-weight: bold;
+                font-size: 16px;
             }
         </style>
-    `);
-    
-    newWindow.document.write("</head><body>");
-    // Professional Header
-    newWindow.document.write("<div class='text-center mb-4'><h2>BARANGAY KALAWAG 1</h2><p class='text-muted'>Official Senior Citizen Profile</p></div>");
-    newWindow.document.write('<div class="profile-card">' + content + '</div>');
-    newWindow.document.write("</body></html>");
+    </head>
+    <body>
+        <div class="form-title">SENIOR CITIZEN ID INFORMATION FORM</div>
+        
+        <div class="top-section">
+            <!-- LEFT SIDE: Text Fields -->
+            <div class="info-fields">
+                <div class="field-row">
+                    <div class="label"><span>OSCA ID NO.</span><span>:</span></div>
+                    <div class="value-line"><?php echo $id; ?></div>
+                </div>
+                <div class="field-row">
+                    <div class="label"><span>LAST NAME/Apelyido</span><span>:</span></div>
+                    <div class="value-line"><?php echo htmlspecialchars($row['LastName']); ?></div>
+                </div>
+                <div class="field-row">
+                    <div class="label"><span>GIVEN NAME/Pangalan</span><span>:</span></div>
+                    <div class="value-line"><?php echo htmlspecialchars($row['FirstName']); ?></div>
+                </div>
+                <div class="field-row">
+                    <div class="label"><span>MIDDLE NAME/Gitnang Apelyido</span><span>:</span></div>
+                    <div class="value-line"><?php echo htmlspecialchars($row['MiddleName']); ?></div>
+                </div>
+                <div class="field-row">
+                    <div class="label"><span>ADDRESS/Tirahan</span><span>:</span></div>
+                    <div class="value-line"><?php echo htmlspecialchars($row['Purok'].", ".$row['Barangay']); ?></div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="label"><span>BIRTHDAY/Petsa ng Kapanganakan</span><span>:</span></div>
+                    <div class="value-line" style="flex: 0.6;"><?php echo date("M d, Y", strtotime($row['Birthday'])); ?></div>
+                    <div style="font-size: 14px; margin-left: 15px; margin-right: 5px;">AGE/Edad:</div>
+                    <div class="value-line" style="flex: 0.3;"><?php echo $row['Age']; ?></div>
+                </div>
+                
+                <div class="field-row" style="align-items: center; margin-top: 5px;">
+                    <div class="label"><span>SEX/Kasarian</span><span>:</span></div>
+                    <div style="flex: 1; display:flex; gap: 30px; margin-left: 10px;">
+                        <div class="checkbox-container">
+                            <div class="checkbox"><?php echo ($row['Sex'] == 'Male') ? '&#10003;' : ''; ?></div>
+                            <span>Male</span>
+                        </div>
+                        <div class="checkbox-container">
+                            <div class="checkbox"><?php echo ($row['Sex'] == 'Female') ? '&#10003;' : ''; ?></div>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RIGHT SIDE: Picture Box -->
+            <div class="picture-box">
+                <div class="inner-pic-box">
+                    <?php if (!empty($row['Picture'])) { ?>
+                        <img src="../uploads/<?php echo $row['Picture']; ?>">
+                    <?php } else { ?>
+                        2X2 ID<br>PICTURE
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- THE SIGNATURE/THUMBMARK TABLE -->
+        <table class="sig-table">
+            <tr>
+                <th>SIGNATURE</th>
+                <th>THUMBMARK</th>
+            </tr>
+            <!-- ROW 1 -->
+            <tr>
+                <td>
+                    <?php if (!empty($row['SignaturePicture'])) { ?>
+                        <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
+                    <?php } ?>
+                </td>
+                <td>
+                    <?php if (!empty($row['thumbNailPicture1'])) { ?>
+                        <img src="../uploads/<?php echo $row['thumbNailPicture1']; ?>" class="sig-img">
+                    <?php } ?>
+                </td>
+            </tr>
+            <!-- ROW 2 (Duplicate Signature) -->
+            <tr>
+                <td>
+                    <?php if (!empty($row['SignaturePicture'])) { ?>
+                        <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
+                    <?php } ?>
+                </td>
+                <td>
+                    <?php if (!empty($row['thumbNailPicture2'])) { ?>
+                        <img src="../uploads/<?php echo $row['thumbNailPicture2']; ?>" class="sig-img">
+                    <?php } ?>
+                </td>
+            </tr>
+            <!-- ROW 3 (Duplicate Signature) -->
+            <tr>
+                <td>
+                    <?php if (!empty($row['SignaturePicture'])) { ?>
+                        <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
+                    <?php } ?>
+                </td>
+                <td>
+                    <?php if (!empty($row['thumbNailPicture3'])) { ?>
+                        <img src="../uploads/<?php echo $row['thumbNailPicture3']; ?>" class="sig-img">
+                    <?php } ?>
+                </td>
+            </tr>
+        </table>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-sig">
+                <!-- Changed to display Senior Citizen's full name in ALL CAPS -->
+                <div class="footer-line"><?php echo strtoupper(htmlspecialchars($row['FirstName'] . " " . $row['MiddleName'] . " " . $row['LastName'])); ?></div>
+                <div>Senior Citizen</div>
+            </div>
+            <div class="footer-sig">
+                <div class="footer-line"><?php echo date("M d, Y"); ?></div>
+                <div>Generated Date</div>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+
+    newWindow.document.write(htmlContent);
     newWindow.document.close();
-    
     newWindow.focus();
     
-    // Wait for images/styles to load before printing
     setTimeout(function() {
         newWindow.print();
         newWindow.close();
-    }, 800);
+    }, 1500); 
 }
 </script>
 </body>
