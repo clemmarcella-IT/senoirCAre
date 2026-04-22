@@ -57,14 +57,41 @@ if (!$data) {
                     </div>
 
                     <div class="row mb-4 g-3">
-                        <div class="col-12"><label class="label-tag text-muted small fw-bold">OscaIDNo. (Primary ID)</label><div class="data-box fs-5 fw-bold text-primary"><?php echo $data['OscaIDNo']; ?></div></div>
-                        <div class="col-12"><label class="label-tag text-muted small fw-bold">FULL LEGAL NAME</label><div class="data-box fs-5 fw-bold text-uppercase"><?php echo $data['LastName'].", ".$data['FirstName']." ".$data['MiddleName']; ?></div></div>
-                        <div class="col-4"><label class="label-tag text-muted small fw-bold">SEX</label><div class="data-box"><?php echo $data['Sex']; ?></div></div>
-                        <div class="col-4"><label class="label-tag text-muted small fw-bold">DERIVED AGE</label><div class="data-box text-success fw-bold"><?php echo $data['Age']; ?> Years Old</div></div>
-                        <div class="col-4"><label class="label-tag text-muted small fw-bold">BIRTHDAY</label><div class="data-box"><?php echo date("F d, Y", strtotime($data['Birthday'])); ?></div></div>
-                        <div class="col-6"><label class="label-tag text-muted small fw-bold">PUROK / ZONE</label><div class="data-box"><?php echo $data['Purok']; ?></div></div>
-                        <div class="col-6"><label class="label-tag text-muted small fw-bold">BARANGAY</label><div class="data-box"><?php echo $data['Barangay']; ?></div></div>
-                        <div class="col-12"><label class="label-tag text-muted small fw-bold">REGISTRATION TIMESTAMP</label><div class="data-box small text-muted"><?php echo date("F d, Y h:i A", strtotime($data['GenerateDate'])); ?></div></div>
+                        <div class="col-12">
+                            <label class="label-tag text-muted small fw-bold">OscaIDNo. (Primary ID)</label>
+                            <div class="data-box fs-5 fw-bold text-primary"><?php echo $data['OscaIDNo']; ?>
+                        </div>
+                    </div>
+                        <div class="col-12">
+                            <label class="label-tag text-muted small fw-bold">FULL LEGAL NAME</label>
+                            <div class="data-box fs-5 fw-bold text-uppercase"><?php echo $data['LastName'].", ".$data['FirstName']." ".$data['MiddleName']; ?>
+                        </div>
+                    </div>
+                        <div class="col-4">
+                            <label class="label-tag text-muted small fw-bold">SEX</label>
+                            <div class="data-box"><?php echo $data['Sex']; ?>
+                        </div>
+                    </div>
+                        <div class="col-4">
+                            <label class="label-tag text-muted small fw-bold">DERIVED AGE</label>
+                            <div class="data-box text-success fw-bold"><?php echo $data['Age']; ?> Years Old</div>
+                        </div>
+                        <div class="col-4">
+                            <label class="label-tag text-muted small fw-bold">BIRTHDAY</label>
+                            <div class="data-box"><?php echo date("F d, Y", strtotime($data['Birthday'])); ?></div>
+                        </div>
+                        <div class="col-6">
+                            <label class="label-tag text-muted small fw-bold">PUROK / ZONE</label>
+                            <div class="data-box"><?php echo $data['Purok']; ?></div>
+                        </div>
+                        <div class="col-6">
+                            <label class="label-tag text-muted small fw-bold">BARANGAY</label>
+                            <div class="data-box"><?php echo $data['Barangay']; ?></div>
+                        </div>
+                        <div class="col-12">
+                            <label class="label-tag text-muted small fw-bold">REGISTRATION TIMESTAMP</label>
+                            <div class="data-box small text-muted"><?php echo date("F d, Y h:i A", strtotime($data['GenerateDate'])); ?></div>
+                        </div>
                     </div>
 
                     <h5 class="fw-bold border-bottom pb-2 mb-3 mt-5 text-success">Documentary Verifications</h5>
