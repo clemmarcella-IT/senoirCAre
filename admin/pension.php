@@ -22,20 +22,26 @@
             
             <div class="card mb-4 border-0 shadow-sm mt-3">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-muted small fw-bold">PENSION PAYOUT MANAGEMENT</span>
-                        <button type="button" class="btn btn-forest shadow-sm" data-bs-toggle="modal" data-bs-target="#addPensionModal">
-                            <i class="fa fa-plus me-2"></i> Register New Payout
-                        </button>
+                    <!-- UPDATED LAYOUT TO EXACTLY MATCH HEALTH.PHP -->
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">PENSION PAYOUT MANAGEMENT</span>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="button" class="btn btn-forest shadow-sm w-100" data-bs-toggle="modal" data-bs-target="#addPensionModal">
+                                <i class="fa fa-plus me-2"></i> Register New Payout
+                            </button>
+                            <button type="button" class="btn btn-success fw-bold shadow-sm w-100" style="border-radius: 8px;" onclick="printTable()">
+                                <i class="fa fa-print me-2"></i> Print Report
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card mb-4 shadow border-0">
+            <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
                 <div class="card-header bg-dark text-white fw-bold">Scheduled Payouts</div>
-                <div class="card-body">
+                <div class="card-body bg-white">
                     <div class="table-responsive">
-                    <table id="datatablesSimple" class="table table-hover align-middle">
+                    <table id="datatablesSimple" class="table table-bordered table-hover align-middle">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -84,11 +90,14 @@
         </div>
     </main>
 
-    <!-- MODAL: ADD NEW SESSION (NO NAME FIELD) -->
+    <!-- MODAL: ADD NEW SESSION -->
     <div class="modal fade" id="addPensionModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-success text-white"><h5 class="modal-title fw-bold">Start New Payout Session</h5></div>
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">Start New Payout Session</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
                 <form method="POST" action="query_add_pension.php">
                     <div class="modal-body p-4">
                         <div class="mb-3">
@@ -98,8 +107,12 @@
                         <div class="mb-3">
                             <label class="small fw-bold text-muted mb-1">Cash Amount (₱)</label>
                             <input type="number" step="0.01" name="pamount" class="form-control card shadow border border-1 border-black" required>
+                        </div>
                     </div>
-                    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-success px-4 fw-bold">Create Session</button></div>
+                    <div class="modal-footer border-0 bg-light">
+                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success px-4 fw-bold">Create Session</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -108,5 +121,34 @@
     <script src="js/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="js/datatables-simple-demo.js"></script>
+    <script>
+    function printTable() {
+        var table = document.getElementById("datatablesSimple");
+        var newWindow = window.open("", "", "width=900,height=800");
+        newWindow.document.write("<html><head><title>Print Report</title>");
+        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
+        newWindow.document.write("<style>body{padding:40px; font-family: sans-serif;} table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #ddd; padding:10px; text-align:left;} th{background:#1F4B2C !important; color:white !important; text-transform: uppercase; font-size: 12px;} .empty{margin-top:30px; text-align:center; color:#555;}</style>");
+        newWindow.document.write("</head><body>");
+        newWindow.document.write("<div style='text-align:center; border-bottom: 2px solid #1F4B2C; padding-bottom:10px; margin-bottom:20px;'><h2>BARANGAY KALAWAG 1</h2><p style='margin:0;'>Pension Payout Report</p></div>");
+        if (table) {
+            var tableClone = table.cloneNode(true);
+            var rows = tableClone.rows;
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].cells.length > 0) rows[i].deleteCell(-1); // Delete the action column
+            }
+            newWindow.document.write(tableClone.outerHTML);
+        } else {
+            newWindow.document.write('<p class="empty">No data found to print.</p>');
+        }
+        newWindow.document.write("</body></html>");
+        newWindow.document.close();
+        
+        newWindow.focus();
+        setTimeout(function() {
+            newWindow.print();
+            newWindow.close();
+        }, 750);
+    }
+    </script>
 </body>
 </html>
