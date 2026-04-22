@@ -6,7 +6,7 @@ $pdate = $_GET['date'];
 $res = mysqli_query($conn, "SELECT * FROM pension WHERE PensionReason = '$preason' AND PensionDate = '$pdate' AND OscaIDNo IS NULL");
 $event = mysqli_fetch_array($res);
 if (!$event) {
-    $event = [
+    $event =[
         'PensionReason' => $preason,
         'PensionDate' => $pdate,
         'PensionCashAmount' => 0,
@@ -97,6 +97,7 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                                         <th>Time Claimed</th>
                                         <th>Status</th>
                                         <th>Control No.</th>
+                                        <th>Reason</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -110,17 +111,43 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                                                                       WHERE seniors.CitizenStatus = 'active'
                                                                       ORDER BY pension.pensionTimeRecieve DESC, seniors.LastName ASC");
                                          
-                                         $counter = 1; // Initialize sequence counter
+                                         $counter = 1;
                                          while($display = mysqli_fetch_array($clem)){
-                                            if ($display['PensionAttendanceStatus'] == 'Claimed') {
+                                            
+                                            // Handle status checking and assignments
+                                            $status = $display['PensionAttendanceStatus'];
+                                            $controlNo = $display['ControlNo'];
+                                            
+                                            if ($controlNo == "" || $controlNo == null) {
+                                                $displayControl = "-";
+                                                $modalControl = "";
+                                            } else {
+                                                $displayControl = $controlNo;
+                                                $modalControl = $controlNo;
+                                            }
+
+                                            if ($status == 'Claimed' || $status == 'claimed') {
                                                 $statusText = '<span class="badge bg-success">CLAIMED</span>';
-                                                $time = date("h:i A", strtotime($display['pensionTimeRecieve']));
-                                            } elseif (!empty($display['PensionReason'])) {
-                                                $statusText = '<span class="badge bg-secondary">'.$display['PensionReason'].'</span>';
+                                                
+                                                $pensionTime = $display['pensionTimeRecieve'];
+                                                if ($pensionTime != "" && $pensionTime != null) {
+                                                    $time = date("h:i A", strtotime($pensionTime));
+                                                } else {
+                                                    $time = '-- : --';
+                                                }
+                                                
+                                                $reasonText = "";
+                                                $modalReason = "";
+                                            } else if ($status != "" && $status != "Unclaimed" && $status != null) {
+                                                $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
                                                 $time = '-- : --';
+                                                $reasonText = $status; // Show typed reason here
+                                                $modalReason = $status;
                                             } else {
                                                 $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
                                                 $time = '-- : --';
+                                                $reasonText = "";
+                                                $modalReason = "";
                                             }
                                             ?>
                                             <tr>
@@ -129,7 +156,8 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                                                 <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
                                                 <td><?php echo $time; ?></td>
                                                 <td><?php echo $statusText; ?></td>
-                                                <td class="fw-bold text-primary"><?php echo $display['ControlNo'] ?? '-'; ?></td>
+                                                <td class="fw-bold text-primary"><?php echo $displayControl; ?></td>
+                                                <td class="fw-bold text-danger"><?php echo $reasonText; ?></td>
                                                 <td>
                                                     <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reasonModal_<?php echo $display['OscaIDNo']; ?>">
                                                         <i class="fa fa-edit"></i>
