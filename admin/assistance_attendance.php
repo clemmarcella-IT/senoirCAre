@@ -165,7 +165,9 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
         }
         newWindow.document.write("</body></html>");
         newWindow.document.close();
-        setTimeout(() => { newWindow.print(); newWindow.close(); }, 500);
+        setTimeout(() => { newWindow.print();
+         newWindow.close(); }, 
+         500);
     }
 </script>
 </body>

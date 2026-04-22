@@ -192,7 +192,10 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
         newWindow.document.write("<h3 class='text-center'>Pension: <?php echo $event['PensionReason']; ?></h3>");
         newWindow.document.write(table.outerHTML);
         newWindow.document.close();
-        setTimeout(() => { newWindow.print(); newWindow.close(); }, 500);
+        setTimeout(() => { 
+            newWindow.print(); 
+            newWindow.close(); 
+        }, 500);
     }
 </script>
 </body>
