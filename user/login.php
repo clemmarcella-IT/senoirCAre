@@ -7,10 +7,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST['login_osca'];
     
     // Check if ID exists in the database
-    $res = mysqli_query($conn, "SELECT OscaIDNo FROM seniors WHERE OscaIDNo = '$id'");
+    $res = mysqli_query($conn, "SELECT OscaIDNo, ApprovalStatus FROM seniors WHERE OscaIDNo = '$id'");
     $row = mysqli_fetch_array($res);
     
     if ($row) {
+        if ($row['ApprovalStatus'] == 'pending') {
+            echo "<script>alert('Your registration is still pending admin approval. Please wait.'); window.location='login.php';</script>";
+            exit;
+        } else if ($row['ApprovalStatus'] == 'rejected') {
+            // Delete the rejected record so they can register again using the same ID
+            mysqli_query($conn, "DELETE FROM seniors WHERE OscaIDNo = '$id'");
+            echo "<script>alert('Sorry, your registration was rejected by the admin for reasons of error of filling up the form or wrong information. Please make another try to fill up the form correctly.'); window.location='register.php';</script>";
+            exit;
+        }
         // Redirect to profile page
         header("Location: profile.php?id=$id");
         exit;

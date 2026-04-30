@@ -20,8 +20,6 @@
 			exit;
 		}
 
-		// Removed Age Calculation as it's dynamic
-
 		// 2. Ensure the uploads folder exists in the root directory
 		if(!is_dir('../uploads')) { mkdir('../uploads', 0777, true); }
 
@@ -51,7 +49,8 @@
 			CitizenStatus, 
 			SignaturePicture, 
 			thumbNailPicture, 
-			GenerateDate
+			GenerateDate,
+			ApprovalStatus
 		) VALUES (
 			'$oscaID', 
 			'$lname', 
@@ -66,10 +65,11 @@
 			'$status', 
 			'$s1', 
 			'$t1', 
-			NOW()
+			NOW(),
+			'pending'
 		)");
 
-		// 7. Redirect to the profile result page
-		header("location:profile.php?id=" . $oscaID);
+		// 7. Alert the user to wait for admin approval and redirect to login
+		echo "<script>alert('Registration submitted successfully! Please wait for the admin approval before you can log in.'); window.location='login.php';</script>";
 	}
 ?>

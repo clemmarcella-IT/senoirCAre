@@ -36,8 +36,8 @@ if(isset($_POST['oscaID'])){
     $t1 = $oscaID."_th1.jpg"; move_uploaded_file($_FILES["thumb1"]["tmp_name"], $target.$t1);
 
     // Insert
-    $query = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, Picture, QRCode, CitizenStatus, SignaturePicture, thumbNailPicture, GenerateDate) 
-              VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$pic', '$oscaID', '$status', '$s1', '$t1', NOW())";
+    $query = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, Picture, QRCode, CitizenStatus, SignaturePicture, thumbNailPicture, GenerateDate, ApprovalStatus) 
+              VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$pic', '$oscaID', '$status', '$s1', '$t1', NOW(), 'approved')";
 
     if(mysqli_query($conn, $query)){
         echo "<script>alert('Senior Citizen Successfully Registered!'); window.location='profiling.php';</script>";

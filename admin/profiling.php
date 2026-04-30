@@ -73,11 +73,12 @@
                         </thead>
                         <tbody>
                             <?php
-                            $query = mysqli_query($conn, "SELECT * FROM seniors ORDER BY GenerateDate DESC");
+                            $query = mysqli_query($conn, "SELECT * FROM seniors ORDER BY LastName");
                             while ($row = mysqli_fetch_array($query)) {
                                 $id = $row['OscaIDNo'];
+                                $isPending = ($row['ApprovalStatus'] == 'pending');
                             ?>
-                            <tr>
+                            <tr class="<?php echo $isPending ? 'table-warning' : ''; ?>">
                                 <td>
                                     <!-- UX: Clicking photo opens full details page -->
                                     <a href="view_senior_details.php?id=<?php echo $id; ?>">
@@ -99,12 +100,17 @@
                                 </td>
                                 <td class="no-print">
                                     <div class="btn-group">
+                                        <?php if($isPending): ?>
+                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approve_<?php echo $id; ?>" title="Approve"><i class="fa fa-check"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#reject_<?php echo $id; ?>" title="Reject"><i class="fa fa-times"></i></button>
+                                        <?php endif; ?>
                                         <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $id; ?>"><i class="fa fa-edit"></i></button>
                                         <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_<?php echo $id; ?>"><i class="fa fa-trash"></i></button>
                                     </div>
                                 </td>
                                 <!-- Load Update/Delete Popups -->
                                 <?php include("includes/senior_modals.php"); ?>
+
                             </tr>
                             <?php } ?>
                         </tbody>

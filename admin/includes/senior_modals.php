@@ -120,3 +120,49 @@
         </div>
     </div>
 </div>
+
+<?php if(isset($isPending) && $isPending): ?>
+<!-- Approve Modal -->
+<div class="modal fade" id="approve_<?php echo $id; ?>" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="approve_senior.php">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Approve Registration</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to approve the registration for <strong><?php echo $row['FirstName'] . ' ' . $row['LastName']; ?></strong>?</p>
+                    <input type="hidden" name="approve_id" value="<?php echo $id; ?>">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="approve_btn" class="btn btn-success">Approve</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="reject_<?php echo $id; ?>" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="reject_senior.php">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Reject Registration</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to <strong>reject</strong> the registration for <strong><?php echo $row['FirstName'] . ' ' . $row['LastName']; ?></strong>?</p>
+                    <input type="hidden" name="reject_id" value="<?php echo $id; ?>">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="reject_btn" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
