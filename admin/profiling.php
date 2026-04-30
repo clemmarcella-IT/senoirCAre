@@ -73,7 +73,7 @@
                         </thead>
                         <tbody>
                             <?php
-                            $query = mysqli_query($conn, "SELECT * FROM seniors ORDER BY GenerateDate DESC");
+                            $query = mysqli_query($conn, "SELECT * FROM seniors ORDER BY Lastname ASC");
                             while ($row = mysqli_fetch_array($query)) {
                                 $id = $row['OscaIDNo'];
                             ?>
