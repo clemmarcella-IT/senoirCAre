@@ -70,6 +70,6 @@
 		)");
 
 		// 7. Alert the user to wait for admin approval and redirect to login
-		echo "<script>alert('Registration submitted successfully! Please wait for the admin approval before you can log in.'); window.location='login.php';</script>";
+		echo "<script>alert('Registration submitted successfully! Please wait for the admin approval before you can log in. Check everytime for approval.'); window.location='login.php';</script>";
 	}
 ?>
