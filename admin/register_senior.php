@@ -80,11 +80,9 @@
                             </div>
 
                             <div class="col-md-6 mt-3">
-                                <label class="fw-bold text-success">3. THUMBMARKS</label>
+                                <label class="fw-bold text-success">3. THUMBMARK</label>
                                 <input type="file" class="form-control card shadow border border-1 border-black mb-2" name="thumb1" required/>
-                                <input type="file" class="form-control card shadow border border-1 border-black mb-2" name="thumb2" required/>
-                                <input type="file" class="form-control card shadow border border-1 border-black" name="thumb3" required/>
-                                <div class="upload-instruction">Note: Upload all three thumbprints.</div>
+                                <div class="upload-instruction">Note: Upload single thumbprint.</div>
                             </div>
                         </div>
 

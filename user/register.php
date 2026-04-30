@@ -72,10 +72,8 @@
                             </div>
 
                             <div class="col-md-6 mt-3">
-                                <label class="fw-bold text-success">3. THREE (3) THUMBMARKS</label>
+                                <label class="fw-bold text-success">3. ONE (1) THUMBMARK</label>
                                 <input type="file" class="form-control card shadow border border-1 border-black mb-1" name="thumb1" required/>
-                                <input type="file" class="form-control card shadow border border-1 border-black mb-1" name="thumb2" required/>
-                                <input type="file" class="form-control card shadow border border-1 border-black" name="thumb3" required/>
                                 <div class="upload-instruction">Note: Thumbmark on <strong>white paper</strong>, take a picture and upload.</div>
                             </div>
                         </div>
@@ -102,7 +100,7 @@
         if(!form.checkValidity()) { form.reportValidity(); return; }
         Swal.fire({
             title: 'Confirm Enrollment?',
-            text: "Make sure all 3 signatures and thumbmarks are clear.",
+            text: "Make sure your signature and thumbmark are clear.",
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#1F4B2C',

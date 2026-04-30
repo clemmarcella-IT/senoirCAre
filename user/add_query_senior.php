@@ -20,10 +20,7 @@
 			exit;
 		}
 
-		// Calculate Age
-		$birthDate = new DateTime($bday);
-		$today = new DateTime();
-		$age = $today->diff($birthDate)->y;
+		// Removed Age Calculation as it's dynamic
 
 		// 2. Ensure the uploads folder exists in the root directory
 		if(!is_dir('../uploads')) { mkdir('../uploads', 0777, true); }
@@ -36,10 +33,8 @@
 		$s1 = $oscaID . "_sig.jpg";
 		move_uploaded_file($_FILES["sig1"]["tmp_name"], "../uploads/" . $s1);
 
-		// 5. Handle Three (3) Thumbmark Pictures
+		// 5. Handle Single Thumbmark Picture
 		$t1 = $oscaID . "_thumb1.jpg"; move_uploaded_file($_FILES["thumb1"]["tmp_name"], "../uploads/" . $t1);
-		$t2 = $oscaID . "_thumb2.jpg"; move_uploaded_file($_FILES["thumb2"]["tmp_name"], "../uploads/" . $t2);
-		$t3 = $oscaID . "_thumb3.jpg"; move_uploaded_file($_FILES["thumb3"]["tmp_name"], "../uploads/" . $t3);
 
 		// 6. SQL Insert Query (Preserves 00 and uses NOW() for GenerateDate)
 		mysqli_query($conn, "INSERT INTO seniors (
@@ -51,14 +46,11 @@
 			Purok, 
 			Barangay, 
 			Birthday, 
-			Age, 
 			Picture, 
 			QRCode, 
 			CitizenStatus, 
 			SignaturePicture, 
-			thumbNailPicture1, 
-			thumbNailPicture2, 
-			thumbNailPicture3, 
+			thumbNailPicture, 
 			GenerateDate
 		) VALUES (
 			'$oscaID', 
@@ -69,14 +61,11 @@
 			'$purok', 
 			'$brgy', 
 			'$bday', 
-			'$age', 
 			'$pic', 
 			'$oscaID', 
 			'$status', 
 			'$s1', 
 			'$t1', 
-			'$t2', 
-			'$t3', 
 			NOW()
 		)");
 

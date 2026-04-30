@@ -84,12 +84,9 @@
                         </div>
 
                         <div class="col-md-6 mt-3">
-                            <label class="fw-bold text-success">3. THUMBMARKS</label>
-                            <!-- Stacked vertically with mb-2 spacing -->
+                            <label class="fw-bold text-success">3. THUMBMARK</label>
                             <input type="file" name="thumb1" class="form-control card shadow border border-1 border-black mb-2">
-                            <input type="file" name="thumb2" class="form-control card shadow border border-1 border-black mb-2">
-                            <input type="file" name="thumb3" class="form-control card shadow border border-1 border-black">
-                            <div class="upload-instruction">Note: Upload all three thumbprints.</div>
+                            <div class="upload-instruction">Note: Upload single thumbprint.</div>
                         </div>
                     </div>
                 </div>

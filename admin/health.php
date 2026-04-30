@@ -29,6 +29,9 @@
                             <button type="button" class="btn btn-forest shadow-sm w-100" data-bs-toggle="modal" data-bs-target="#addhealth">
                                 <i class="fa fa-plus me-2"></i> Create Health Event
                             </button>
+                            <button type="button" class="btn btn-success fw-bold shadow-sm w-100" style="border-radius: 8px;" onclick="printTable()">
+                                <i class="fa fa-print me-2"></i> Print Report
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -134,5 +137,34 @@
     <script src="js/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="js/datatables-simple-demo.js"></script>
+    <script>
+    function printTable() {
+        var table = document.getElementById("datatablesSimple");
+        var newWindow = window.open("", "", "width=900,height=800");
+        newWindow.document.write("<html><head><title>Print Report</title>");
+        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
+        newWindow.document.write("<style>body{padding:40px; font-family: sans-serif;} table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #ddd; padding:10px; text-align:left;} th{background:#1F4B2C !important; color:white !important; text-transform: uppercase; font-size: 12px;} .empty{margin-top:30px; text-align:center; color:#555;}</style>");
+        newWindow.document.write("</head><body>");
+        newWindow.document.write("<div style='text-align:center; border-bottom: 2px solid #1F4B2C; padding-bottom:10px; margin-bottom:20px;'><h2>BARANGAY KALAWAG 1</h2><p style='margin:0;'>Health Event Report</p></div>");
+        if (table) {
+            var tableClone = table.cloneNode(true);
+            var rows = tableClone.rows;
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].cells.length > 0) rows[i].deleteCell(-1);
+            }
+            newWindow.document.write(tableClone.outerHTML);
+        } else {
+            newWindow.document.write('<p class="empty">No data found to print.</p>');
+        }
+        newWindow.document.write("</body></html>");
+        newWindow.document.close();
+        
+        newWindow.focus();
+        setTimeout(function() {
+            newWindow.print();
+            newWindow.close();
+        }, 750);
+    }
+    </script>
 </body>
 </html>

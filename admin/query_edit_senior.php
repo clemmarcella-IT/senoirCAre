@@ -13,10 +13,7 @@
 	$purok  = $_POST['purok'];
 	$status = $_POST['status'];
 
-	// Calculate Age
-	$birthDate = new DateTime($bday);
-	$today = new DateTime();
-	$age = $today->diff($birthDate)->y;
+	// Removed Age calculation as Age is dynamic now
 
 	// 3. Start building the SQL command (Text part)
 	$sql = "UPDATE seniors SET 
@@ -25,7 +22,6 @@
 			LastName = '$lname', 
 			Sex = '$sex', 
 			Birthday = '$bday', 
-			Age = '$age', 
 			Purok = '$purok', 
 			CitizenStatus = '$status'";
 
@@ -47,13 +43,11 @@
 		$sql .= ", SignaturePicture = '$fileName'";
 	}
 
-	for($i=1; $i<=3; $i++) {
-		$inputName = "thumb" . $i; // thumb1, thumb2, thumb3
-		if($_FILES[$inputName]['name'] != "") {
-			$fileName = $id . "_updated_thumb" . $i . ".jpg";
-			move_uploaded_file($_FILES[$inputName]['tmp_name'], $folder . $fileName);
-			$sql .= ", thumbNailPicture$i = '$fileName'";
-		}
+	// 7. Thumbnail update
+	if($_FILES['thumb1']['name'] != "") {
+		$fileName = $id . "_updated_thumb.jpg";
+		move_uploaded_file($_FILES['thumb1']['tmp_name'], $folder . $fileName);
+		$sql .= ", thumbNailPicture = '$fileName'";
 	}
 
 	// 8. Finish the SQL command by telling it which Senior to update

@@ -16,6 +16,22 @@ if (!$data) {
     echo "<script>alert('Record not found.'); window.location='profiling.php';</script>";
     exit;
 }
+
+// Simple age calculation from Birthday
+$birthYear  = date("Y", strtotime($data['Birthday']));
+$birthMonth = date("m", strtotime($data['Birthday']));
+$birthDay   = date("d", strtotime($data['Birthday']));
+
+$currentYear  = date("Y");
+$currentMonth = date("m");
+$currentDay   = date("d");
+
+$age = $currentYear - $birthYear;
+if ($currentMonth < $birthMonth) {
+    $age = $age - 1;
+} else if ($currentMonth == $birthMonth && $currentDay < $birthDay) {
+    $age = $age - 1;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,31 +72,57 @@ if (!$data) {
                         <span class="badge <?php echo $statusClass; ?> fs-6 text-uppercase"><?php echo $data['CitizenStatus']; ?></span>
                     </div>
 
-                    <div class="row mb-4 g-3">
-                        <div class="col-12"><label class="label-tag text-muted small fw-bold">OscaIDNo. (Primary ID)</label><div class="data-box fs-5 fw-bold text-primary"><?php echo $data['OscaIDNo']; ?></div></div>
-                        <div class="col-12"><label class="label-tag text-muted small fw-bold">FULL LEGAL NAME</label><div class="data-box fs-5 fw-bold text-uppercase"><?php echo $data['LastName'].", ".$data['FirstName']." ".$data['MiddleName']; ?></div></div>
-                        <div class="col-4"><label class="label-tag text-muted small fw-bold">SEX</label><div class="data-box"><?php echo $data['Sex']; ?></div></div>
-                        <div class="col-4"><label class="label-tag text-muted small fw-bold">DERIVED AGE</label><div class="data-box text-success fw-bold"><?php echo $data['Age']; ?> Years Old</div></div>
-                        <div class="col-4"><label class="label-tag text-muted small fw-bold">BIRTHDAY</label><div class="data-box"><?php echo date("F d, Y", strtotime($data['Birthday'])); ?></div></div>
-                        <div class="col-6"><label class="label-tag text-muted small fw-bold">PUROK / ZONE</label><div class="data-box"><?php echo $data['Purok']; ?></div></div>
-                        <div class="col-6"><label class="label-tag text-muted small fw-bold">BARANGAY</label><div class="data-box"><?php echo $data['Barangay']; ?></div></div>
-                        <div class="col-12"><label class="label-tag text-muted small fw-bold">REGISTRATION TIMESTAMP</label><div class="data-box small text-muted"><?php echo date("F d, Y h:i A", strtotime($data['GenerateDate'])); ?></div></div>
+                   <div class="row mb-4 g-3">
+                        <div class="col-12">
+                            <label class="label-tag text-muted small fw-bold">OscaIDNo. (Primary ID)</label>
+                            <div class="data-box fs-5 fw-bold text-primary"><?php echo $data['OscaIDNo']; ?>
+                        </div>
                     </div>
+                        <div class="col-12">
+                            <label class="label-tag text-muted small fw-bold">FULL LEGAL NAME</label>
+                            <div class="data-box fs-5 fw-bold text-uppercase"><?php echo $data['LastName'].", ".$data['FirstName']." ".$data['MiddleName']; ?>
+                        </div>
+                    </div>
+                        <div class="col-4">
+                            <label class="label-tag text-muted small fw-bold">SEX</label>
+                            <div class="data-box"><?php echo $data['Sex']; ?>
+                        </div>
+                    </div>
+                        <div class="col-4">
+                            <label class="label-tag text-muted small fw-bold">DERIVED AGE</label>
+                            <div class="data-box text-success fw-bold"><?php echo $age; ?> Years Old</div>
+                        </div>
+                        <div class="col-4">
+                            <label class="label-tag text-muted small fw-bold">BIRTHDAY</label>
+                            <div class="data-box"><?php echo date("F d, Y", strtotime($data['Birthday'])); ?></div>
+                        </div>
+                        <div class="col-6">
+                            <label class="label-tag text-muted small fw-bold">PUROK / ZONE</label>
+                            <div class="data-box"><?php echo $data['Purok']; ?></div>
+                        </div>
+                        <div class="col-6">
+                            <label class="label-tag text-muted small fw-bold">BARANGAY</label>
+                            <div class="data-box"><?php echo $data['Barangay']; ?></div>
+                        </div>
+                        <div class="col-12">
+                            <label class="label-tag text-muted small fw-bold">REGISTRATION TIMESTAMP</label>
+                            <div class="data-box small text-muted"><?php echo date("F d, Y h:i A", strtotime($data['GenerateDate'])); ?></div>
+                        </div>
+                    </div>
+
 
                     <h5 class="fw-bold border-bottom pb-2 mb-3 mt-5 text-success">Documentary Verifications</h5>
                     <div class="row g-3 text-center no-print">
                         <div class="col-6">
                             <label class="small text-muted fw-bold mb-2">SIGNATURE (Click to view)</label>
                             <div class="d-flex justify-content-center">
-                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="doc-img rounded" onclick="viewImage(this)">
+                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="doc-img rounded" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
                             </div>
                         </div>
                         <div class="col-6">
-                            <label class="small text-muted fw-bold mb-2">3 THUMBMARKS (Click to view)</label>
+                            <label class="small text-muted fw-bold mb-2">THUMBMARK (Click to view)</label>
                             <div class="d-flex justify-content-center">
-                                <img src="../uploads/<?php echo $data['thumbNailPicture1']; ?>" class="doc-img rounded" onclick="viewImage(this)">
-                                <img src="../uploads/<?php echo $data['thumbNailPicture2']; ?>" class="doc-img rounded" onclick="viewImage(this)">
-                                <img src="../uploads/<?php echo $data['thumbNailPicture3']; ?>" class="doc-img rounded" onclick="viewImage(this)">
+                                <img src="../uploads/<?php echo $data['thumbNailPicture']; ?>" class="doc-img rounded" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
                             </div>
                         </div>
                     </div>
@@ -130,34 +172,305 @@ if (!$data) {
         }
 
         function printCitizenRecord() {
-            var content = document.getElementById("printArea").innerHTML;
-            var newWindow = window.open("", "", "width=900,height=800");
-            newWindow.document.write("<html><head><title>Senior Profile - <?php echo $id; ?></title>");
-            newWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">');
-            newWindow.document.write('<link rel="stylesheet" href="css/style.css">');
-            newWindow.document.write(`
+            var newWindow = window.open("", "", "width=900,height=1000");
+
+            var htmlContent = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>SENIOR CITIZEN ID INFORMATION FORM</title>
                 <style>
-                    body { background: white !important; padding: 0 !important; margin: 0 !important; font-family: sans-serif; }
-                    .card { border: 2px solid #333 !important; box-shadow: none !important; margin: 0 !important; }
-                    .p-5 { padding: 15px !important; } .p-3 { padding: 10px !important; } .p-4 { padding: 12px !important; }
-                    .mb-4, .mb-5 { margin-bottom: 10px !important; } .mt-5 { margin-top: 10px !important; } .mb-3 { margin-bottom: 5px !important; }
-                    .id-side { background-color: #1F4B2C !important; color: white !important; padding: 20px !important; -webkit-print-color-adjust: exact; text-align: center; }
-                    .display-pic { width: 130px !important; height: 130px !important; margin-bottom: 10px !important; }
-                    .data-side { padding: 20px !important; }
-                    .data-box { border-bottom: 1px solid #ddd !important; font-weight: bold; font-size: 0.95rem !important; }
-                    .label-tag { font-size: 0.7rem !important; text-transform: uppercase; color: #666 !important; }
-                    .doc-img { width: 120px !important; height: 80px !important; object-fit: cover; margin: 2px !important; }
-                    .no-print, .btn, .breadcrumb, #sidebar-overlay { display: none !important; }
-                    @media print { @page { size: auto; margin: 10mm; } }
+                    @media print {
+                        @page { margin: 10mm; size: A4 portrait; }
+                        body { 
+                            -webkit-print-color-adjust: exact; 
+                            print-color-adjust: exact; 
+                        }
+                        /* FORCES CONTENT INTO ONE PAGE */
+                        html, body {
+                            height: 100%;
+                            overflow: hidden; 
+                            page-break-inside: avoid;
+                        }
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                        color: black;
+                        background: white;
+                        margin: 0 auto;
+                        padding: 15px 30px;
+                        box-sizing: border-box;
+                        width: 210mm; /* Strict A4 Width */
+                        height: 297mm; /* Strict A4 Height */
+                    }
+                    /* Header Title */
+                    .form-title {
+                        text-align: center;
+                        font-weight: bold;
+                        font-size: 21px;
+                        margin-bottom: 25px;
+                        margin-top: 10px;
+                        letter-spacing: 1px;
+                    }
+                    /* Top Layout: Fields on Left, Picture on Right */
+                    .top-section {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+                    }
+                    .info-fields {
+                        flex: 1;
+                        padding-right: 30px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                    }
+                    /* Form Fields alignment */
+                    .field-row {
+                        display: flex;
+                        align-items: flex-end;
+                        margin-bottom: 16px;
+                    }
+                    .label {
+                        width: 260px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 14px;
+                        font-weight: normal;
+                        padding-right: 15px;
+                    }
+                    .value-line {
+                        flex: 1;
+                        border-bottom: 1px solid black;
+                        font-size: 15px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        text-align: center;
+                        padding-bottom: 2px;
+                    }
+                    /* 2x2 Picture Box */
+                    .picture-box {
+                        width: 180px;
+                        height: 180px;
+                        border: 1px solid black;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 6px;
+                        box-sizing: border-box;
+                    }
+                    .inner-pic-box {
+                        width: 100%;
+                        height: 100%;
+                        border: 1px solid black;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                        font-size: 12px;
+                        font-weight: bold;
+                    }
+                    .inner-pic-box img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                    
+                    .sig-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                        table-layout: fixed; 
+                    }
+                    .sig-table th, .sig-table td {
+                        border: 1px solid black;
+                        text-align: center;
+                        vertical-align: middle;
+                    }
+                    .sig-table th {
+                        padding: 12px;
+                        font-weight: bold;
+                        font-size: 16px;
+                    }
+                    .sig-table td {
+                        height: 175px;
+                        padding: 5px; 
+                    }
+                    .sig-img {
+                        width: 100%;
+                        height: 165px;
+                        object-fit: contain; 
+                        display: block;
+                        margin: 0 auto;
+                    }
+
+                    /* Footer Signatures */
+                    .footer {
+                        display: flex;
+                        justify-content: space-around;
+                        margin-top: 40px; 
+                    }
+                    .footer-sig {
+                        text-align: center;
+                        font-size: 14px;
+                    }
+                    .footer-line {
+                        border-bottom: 1px solid black;
+                        width: 280px;
+                        margin-bottom: 5px;
+                        text-align: center;
+                        font-weight: bold;
+                        padding-bottom: 3px;
+                    }
+                    /* Custom Checkboxes */
+                    .checkbox-container {
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    }
+                    .checkbox {
+                        width: 30px;
+                        height: 18px;
+                        border: 1px solid black;
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-weight: bold;
+                        font-size: 16px;
+                    }
                 </style>
-            `);
-            newWindow.document.write("</head><body>");
-            newWindow.document.write("<div class='text-center mb-2'><h2>BARANGAY KALAWAG 1</h2><p>Official Senior Citizen Profile</p></div>");
-            newWindow.document.write('<div class="card">' + content + '</div>');
-            newWindow.document.write("</body></html>");
+            </head>
+            <body>
+                <div class="form-title">SENIOR CITIZEN ID INFORMATION FORM</div>
+                
+                <div class="top-section">
+                    <!-- LEFT SIDE: Text Fields -->
+                    <div class="info-fields">
+                        <div class="field-row">
+                            <div class="label"><span>OSCA ID NO.</span><span>:</span></div>
+                            <div class="value-line"><?php echo $id; ?></div>
+                        </div>
+                        <div class="field-row">
+                            <div class="label"><span>LAST NAME/Apelyido</span><span>:</span></div>
+                            <div class="value-line"><?php echo $data['LastName']; ?></div>
+                        </div>
+                        <div class="field-row">
+                            <div class="label"><span>GIVEN NAME/Pangalan</span><span>:</span></div>
+                            <div class="value-line"><?php echo $data['FirstName']; ?></div>
+                        </div>
+                        <div class="field-row">
+                            <div class="label"><span>MIDDLE NAME/Gitnang Apelyido</span><span>:</span></div>
+                            <div class="value-line"><?php echo $data['MiddleName']; ?></div>
+                        </div>
+                        <div class="field-row">
+                            <div class="label"><span>ADDRESS/Tirahan</span><span>:</span></div>
+                            <div class="value-line"><?php echo $data['Purok'].", ".$data['Barangay']; ?></div>
+                        </div>
+                        
+                        <div class="field-row">
+                            <div class="label"><span>BIRTHDAY/Petsa ng Kapanganakan</span><span>:</span></div>
+                            <div class="value-line" style="flex: 0.6;"><?php echo date("M d, Y", strtotime($data['Birthday'])); ?></div>
+                            <div style="font-size: 14px; margin-left: 15px; margin-right: 5px;">AGE/Edad:</div>
+                            <div class="value-line" style="flex: 0.3;"><?php echo $age; ?></div>
+                        </div>
+                        
+                        <div class="field-row" style="align-items: center; margin-top: 5px;">
+                            <div class="label"><span>SEX/Kasarian</span><span>:</span></div>
+                            <div style="flex: 1; display:flex; gap: 30px; margin-left: 10px;">
+                                <div class="checkbox-container">
+                                    <div class="checkbox"><?php echo ($data['Sex'] == 'Male') ? '&#10003;' : ''; ?></div>
+                                    <span>Male</span>
+                                </div>
+                                <div class="checkbox-container">
+                                    <div class="checkbox"><?php echo ($data['Sex'] == 'Female') ? '&#10003;' : ''; ?></div>
+                                    <span>Female</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT SIDE: Picture Box -->
+                    <div class="picture-box">
+                        <div class="inner-pic-box">
+                            <?php if ($data['Picture'] != '') { ?>
+                                <img src="../uploads/<?php echo $data['Picture']; ?>">
+                            <?php } else { ?>
+                                2X2 ID<br>PICTURE
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THE SIGNATURE/THUMBMARK TABLE -->
+                <table class="sig-table">
+                    <tr>
+                        <th>SIGNATURE</th>
+                        <th>THUMBMARK</th>
+                    </tr>
+                    <!-- ROW 1 -->
+                    <tr>
+                        <td>
+                            <?php if ($data['SignaturePicture'] != '') { ?>
+                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="sig-img">
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if ($data['thumbNailPicture'] != '') { ?>
+                                <img src="../uploads/<?php echo $data['thumbNailPicture']; ?>" class="sig-img">
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <!-- ROW 2 (Duplicate Signature) -->
+                    <tr>
+                        <td>
+                            <?php if ($data['SignaturePicture'] != '') { ?>
+                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="sig-img">
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if ($data['thumbNailPicture'] != '') { ?>
+                                <img src="../uploads/<?php echo $data['thumbNailPicture']; ?>" class="sig-img">
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <!-- ROW 3 (Duplicate Signature) -->
+                    <tr>
+                        <td>
+                            <?php if ($data['SignaturePicture'] != '') { ?>
+                                <img src="../uploads/<?php echo $data['SignaturePicture']; ?>" class="sig-img">
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if ($data['thumbNailPicture'] != '') { ?>
+                                <img src="../uploads/<?php echo $data['thumbNailPicture']; ?>" class="sig-img">
+                            <?php } ?>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- FOOTER -->
+                <div class="footer">
+                    <div class="footer-sig">
+                        <div class="footer-line" style="text-transform: uppercase;"><?php echo $data['FirstName'] . " " . $data['MiddleName'] . " " . $data['LastName']; ?></div>
+                        <div>Senior Citizen</div>
+                    </div>
+                    <div class="footer-sig">
+                        <div class="footer-line"><?php echo date("M d, Y"); ?></div>
+                        <div>Generated Date</div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            `;
+
+            newWindow.document.write(htmlContent);
             newWindow.document.close();
             newWindow.focus();
-            setTimeout(function() { newWindow.print(); newWindow.close(); }, 800);
+            
+            setTimeout(function() {
+                newWindow.print();
+                newWindow.close();
+            }, 1500); 
         }
 
         function printQRCodeOnly() {
