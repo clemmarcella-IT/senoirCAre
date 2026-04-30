@@ -5,7 +5,9 @@ if(isset($_POST['update_admin'])) {
     $new_osca = $_POST['admin_osca'];
     $new_pass = $_POST['admin_pass'];
     
-    mysqli_query($conn, "UPDATE admin_users SET AdminOscaID='$new_osca', Password='$new_pass' WHERE AdminID=1");
+    // Hash the password before saving
+    $hashedPassword = password_hash($new_pass, PASSWORD_DEFAULT);
+    mysqli_query($conn, "UPDATE admin_users SET AdminOscaID='$new_osca', Password='$hashedPassword' WHERE AdminID=1");
     $_SESSION['admin_osca'] = $new_osca;
     echo "<script>alert('Admin Credentials Updated!'); window.location='settings.php';</script>";
 }
