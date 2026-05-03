@@ -10,15 +10,15 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="small fw-bold">Event Name</label>
-                        <input type="text" name="ename" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventName']; ?>" required>
+                        <input type="text" name="ename" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventName']; ?>">
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Date</label>
-                        <input type="date" name="edate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['eventDate']; ?>" required>
+                        <input type="date" name="edate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventDate']; ?>">
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Time</label>
-                        <input type="time" name="etime" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventTime']; ?>" required>
+                        <input type="time" name="etime" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventTime']; ?>">
                     </div>
                 </div>
                 <div class="modal-footer">

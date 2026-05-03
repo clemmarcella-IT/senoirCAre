@@ -11,12 +11,12 @@
                     
                     <div class="mb-3">
                         <label class="small fw-bold">Date</label>
-                        <input type="date" name="pdate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventDate']; ?>" required>
+                        <input type="date" name="pdate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventDate']; ?>">
                     </div>
                     
                     <div class="mb-3">
                         <label class="small fw-bold">Cash Amount (₱)</label>
-                        <input type="number" step="0.01" name="pamount" class="form-control card shadow border border-1 border-black" value="<?php echo $display['CashAmount']; ?>" required>
+                        <input type="number" step="0.01" name="pamount" class="form-control card shadow border border-1 border-black" value="<?php echo $display['CashAmount']; ?>">
                     </div>
                     
                 </div>

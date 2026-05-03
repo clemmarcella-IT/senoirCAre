@@ -15,7 +15,7 @@
                         <!-- Row 1: Names -->
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">First Name</label>
-                            <input type="text" name="fname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['FirstName']; ?>" required>
+                            <input type="text" name="fname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['FirstName']; ?>">
                         </div>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Middle Name</label>
@@ -23,21 +23,22 @@
                         </div>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Last Name</label>
-                            <input type="text" name="lname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['LastName']; ?>" required>
+                            <input type="text" name="lname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['LastName']; ?>">
                         </div>
 
                         <!-- Row 2: Sex, Purok, Birthday -->
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Sex</label>
-                            <select name="sex" class="form-select card shadow border border-1 border-black" required>
+                            <select name="sex" class="form-select card shadow border border-1 border-black">
                                 <option value="Male" <?php if($row['Sex']=='Male'){ echo 'selected'; } ?>>Male</option>
                                 <option value="Female" <?php if($row['Sex']=='Female'){ echo 'selected'; } ?>>Female</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Purok (Zone)</label>
-                            <select name="purok" class="form-select card shadow border border-1 border-black" required>
+                            <select name="purok" class="form-select card shadow border border-1 border-black">
                                 <?php for($i=1; $i<=6; $i++){ ?>
+
                                     <option value="Zone <?php echo $i; ?>" <?php if($row['Purok']=="Zone $i"){ echo 'selected'; } ?>>Zone <?php echo $i; ?></option>
                                 <?php } ?>
                             </select>
@@ -52,7 +53,7 @@
                         ?>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Birthday</label>
-                            <input type="date" name="bday" id="bdayInput_<?php echo $id; ?>" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Birthday']; ?>" onchange="calculateAge('<?php echo $id; ?>')" required>
+                            <input type="date" name="bday" id="bdayInput_<?php echo $id; ?>" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Birthday']; ?>" onchange="calculateAge('<?php echo $id; ?>')">
                             <div id="ageDisplay_<?php echo $id; ?>" class="mt-1 text-primary fw-bold small">Derived Age: <?php echo $currentAge; ?> Years Old</div>
                         </div>
 

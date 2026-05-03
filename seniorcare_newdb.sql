@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2026 at 11:37 AM
+-- Generation Time: May 03, 2026 at 03:27 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,6 +46,18 @@ INSERT INTO `admin_users` (`AdminID`, `AdminOscaID`, `Password`, `ContactNumber`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `assistance_details`
+--
+
+CREATE TABLE `assistance_details` (
+  `AssistanceDataID` int(11) NOT NULL,
+  `EventID` int(11) NOT NULL,
+  `AssistanceType` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `event_attendance`
 --
 
@@ -64,8 +76,6 @@ CREATE TABLE `event_attendance` (
 --
 
 INSERT INTO `event_attendance` (`AttendanceID`, `EventID`, `OscaIDNo`, `TimeIn`, `Status`, `ControlNo`, `Reason`) VALUES
-(1, 1, '00123', '08:00:00', 'Claimed', NULL, NULL),
-(2, 1, '055455', '08:15:00', 'Claimed', NULL, NULL),
 (3, 2, '055455', '10:00:00', 'Claimed', NULL, NULL);
 
 -- --------------------------------------------------------
@@ -88,9 +98,9 @@ CREATE TABLE `event_master` (
 --
 
 INSERT INTO `event_master` (`EventID`, `EventName`, `EventDate`, `EventTime`, `EventType`, `EventStatus`) VALUES
-(1, 'Relief Goods', '2026-05-03', NULL, 'Assistance', 'Active'),
-(2, 'Monthly Pension', '2026-04-22', NULL, 'Pension', 'Stopped'),
-(3, 'Health Checkup', '2026-05-03', NULL, 'Health', 'Stopped');
+(2, 'Monthly Pension Payout', '2026-04-22', NULL, 'Pension', 'Stopped'),
+(3, 'Health Checkup', '2026-05-03', NULL, 'Health', 'Stopped'),
+(4, 'sd', '2026-05-03', NULL, 'Assistance', 'Stopped');
 
 -- --------------------------------------------------------
 
@@ -147,38 +157,19 @@ CREATE TABLE `seniors` (
   `Birthday` date NOT NULL,
   `CitizenStatus` enum('active','inactive') DEFAULT 'active',
   `ApprovalStatus` enum('pending','approved','rejected') DEFAULT 'pending',
-  `GenerateDate` datetime DEFAULT current_timestamp()
+  `GenerateDate` datetime DEFAULT current_timestamp(),
+  `Picture` varchar(255) DEFAULT NULL,
+  `SignaturePicture` varchar(255) DEFAULT NULL,
+  `ThumbmarkPicture` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `seniors`
 --
 
-INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `CitizenStatus`, `ApprovalStatus`, `GenerateDate`) VALUES
-('00123', 'ARCELLA', 'CLEM', 'A', 'Male', 'Zone 1', 'Kalawag 1', '1960-09-19', 'active', 'approved', '2026-05-03 17:37:00'),
-('055455', 'MARCELLA', 'CLEM', 'A', 'Male', 'Zone 2', 'Kalawag 1', '1926-07-21', 'active', 'approved', '2026-05-03 17:37:00');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `senior_documents`
---
-
-CREATE TABLE `senior_documents` (
-  `DocID` int(11) NOT NULL,
-  `OscaIDNo` varchar(50) NOT NULL,
-  `ProfilePicture` varchar(255) DEFAULT NULL,
-  `SignaturePicture` varchar(255) DEFAULT NULL,
-  `ThumbmarkPicture` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `senior_documents`
---
-
-INSERT INTO `senior_documents` (`DocID`, `OscaIDNo`, `ProfilePicture`, `SignaturePicture`, `ThumbmarkPicture`) VALUES
-(1, '00123', '00123_profile.jpg', '00123_sig.jpg', '00123_thumb1.jpg'),
-(2, '055455', '055455_profile.jpg', '055455_sig.jpg', '055455_thumb1.jpg');
+INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `CitizenStatus`, `ApprovalStatus`, `GenerateDate`, `Picture`, `SignaturePicture`, `ThumbmarkPicture`) VALUES
+('00123', 'ARCELLA', 'CLEM', 'A', 'Male', 'Zone 1', 'Kalawag 1', '1960-09-19', 'active', 'approved', '2026-05-03 21:16:59', '00123_profile.jpg', '00123_sig.jpg', '00123_thumb1.jpg'),
+('055455', 'MARCELLA', 'CLEM', 'A', 'Male', 'Zone 2', 'Kalawag 1', '1926-07-21', 'active', 'approved', '2026-05-03 21:16:59', '055455_profile.jpg', '055455_sig.jpg', '055455_thumb1.jpg');
 
 --
 -- Indexes for dumped tables
@@ -189,6 +180,13 @@ INSERT INTO `senior_documents` (`DocID`, `OscaIDNo`, `ProfilePicture`, `Signatur
 --
 ALTER TABLE `admin_users`
   ADD PRIMARY KEY (`AdminID`);
+
+--
+-- Indexes for table `assistance_details`
+--
+ALTER TABLE `assistance_details`
+  ADD PRIMARY KEY (`AssistanceDataID`),
+  ADD UNIQUE KEY `fk_assistance_event` (`EventID`);
 
 --
 -- Indexes for table `event_attendance`
@@ -225,13 +223,6 @@ ALTER TABLE `seniors`
   ADD PRIMARY KEY (`OscaIDNo`);
 
 --
--- Indexes for table `senior_documents`
---
-ALTER TABLE `senior_documents`
-  ADD PRIMARY KEY (`DocID`),
-  ADD UNIQUE KEY `fk_senior_docs` (`OscaIDNo`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -240,6 +231,12 @@ ALTER TABLE `senior_documents`
 --
 ALTER TABLE `admin_users`
   MODIFY `AdminID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `assistance_details`
+--
+ALTER TABLE `assistance_details`
+  MODIFY `AssistanceDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `event_attendance`
@@ -251,13 +248,13 @@ ALTER TABLE `event_attendance`
 -- AUTO_INCREMENT for table `event_master`
 --
 ALTER TABLE `event_master`
-  MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `health_details`
 --
 ALTER TABLE `health_details`
-  MODIFY `HealthDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `HealthDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `pension_details`
@@ -266,14 +263,14 @@ ALTER TABLE `pension_details`
   MODIFY `PensionDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `senior_documents`
---
-ALTER TABLE `senior_documents`
-  MODIFY `DocID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `assistance_details`
+--
+ALTER TABLE `assistance_details`
+  ADD CONSTRAINT `fk_assistance_event` FOREIGN KEY (`EventID`) REFERENCES `event_master` (`EventID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `event_attendance`
@@ -293,12 +290,6 @@ ALTER TABLE `health_details`
 --
 ALTER TABLE `pension_details`
   ADD CONSTRAINT `fk_pension_event` FOREIGN KEY (`EventID`) REFERENCES `event_master` (`EventID`) ON DELETE CASCADE;
-
---
--- Constraints for table `senior_documents`
---
-ALTER TABLE `senior_documents`
-  ADD CONSTRAINT `fk_senior_docs_fk_seniors` FOREIGN KEY (`OscaIDNo`) REFERENCES `seniors` (`OscaIDNo`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

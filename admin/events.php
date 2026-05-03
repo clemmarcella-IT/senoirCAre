@@ -69,7 +69,11 @@ while ($display = mysqli_fetch_array($query)) {
     <td><?php echo $ename; ?></td>
     <td><?php echo $display['EventDate']; ?></td>
     <td><?php echo $display['EventTime']; ?></td>
-    <td><?php echo $display['EventStatus']; ?></td>
+    <td>
+        <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
+            <?php echo $display['EventStatus']; ?>
+        </span>
+    </td>
     <td>
         <div class="btn-group">
             <a href="event_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info">

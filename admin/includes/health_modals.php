@@ -10,15 +10,15 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="small fw-bold">Event Name</label>
-                        <input type="text" name="hname" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventName']; ?>" required>
+                        <input type="text" name="hname" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventName']; ?>">
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Date</label>
-                        <input type="date" name="hdate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventDate']; ?>" required>
+                        <input type="date" name="hdate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventDate']; ?>">
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Purpose</label>
-                        <select name="hpurpose" class="form-select card shadow border border-1 border-black" required>
+                        <select name="hpurpose" class="form-select card shadow border border-1 border-black">
                             <option value="Check up" <?php if($display['HealthPurpose'] == 'Check up') echo 'selected'; ?>>Check up</option>
                             <option value="Giving a medicine" <?php if($display['HealthPurpose'] == 'Giving a medicine') echo 'selected'; ?>>Giving a medicine</option>
                             <option value="Both" <?php if($display['HealthPurpose'] == 'Both') echo 'selected'; ?>>Both</option>

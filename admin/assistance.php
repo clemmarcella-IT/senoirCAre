@@ -47,7 +47,7 @@
                         <thead>
                             <tr>
                                 <th>Assistance Name</th>
-                                <th>Type</th>
+                                <th>Assistance Type</th>
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -56,18 +56,22 @@
                        <!-- Inside the <tbody> of assistance.php -->
 <tbody>
     <?php
-    // NEW LOGIC: We query the event_master table directly. 
-    // It is already "clean" so we don't need DISTINCT.
-    $query = mysqli_query($conn, "SELECT EventID, EventName, EventDate, EventType, EventStatus FROM event_master WHERE EventType = 'Assistance' ORDER BY EventDate DESC");
+    // Query event_master and assistance_details together
+    $query = mysqli_query($conn, "SELECT event_master.EventID, event_master.EventName, event_master.EventDate, event_master.EventType, event_master.EventStatus, assistance_details.AssistanceType 
+                                  FROM event_master
+                                  LEFT JOIN assistance_details ON event_master.EventID = assistance_details.EventID 
+                                  WHERE event_master.EventType = 'Assistance' 
+                                  ORDER BY event_master.EventDate DESC");
     
     while ($display = mysqli_fetch_array($query)) {
-        $eid = $display['EventID']; // This is the real ID
+        $eid = $display['EventID'];
         $ename = $display['EventName'];
         $edate = $display['EventDate'];
+        $atype = $display['AssistanceType'];
     ?>
     <tr>
         <td class="fw-bold"><?php echo $ename; ?></td>
-        <td><?php echo $display['EventType']; ?></td>
+        <td><?php echo $atype; ?></td>
         <td><?php echo date("M d, Y", strtotime($edate)); ?></td>
         <td>
             <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
