@@ -3,10 +3,9 @@ include("../includes/db_connection.php");
 
 $id = $_GET['id'];
 
-// Simple JOIN to get data from BOTH seniors and senior_documents tables
-$res = mysqli_query($conn, "SELECT seniors.*, senior_documents.ProfilePicture, senior_documents.SignaturePicture, senior_documents.ThumbmarkPicture 
+// Query seniors directly; image fields live in seniors table
+$res = mysqli_query($conn, "SELECT seniors.* 
                             FROM seniors 
-                            LEFT JOIN senior_documents ON seniors.OscaIDNo = senior_documents.OscaIDNo 
                             WHERE seniors.OscaIDNo = '$id'");
 $row = mysqli_fetch_array($res);
 
@@ -60,7 +59,7 @@ if ($currentMonth < $birthMonth) {
                 <div class="row g-0">
                     <!-- LEFT SIDE: PHOTO & QR -->
                     <div class="col-md-4 id-side">
-                       <img src="../uploads/<?php echo $row['ProfilePicture']; ?>" class="display-pic">
+                       <img src="../uploads/<?php echo $row['Picture']; ?>" class="display-pic">
                         <h5 class="fw-bold mb-0"><?php echo $row['FirstName']; ?></h5>
                         <p class="small opacity-75 mb-3">OscaIDNo. <?php echo $id; ?></p>
                         
@@ -428,8 +427,8 @@ function printCitizenRecord() {
             
             <div class="picture-box">
                 <div class="inner-pic-box">
-                    <?php if ($row['ProfilePicture'] != "") { ?>
-                        <img src="../uploads/<?php echo $row['ProfilePicture']; ?>">
+                    <?php if ($row['Picture'] != "") { ?>
+                        <img src="../uploads/<?php echo $row['Picture']; ?>">
                     <?php } else { ?>
                         2X2 ID<br>PICTURE
                     <?php } ?>

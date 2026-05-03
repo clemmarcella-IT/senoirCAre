@@ -62,9 +62,8 @@
                         <tbody>
                             <?php
                             // Joining both tables to get the profile picture
-                            $query = mysqli_query($conn, "SELECT seniors.*, senior_documents.ProfilePicture 
+                            $query = mysqli_query($conn, "SELECT seniors.* 
                                                           FROM seniors 
-                                                          LEFT JOIN senior_documents ON seniors.OscaIDNo = senior_documents.OscaIDNo 
                                                           ORDER BY seniors.LastName");
                             
                             while ($row = mysqli_fetch_array($query)) {
@@ -82,8 +81,8 @@
                             <tr class="<?php echo $isPendingClass; ?>">
                                 <td>
                                     <a href="view_senior_details.php?id=<?php echo $id; ?>">
-                                        <?php if ($row['ProfilePicture'] != "") { ?>
-                                            <img src="../uploads/<?php echo $row['ProfilePicture']; ?>" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--forest-deep);">
+                                        <?php if ($row['Picture'] != "") { ?>
+                                            <img src="../uploads/<?php echo $row['Picture']; ?>" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--forest-deep);">
                                         <?php } else { ?>
                                             <div style="width:45px; height:45px; border-radius:50%; border:2px solid var(--forest-deep); background:#ccc; display:flex; align-items:center; justify-content:center; font-size:10px;">No Pic</div>
                                         <?php } ?>

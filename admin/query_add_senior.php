@@ -36,17 +36,11 @@ if(isset($_POST['oscaID'])){
     $t1 = $oscaID . "_th1.jpg"; 
     move_uploaded_file($_FILES["thumb1"]["tmp_name"], $target . $t1);
 
-    // FIRST INSERT: Personal Details goes into "seniors" table
-    $query1 = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, CitizenStatus, GenerateDate, ApprovalStatus) 
-               VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$status', NOW(), 'approved')";
+    // FIRST INSERT: Personal Details and images all go into "seniors" table
+    $query1 = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, CitizenStatus, GenerateDate, ApprovalStatus, Picture, SignaturePicture, ThumbmarkPicture) 
+               VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$status', NOW(), 'approved', '$pic', '$s1', '$t1')";
 
-    // If personal details saved successfully, proceed to save the images
     if(mysqli_query($conn, $query1)){
-        
-        // SECOND INSERT: Images go into "senior_documents" table
-        $query2 = "INSERT INTO senior_documents (OscaIDNo, ProfilePicture, SignaturePicture, ThumbmarkPicture) 
-                   VALUES ('$oscaID', '$pic', '$s1', '$t1')";
-        mysqli_query($conn, $query2);
 
         echo "<script>alert('Senior Citizen Successfully Registered!'); window.location='profiling.php';</script>";
     } else {

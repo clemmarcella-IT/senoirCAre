@@ -9,9 +9,8 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id']; 
 
-$query = mysqli_query($conn, "SELECT seniors.*, senior_documents.ProfilePicture, senior_documents.SignaturePicture, senior_documents.ThumbmarkPicture 
+$query = mysqli_query($conn, "SELECT seniors.* 
                               FROM seniors 
-                              LEFT JOIN senior_documents ON seniors.OscaIDNo = senior_documents.OscaIDNo 
                               WHERE seniors.OscaIDNo = '$id'");
 $data = mysqli_fetch_array($query);
 
@@ -59,7 +58,7 @@ if ($currentMonth < $birthMonth) {
         <div class="card shadow border-0" id="printArea">
             <div class="row g-0">
                 <div class="col-md-4 bg-dark text-white text-center p-5 id-side">
-                    <img src="../uploads/<?php echo $data['ProfilePicture'] ?: $data['Picture']; ?>" class="display-pic rounded-circle shadow mb-4 border border-3 border-success" style="width:160px; height:160px; object-fit:cover;">
+                    <img src="../uploads/<?php echo $data['Picture']; ?>" class="display-pic rounded-circle shadow mb-4 border border-3 border-success" style="width:160px; height:160px; object-fit:cover;">
                     <h3 class="text-uppercase fw-bold"><?php echo $data['FirstName']; ?></h3>
                     <p class="small opacity-75 mb-4">OscaIDNo. <?php echo $data['OscaIDNo']; ?></p>
                     
@@ -403,8 +402,8 @@ if ($currentMonth < $birthMonth) {
                     <!-- RIGHT SIDE: Picture Box -->
                     <div class="picture-box">
                         <div class="inner-pic-box">
-                            <?php if (!empty($data['ProfilePicture']) || !empty($data['Picture'])) { ?>
-                                <img src="../uploads/<?php echo $data['ProfilePicture'] ?: $data['Picture']; ?>">
+                            <?php if (!empty($data['Picture'])) { ?>
+                                <img src="../uploads/<?php echo $data['Picture']; ?>">
                             <?php } else { ?>
                                 2X2 ID<br>PICTURE
                             <?php } ?>

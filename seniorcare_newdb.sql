@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2026 at 03:27 PM
+-- Generation Time: May 03, 2026 at 11:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,7 +41,7 @@ CREATE TABLE `admin_users` (
 --
 
 INSERT INTO `admin_users` (`AdminID`, `AdminOscaID`, `Password`, `ContactNumber`, `ResetCode`, `CodeExpiry`) VALUES
-(1, '001', '$2y$10$OaGp7lBCyxQDmDPXxnT7QeBVLUMdfLvXjdOiZXd4UdaSz3z1L9.ha', '09365250520', NULL, NULL);
+(1, '001', '$2y$10$0umFWLrHM9irpHAWGQ/F8uSFgM00ziZmYpw5g./iq1qHtMJFXr.7S', '09365250520', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -71,13 +71,6 @@ CREATE TABLE `event_attendance` (
   `Reason` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `event_attendance`
---
-
-INSERT INTO `event_attendance` (`AttendanceID`, `EventID`, `OscaIDNo`, `TimeIn`, `Status`, `ControlNo`, `Reason`) VALUES
-(3, 2, '055455', '10:00:00', 'Claimed', NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -93,15 +86,6 @@ CREATE TABLE `event_master` (
   `EventStatus` enum('Active','Stopped') DEFAULT 'Active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `event_master`
---
-
-INSERT INTO `event_master` (`EventID`, `EventName`, `EventDate`, `EventTime`, `EventType`, `EventStatus`) VALUES
-(2, 'Monthly Pension Payout', '2026-04-22', NULL, 'Pension', 'Stopped'),
-(3, 'Health Checkup', '2026-05-03', NULL, 'Health', 'Stopped'),
-(4, 'sd', '2026-05-03', NULL, 'Assistance', 'Stopped');
-
 -- --------------------------------------------------------
 
 --
@@ -114,13 +98,6 @@ CREATE TABLE `health_details` (
   `HealthPurpose` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `health_details`
---
-
-INSERT INTO `health_details` (`HealthDataID`, `EventID`, `HealthPurpose`) VALUES
-(1, 3, 'Check up');
-
 -- --------------------------------------------------------
 
 --
@@ -132,13 +109,6 @@ CREATE TABLE `pension_details` (
   `EventID` int(11) NOT NULL,
   `CashAmount` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `pension_details`
---
-
-INSERT INTO `pension_details` (`PensionDataID`, `EventID`, `CashAmount`) VALUES
-(1, 2, 12323.00);
 
 -- --------------------------------------------------------
 
@@ -236,7 +206,7 @@ ALTER TABLE `admin_users`
 -- AUTO_INCREMENT for table `assistance_details`
 --
 ALTER TABLE `assistance_details`
-  MODIFY `AssistanceDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `AssistanceDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `event_attendance`
@@ -248,13 +218,13 @@ ALTER TABLE `event_attendance`
 -- AUTO_INCREMENT for table `event_master`
 --
 ALTER TABLE `event_master`
-  MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `health_details`
 --
 ALTER TABLE `health_details`
-  MODIFY `HealthDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `HealthDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `pension_details`

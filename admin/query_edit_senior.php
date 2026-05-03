@@ -47,12 +47,8 @@
 	if($_FILES['thumb1']['name'] != "") {
 		$fileName = $id . "_updated_thumb.jpg";
 		move_uploaded_file($_FILES['thumb1']['tmp_name'], $folder . $fileName);
-		$sql .= ", thumbNailPicture = '$fileName'";
+        $sql .= ", ThumbmarkPicture = '$fileName'";
 	}
-
-	// 8. Finish the SQL command by telling it which Senior to update
-	$sql .= " WHERE OscaIDNo = '$id'";
-
 	// 9. Run the command in the database
 	mysqli_query($conn, $sql);
 	
