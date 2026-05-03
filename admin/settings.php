@@ -39,14 +39,14 @@ if(isset($_POST['update_admin'])) {
                                 <label class="label-tag">Update Admin OscaIDNo.</label>
                                 <input type="text" name="admin_osca" class="form-control form-control-lg" 
                                        value="<?php echo $_SESSION['admin_osca']; ?>" 
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 <small class="text-muted">This is used for your two-step login.</small>
                             </div>
                             
                             <div class="mb-4">
                                 <label class="label-tag">Update Admin Password</label>
                                 <div class="input-group">
-                                    <input type="password" name="admin_pass" id="settingsPass" class="form-control form-control-lg" placeholder="New Password" required>
+                                    <input type="password" name="admin_pass" id="settingsPass" class="form-control form-control-lg" placeholder="New Password">
                                     <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('settingsPass', 'setEye')">
                                         <i id="setEye" class="fa fa-eye"></i>
                                     </button>
