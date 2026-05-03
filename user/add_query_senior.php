@@ -34,8 +34,10 @@
         $query1 = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, CitizenStatus, ApprovalStatus, GenerateDate, Picture, SignaturePicture, ThumbmarkPicture) 
                    VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$status', 'pending', NOW(), '$pic', '$s1', '$t1')";
         
-        mysqli_query($conn, $query1);
-
-		echo "<script>alert('Registration submitted! Waiting for approval.'); window.location='login.php';</script>";
+        if (mysqli_query($conn, $query1)) {
+            echo "<script>alert('Registration submitted! Waiting for approval.'); window.location='login.php';</script>";
+        } else {
+            echo "<script>alert('Error: Registration failed!'); window.location='register.php';</script>";
+        }
 	}
 ?>

@@ -14,6 +14,10 @@ if ($result) {
     // Insert into assistance_details
     mysqli_query($conn, "INSERT INTO assistance_details (EventID, AssistanceType) 
     VALUES ('$eventID', '$type')");
+} else {
+    echo "<script>alert('Error adding assistance event!'); 
+    window.location='assistance.php';</script>";
+    exit;
 }
 ?>
 <script>
