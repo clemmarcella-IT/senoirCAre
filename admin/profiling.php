@@ -7,42 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Senior Profiling | Admin</title>
     
-    <!-- External CSS -->
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- YOUR MASTER DESIGN CSS -->
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
     
-    <!-- Required Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="sb-nav-fixed">
 
-    <!-- Design: Topbar and Mobile Overlay -->
     <?php include('includes/header.php'); ?>
-
-    <!-- Design: Sidebar Menu -->
     <?php include('includes/sidebar.php'); ?>
 
-    <!-- UX: Main Content Wrapper -->
     <main id="main-content">
         <div class="container-fluid px-4">
             <h2 class="mt-4 fw-bold text-success"><i class="fa fa-users me-2"></i> Senior Citizen Profiling</h2>
             
-            <!-- Action Bar -->
             <div class="card mb-4 border-0 shadow-sm mt-3">
                 <div class="card-body">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                         <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">MASTER LIST MANAGEMENT</span>
                         <div class="d-flex flex-column flex-sm-row gap-2">
-                            <!-- Design: Your requested Forest Green Register Button -->
                             <button type="button" class="btn btn-forest shadow-sm w-100" onclick="window.location.href='register_senior.php'">
                                  <i class="fa fa-user-plus me-2"></i> Register New Senior
                             </button>
-                            <!-- Design: Green Print Button -->
                             <button type="button" class="btn btn-success fw-bold shadow-sm w-100" style="border-radius: 8px;" onclick="printTable()">
                                 <i class="fa fa-print me-2"></i> Print Report
                             </button>
@@ -51,13 +41,11 @@
                 </div>
             </div>
 
-            <!-- Table Card -->
             <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
                 <div class="card-header py-3">
                     <i class="fas fa-table me-1"></i> Official Master List of Enrolled Seniors
                 </div>
                 <div class="card-body bg-white">
-                    <!-- UX: Search and Pagination are handled by 'datatablesSimple' ID -->
                     <div class="table-responsive">
                         <table id="datatablesSimple" class="table table-hover align-middle">
                             <thead class="table-light">
@@ -73,37 +61,60 @@
                         </thead>
                         <tbody>
                             <?php
-                            $query = mysqli_query($conn, "SELECT * FROM seniors ORDER BY LastName");
+                            // Joining both tables to get the profile picture
+                            $query = mysqli_query($conn, "SELECT seniors.*, senior_documents.ProfilePicture 
+                                                          FROM seniors 
+                                                          LEFT JOIN senior_documents ON seniors.OscaIDNo = senior_documents.OscaIDNo 
+                                                          ORDER BY seniors.LastName");
+                            
                             while ($row = mysqli_fetch_array($query)) {
                                 $id = $row['OscaIDNo'];
-                                $isPending = ($row['ApprovalStatus'] == 'pending');
+                                
+                                // Simple if/else for pending status
+                                if ($row['ApprovalStatus'] == 'pending') {
+                                    $isPendingClass = 'table-warning';
+                                    $isPending = true;
+                                } else {
+                                    $isPendingClass = '';
+                                    $isPending = false;
+                                }
                             ?>
-                            <tr class="<?php echo $isPending ? 'table-warning' : ''; ?>">
+                            <tr class="<?php echo $isPendingClass; ?>">
                                 <td>
-                                    <!-- UX: Clicking photo opens full details page -->
                                     <a href="view_senior_details.php?id=<?php echo $id; ?>">
-                                        <img src="../uploads/<?php echo $row['Picture']; ?>" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--forest-deep);">
+                                        <?php if ($row['ProfilePicture'] != "") { ?>
+                                            <img src="../uploads/<?php echo $row['ProfilePicture']; ?>" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--forest-deep);">
+                                        <?php } else { ?>
+                                            <div style="width:45px; height:45px; border-radius:50%; border:2px solid var(--forest-deep); background:#ccc; display:flex; align-items:center; justify-content:center; font-size:10px;">No Pic</div>
+                                        <?php } ?>
                                     </a>
                                 </td>
                                 <td class="fw-bold text-primary"><?php echo $id; ?></td>
                                 <td>
                                     <a href="view_senior_details.php?id=<?php echo $id; ?>" class="text-dark fw-bold text-decoration-none text-uppercase">
-                                        <?php echo $row['LastName'].", ".$row['FirstName']; ?>
+                                        <?php echo $row['LastName']; ?>, <?php echo $row['FirstName']; ?>
                                     </a>
                                 </td>
                                 <td><?php echo $row['Sex']; ?></td>
                                 <td><?php echo $row['Purok']; ?></td>
                                 <td>
-                                    <span class="badge <?php echo ($row['CitizenStatus'] == 'active') ? 'bg-success' : 'bg-danger'; ?> text-uppercase" style="font-size: 0.75rem; padding: 6px 12px;">
+                                    <?php 
+                                    if ($row['CitizenStatus'] == 'active') {
+                                        $badgeClass = 'bg-success';
+                                    } else {
+                                        $badgeClass = 'bg-danger';
+                                    }
+                                    ?>
+                                    <span class="badge <?php echo $badgeClass; ?> text-uppercase" style="font-size: 0.75rem; padding: 6px 12px;">
                                         <?php echo $row['CitizenStatus']; ?>
                                     </span>
                                 </td>
                                 <td class="no-print">
                                     <div class="btn-group">
-                                        <?php if($isPending): ?>
+                                        <?php if($isPending == true) { ?>
                                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approve_<?php echo $id; ?>" title="Approve"><i class="fa fa-check"></i></button>
                                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#reject_<?php echo $id; ?>" title="Reject"><i class="fa fa-times"></i></button>
-                                        <?php endif; ?>
+                                        <?php } ?>
                                         <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $id; ?>"><i class="fa fa-edit"></i></button>
                                         <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_<?php echo $id; ?>"><i class="fa fa-trash"></i></button>
                                     </div>
@@ -121,14 +132,10 @@
         </div>
     </main>
 
-    <!-- UX: Sidebar Toggle and Link Highlighting -->
     <script src="js/scripts.js"></script>
-    
-    <!-- UX: DataTables Search/Pagination Engine -->
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="js/datatables-simple-demo.js"></script>
 
-    <!-- UX: Professional Report Printing Logic -->
     <script>
     function printTable() {
         var table = document.getElementById("datatablesSimple");

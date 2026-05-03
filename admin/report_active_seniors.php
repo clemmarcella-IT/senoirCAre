@@ -33,7 +33,7 @@
                     <table id="example" class="table table-bordered nowrap" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Total List</th>
+                                <th>#</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Osca ID No.</th>
@@ -49,7 +49,7 @@
                             while ($display = mysqli_fetch_array($query)) {
                             ?>
                             <tr>
-                                <td><?php echo $clem++; ?></td> 
+                                <td><?php echo $clem++; ?></td>
                                 <td><?php echo $display['FirstName']; ?></td>
                                 <td><?php echo $display['LastName']; ?></td>
                                 <td><?php echo $display['OscaIDNo']; ?></td>

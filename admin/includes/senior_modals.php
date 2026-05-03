@@ -3,13 +3,11 @@
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content border border-black shadow-lg">
             
-            <!-- Modal Header: Matching Registration Style -->
             <div class="modal-header text-white py-3" style="background-color: #1F4B2C;">
                 <h5 class="modal-title fw-bold"><i class="fa fa-user-edit me-2"></i> Update Profile: <?php echo $id; ?></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <!-- Form Start -->
             <form role="form" method="POST" action="query_edit_senior.php?id=<?php echo $id; ?>" enctype="multipart/form-data">
                 <div class="modal-body p-4" style="background-color: #f8f9fa;">
                     <div class="row g-3">
@@ -28,30 +26,32 @@
                             <input type="text" name="lname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['LastName']; ?>" required>
                         </div>
 
-                        <!-- Row 2: Sex, Purok, Birthday with Live Age -->
+                        <!-- Row 2: Sex, Purok, Birthday -->
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Sex</label>
                             <select name="sex" class="form-select card shadow border border-1 border-black" required>
-                                <option value="Male" <?php if($row['Sex']=='Male') echo 'selected'; ?>>Male</option>
-                                <option value="Female" <?php if($row['Sex']=='Female') echo 'selected'; ?>>Female</option>
+                                <option value="Male" <?php if($row['Sex']=='Male'){ echo 'selected'; } ?>>Male</option>
+                                <option value="Female" <?php if($row['Sex']=='Female'){ echo 'selected'; } ?>>Female</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Purok (Zone)</label>
                             <select name="purok" class="form-select card shadow border border-1 border-black" required>
-                                <?php for($i=1; $i<=6; $i++): ?>
-                                    <option value="Zone <?php echo $i; ?>" <?php if($row['Purok']=="Zone $i") echo 'selected'; ?>>Zone <?php echo $i; ?></option>
-                                <?php endfor; ?>
+                                <?php for($i=1; $i<=6; $i++){ ?>
+                                    <option value="Zone <?php echo $i; ?>" <?php if($row['Purok']=="Zone $i"){ echo 'selected'; } ?>>Zone <?php echo $i; ?></option>
+                                <?php } ?>
                             </select>
                         </div>
 
                         <?php 
-                            // Calculate existing age via PHP for initial modal load
-                            $currentAge = date_diff(date_create($row['Birthday']), date_create('today'))->y; 
+                            // Very simple and safe age calculation
+                            $bday = $row['Birthday'];
+                            $birthYear = date("Y", strtotime($bday));
+                            $currentYear = date("Y");
+                            $currentAge = $currentYear - $birthYear;
                         ?>
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Birthday</label>
-                            <!-- Note the dynamic ID and the parameter in calculateAge() -->
                             <input type="date" name="bday" id="bdayInput_<?php echo $id; ?>" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Birthday']; ?>" onchange="calculateAge('<?php echo $id; ?>')" required>
                             <div id="ageDisplay_<?php echo $id; ?>" class="mt-1 text-primary fw-bold small">Derived Age: <?php echo $currentAge; ?> Years Old</div>
                         </div>
@@ -60,8 +60,8 @@
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Citizen Status</label>
                             <select name="status" class="form-select card shadow border border-1 border-black">
-                                <option value="active" <?php if($row['CitizenStatus']=='active') echo 'selected'; ?>>Active</option>
-                                <option value="inactive" <?php if($row['CitizenStatus']=='inactive') echo 'selected'; ?>>Inactive</option>
+                                <option value="active" <?php if($row['CitizenStatus']=='active'){ echo 'selected'; } ?>>Active</option>
+                                <option value="inactive" <?php if($row['CitizenStatus']=='inactive'){ echo 'selected'; } ?>>Inactive</option>
                             </select>
                         </div>
                         <div class="col-md-8">
@@ -76,7 +76,7 @@
                             <div class="upload-instruction">Note: Picture must have a plain <strong>white background</strong>.</div>
                         </div>
 
-                        <!-- Row 5: Signature & Thumbmarks (Stacked vertically) -->
+                        <!-- Row 5: Signature & Thumbmarks -->
                         <div class="col-md-6 mt-3">
                             <label class="fw-bold text-success">2. SIGNATURE</label>
                             <input type="file" name="sig1" class="form-control card shadow border border-1 border-black">
@@ -110,7 +110,7 @@
             </div>
             <div class="modal-body text-center p-4">
                 <p>Are you sure you want to delete the profile of:</p>
-                <h4 class="font-weight-bold text-dark"><?php echo $row['LastName'].", ".$row['FirstName']; ?></h4>
+                <h4 class="font-weight-bold text-dark"><?php echo $row['LastName']; ?>, <?php echo $row['FirstName']; ?></h4>
                 <p class="text-danger small">This action is permanent.</p>
             </div>
             <div class="modal-footer justify-content-center bg-light border-0">
@@ -121,7 +121,7 @@
     </div>
 </div>
 
-<?php if(isset($isPending) && $isPending): ?>
+<?php if($isPending == true) { ?>
 <!-- Approve Modal -->
 <div class="modal fade" id="approve_<?php echo $id; ?>" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -132,7 +132,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to approve the registration for <strong><?php echo $row['FirstName'] . ' ' . $row['LastName']; ?></strong>?</p>
+                    <p>Are you sure you want to approve the registration for <strong><?php echo $row['FirstName']; ?> <?php echo $row['LastName']; ?></strong>?</p>
                     <input type="hidden" name="approve_id" value="<?php echo $id; ?>">
                 </div>
                 <div class="modal-footer">
@@ -154,7 +154,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to <strong>reject</strong> the registration for <strong><?php echo $row['FirstName'] . ' ' . $row['LastName']; ?></strong>?</p>
+                    <p>Are you sure you want to <strong>reject</strong> the registration for <strong><?php echo $row['FirstName']; ?> <?php echo $row['LastName']; ?></strong>?</p>
                     <input type="hidden" name="reject_id" value="<?php echo $id; ?>">
                 </div>
                 <div class="modal-footer">
@@ -165,4 +165,4 @@
         </div>
     </div>
 </div>
-<?php endif; ?>
+<?php } ?>

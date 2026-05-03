@@ -1,20 +1,15 @@
 <?php 
 require_once('includes/session.php'); 
-$hname = $_GET['name'];
-$hdate = $_GET['date'];
+$eid = $_GET['id'];
 
-$res = mysqli_query($conn, "SELECT * FROM healthrecords WHERE HealthName = '$hname' AND HealthDate = '$hdate' AND OscaIDNo IS NULL");
+$res = mysqli_query($conn, "SELECT em.*, hd.HealthPurpose FROM event_master em LEFT JOIN health_details hd ON em.EventID = hd.EventID WHERE em.EventID = '$eid' AND em.EventType = 'Health'");
 $event = mysqli_fetch_array($res);
 if (!$event) {
-    $event = [
-        'HealthName' => $hname,
-        'HealthPurpose' => 'Unknown',
-        'HealthDate' => $hdate,
-        'HealthEventStatus' => 'Active'
-    ];
+    echo "<script>alert('Event not found.'); window.location='health.php';</script>";
+    exit;
 }
 
-$isStopped = ($event['HealthEventStatus'] == 'Stopped');
+$isStopped = ($event['EventStatus'] == 'Stopped');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +17,7 @@ $isStopped = ($event['HealthEventStatus'] == 'Stopped');
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Health Attendance | <?php echo $event['HealthName']; ?></title>
+    <title>Health Attendance | <?php echo $event['EventName']; ?></title>
     
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -41,8 +36,8 @@ $isStopped = ($event['HealthEventStatus'] == 'Stopped');
         <div class="container-fluid px-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-4 mb-4 gap-3">
                 <div>
-                    <h3 class="fw-bold text-success m-0"><?php echo $event['HealthName']; ?></h3>
-                    <p class="text-muted mb-1"><?php echo $event['HealthPurpose']; ?> | <?php echo date("M d, Y", strtotime($hdate)); ?></p>
+                    <h3 class="fw-bold text-success m-0"><?php echo $event['EventName']; ?></h3>
+                    <p class="text-muted mb-1"><?php echo $event['HealthPurpose']; ?> | <?php echo date("M d, Y", strtotime($event['EventDate'])); ?></p>
                     <span class="badge <?php echo $isStopped ? 'bg-danger' : 'bg-success'; ?>">
                         <?php echo $isStopped ? 'CLOSED (VIEW ONLY)' : 'ACTIVE SESSION'; ?>
                     </span>
@@ -51,7 +46,7 @@ $isStopped = ($event['HealthEventStatus'] == 'Stopped');
                     <a href="health.php" class="btn btn-secondary shadow-sm w-100">Back</a>
                     <button onclick="printTable()" class="btn btn-success shadow-sm w-100"><i class="fa fa-print"></i> Print</button>
                     <?php if(!$isStopped): ?>
-                        <a href="query_stop_health.php?name=<?php echo $hname; ?>&date=<?php echo $hdate; ?>" 
+                        <a href="query_stop_health.php?id=<?php echo $eid; ?>" 
                            class="btn btn-danger fw-bold shadow-sm w-100" onclick="return confirm('Stop permanently?')">
                            STOP ATTENDANCE
                         </a>
@@ -66,9 +61,7 @@ $isStopped = ($event['HealthEventStatus'] == 'Stopped');
                 <div class="card p-3 shadow-sm border-0">
                     <div id="reader"></div>
                     <form action="query_record_health_attendance.php" method="POST" class="mt-3">
-                        <input type="hidden" name="hname" value="<?php echo $event['HealthName']; ?>">
-                        <input type="hidden" name="hdate" value="<?php echo $event['HealthDate']; ?>">
-                        <input type="hidden" name="hpurpose" value="<?php echo $event['HealthPurpose']; ?>">
+                        <input type="hidden" name="eid" value="<?php echo $eid; ?>">
                         <input type="text" name="oscaID" id="scanned_id" class="form-control text-center font-weight-bold text-primary mb-2" readonly placeholder="Waiting for Scan">
                         <button type="submit" id="submitBtn" class="btn btn-success w-100 py-2 fw-bold" disabled>MARK AS PRESENT</button>
                     </form>
@@ -98,20 +91,18 @@ $isStopped = ($event['HealthEventStatus'] == 'Stopped');
                         </thead>
                         <tbody>
                              <?php
-                                 $clem=mysqli_query($conn, "SELECT *
-                                 FROM healthrecords
-                                 LEFT JOIN seniors ON seniors.OscaIDNo = healthrecords.OscaIDNo 
-                                 WHERE healthrecords.HealthName = '$hname' 
-                                 AND healthrecords.HealthDate = '$hdate' 
-                                 AND healthrecords.OscaIDNo IS NOT NULL
-                                 ORDER BY healthrecords.HealthTimeIn DESC");
+                                 $clem=mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, event_attendance.TimeIn 
+                                 FROM event_attendance
+                                 INNER JOIN seniors ON seniors.OscaIDNo = event_attendance.OscaIDNo 
+                                 WHERE event_attendance.EventID = '$eid'
+                                 ORDER BY event_attendance.TimeIn DESC");
                                  
                                 while($display = mysqli_fetch_array($clem)){
                                     ?>
                                     <tr>
                                     <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
                                      <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                     <td><?php echo date("h:i A", strtotime($display['HealthTimeIn'])); ?></td>
+                                     <td><?php echo date("h:i A", strtotime($display['TimeIn'])); ?></td>
                                      <td><span class="text-success fw-bold">PRESENT</span></td>
                                     </tr>
                                 <?php

@@ -1,18 +1,20 @@
 <?php
 include("../includes/db_connection.php");
 
-$old_name = $_GET['old_name'];
-$old_date = $_GET['old_date'];
+$id = $_GET['id'];
 
 $new_name = $_POST['hname'];
 $new_date = $_POST['hdate'];
 $new_purpose = $_POST['hpurpose'];
 
-mysqli_query($conn, "UPDATE healthrecords SET 
-    HealthName = '$new_name', 
-    HealthDate = '$new_date', 
+mysqli_query($conn, "UPDATE event_master SET 
+    EventName = '$new_name', 
+    EventDate = '$new_date'
+    WHERE EventID='$id'");
+
+mysqli_query($conn, "UPDATE health_details SET 
     HealthPurpose = '$new_purpose' 
-    WHERE HealthName = '$old_name' AND HealthDate = '$old_date'");
+    WHERE EventID='$eid'");
 ?>
 <script>
     window.alert('Health Event updated successfully!');

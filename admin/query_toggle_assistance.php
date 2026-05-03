@@ -1,13 +1,11 @@
 <?php
 include("../includes/db_connection.php");
 
-$name = $_GET['name'];
-$date = $_GET['date'];
+$id = $_GET['id'];
 $status = $_GET['status']; // "Stopped" or "Active"
 
-// Update ALL rows belonging to this Assistance group to ensure everything stays synced
-mysqli_query($conn, "UPDATE assistance SET AssistanceEventStatus='$status' WHERE AssistanceName='$name' AND AssistanceDate='$date'");
+mysqli_query($conn, "UPDATE event_master SET EventStatus='$status' WHERE EventID='$id' AND EventType='Assistance'");
 
 // Send them back to the scanner screen
-header("location:assistance_attendance.php?name=$name&date=$date");
+header("location:assistance_attendance.php?id=$id");
 ?>

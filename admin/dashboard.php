@@ -33,21 +33,21 @@
             </div>
             <div class="col-md-3">
                 <div class="card stat-card border-blue">
-                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM events");
+                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM event_master");
                     while($row = mysqli_fetch_array($query)){ ?>
                     <h6>Total Events</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card border-lime">
-                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM assistance");
+                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM event_master WHERE EventType='Assistance'");
                     while($row = mysqli_fetch_array($query)){ ?>
                     <h6>Total Assistance</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card border-red">
-                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM healthrecords");
+                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM event_master WHERE EventType='Health'");
                     while($row = mysqli_fetch_array($query)){ ?>
                     <h6>Total Medical Event</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
@@ -123,11 +123,11 @@
         $bar_vals = [$age_60_65, $age_66_70, $age_71_75, $age_76_plus];
         
         // Count Attendance by Month
-        $attendance_query = mysqli_query($conn, "SELECT eventDate FROM events JOIN attendance ON attendance.EventID = events.EventID");
+        $attendance_query = mysqli_query($conn, "SELECT EventDate FROM event_master em JOIN event_attendance ea ON ea.EventID = em.EventID");
         $area_vals = array_fill(0, 12, 0);
         
         while($attendance_row = mysqli_fetch_array($attendance_query)){
-            $event_date = $attendance_row['eventDate'];
+            $event_date = $attendance_row['EventDate'];
             $month = substr($event_date, 5, 2);
             $month_index = (int)$month - 1;
             $area_vals[$month_index]++;

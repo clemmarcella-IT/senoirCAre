@@ -4,11 +4,17 @@ include("../includes/db_connection.php");
 $date = $_POST['pdate'];
 $amount = $_POST['pamount'];
 
-// Use the date string as the Reason so it identifies this specific session
-$reason = $date; 
+// Insert into event_master
+$name = 'Pension Payout - ' . $date;
+mysqli_query($conn, "INSERT INTO event_master (EventName, EventDate, EventType, EventStatus) 
+VALUES ('$name', '$date', 'Pension', 'Active')");
 
-mysqli_query($conn, "INSERT INTO pension (PensionReason, PensionDate, PensionCashAmount, PensionEventStatus) 
-VALUES ('$reason', '$date', '$amount', 'Active')");
+// Get the EventID
+$event_id = mysqli_insert_id($conn);
+
+// Insert into pension_details
+mysqli_query($conn, "INSERT INTO pension_details (EventID, CashAmount) 
+VALUES ('$event_id', '$amount')");
 ?>
 <script>
     window.alert('Pension Payout Session created successfully!');

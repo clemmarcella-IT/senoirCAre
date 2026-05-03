@@ -1,12 +1,11 @@
 <?php
 include("../includes/db_connection.php");
 
-// Get the identifiers from the URL
-$reason = $_GET['reason'];
-$date = $_GET['date'];
+// Get the identifier from the URL
+$id = $_GET['id'];
 
 // Perform the deletion
-mysqli_query($conn, "DELETE FROM pension WHERE PensionReason='$reason' AND PensionDate='$date'");
+mysqli_query($conn, "DELETE FROM event_master WHERE EventID='$id' AND EventType='Pension'");
 ?>
 
 <!-- Alert and Redirect -->

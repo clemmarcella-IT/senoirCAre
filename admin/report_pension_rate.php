@@ -47,25 +47,22 @@
                             include("../includes/db_connection.php");
 
                             // SQL Logic: Grouping by person to show lifetime totals per senior
-                            $query = mysqli_query($conn, "SELECT 
-                                    seniors.FirstName, 
-                                    seniors.LastName, 
-                                    COUNT(pension.PensionID) AS total_payouts,
-                                    SUM(CASE WHEN pension.PensionAttendanceStatus = 'claimed' THEN 1 ELSE 0 END) AS total_claimed
-                                FROM seniors
-                                LEFT JOIN pension ON seniors.OscaIDNo = pension.OscaIDNo
-                                GROUP BY seniors.OscaIDNo");
+                           $query = mysqli_query($conn, "SELECT seniors.FirstName, seniors.LastName,
+                            COUNT(event_attendance.AttendanceID) AS total_claimed FROM seniors 
+                            LEFT JOIN event_attendance ON seniors.OscaIDNo = event_attendance.OscaIDNo LEFT JOIN event_master 
+                           ON event_attendance.EventID = event_master.EventID 
+                           AND event_master.EventType = 'Pension' GROUP BY seniors.OscaIDNo");
 
                             $clem = 1; // Counter for the # column
 
                             while ($display = mysqli_fetch_array($query)) {
-                                $total = $display['total_payouts'];
+                                $total = $display['total_claimed'];
                                 $claimed = $display['total_claimed'];
                                 
                                 // Calculate Percentage
                                 if ($total > 0) {
-                                    $rate = ($claimed / $total) * 100;
-                                    $rate_display = round($rate, 2) . "%";
+                                    $rate = 100;
+                                    $rate_display = "100%";
                                 } else {
                                     $rate = 0;
                                     $rate_display = "0%";

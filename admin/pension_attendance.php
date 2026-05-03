@@ -1,27 +1,22 @@
 <?php 
 require_once('includes/session.php'); 
-$preason = $_GET['reason'];
-$pdate = $_GET['date'];
+$eid = $_GET['id'];
 
-$res = mysqli_query($conn, "SELECT * FROM pension WHERE PensionReason = '$preason' AND PensionDate = '$pdate' AND OscaIDNo IS NULL");
+$res = mysqli_query($conn, "SELECT em.EventID, em.EventName, em.EventDate, em.EventStatus, pd.CashAmount FROM event_master em LEFT JOIN pension_details pd ON em.EventID = pd.EventID WHERE em.EventID = '$eid' AND em.EventType = 'Pension'");
 $event = mysqli_fetch_array($res);
 if (!$event) {
-    $event =[
-        'PensionReason' => $preason,
-        'PensionDate' => $pdate,
-        'PensionCashAmount' => 0,
-        'PensionEventStatus' => 'Active'
-    ];
+    echo "<script>alert('Pension event not found.'); window.location='pension.php';</script>";
+    exit;
 }
 
-$isStopped = ($event['PensionEventStatus'] == 'Stopped');
+$isStopped = ($event['EventStatus'] == 'Stopped');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Pension Claim | <?php echo $event['PensionReason']; ?></title>
+    <title>Pension Claim | <?php echo $event['EventName']; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -38,8 +33,8 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
         <div class="container-fluid px-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-4 mb-4 gap-3">
                 <div>
-                    <h3 class="fw-bold text-success m-0"><?php echo $event['PensionReason']; ?></h3>
-                    <p class="text-muted mb-1"><?php echo date("M d, Y", strtotime($event['PensionDate'])); ?> | ₱<?php echo number_format($event['PensionCashAmount'], 2); ?></p>
+                    <h3 class="fw-bold text-success m-0"><?php echo $event['EventName']; ?></h3>
+                    <p class="text-muted mb-1"><?php echo date("M d, Y", strtotime($event['EventDate'])); ?> | ₱<?php echo number_format($event['CashAmount'], 2); ?></p>
                     <span class="badge <?php echo $isStopped ? 'bg-warning text-dark' : 'bg-success'; ?>">
                         <?php echo $isStopped ? 'PAUSED (LOCKED)' : 'ACTIVE DISTRIBUTION'; ?>
                     </span>
@@ -48,10 +43,10 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                     <a href="pension.php" class="btn btn-secondary shadow-sm">Back</a>
                     <button onclick="printTable()" class="btn btn-success shadow-sm"><i class="fa fa-print"></i> Print</button>
                     <?php if(!$isStopped): ?>
-                        <a href="query_toggle_pension.php?reason=<?php echo $preason; ?>&date=<?php echo $pdate; ?>&status=Stopped" 
+                        <a href="query_toggle_pension.php?id=<?php echo $event['EventID']; ?>&status=Stopped" 
                            class="btn btn-warning fw-bold shadow-sm" onclick="return confirm('Pause distribution?')">PAUSE</a>
                     <?php else: ?>
-                        <a href="query_toggle_pension.php?reason=<?php echo $preason; ?>&date=<?php echo $pdate; ?>&status=Active" 
+                        <a href="query_toggle_pension.php?id=<?php echo $event['EventID']; ?>&status=Active" 
                            class="btn btn-primary fw-bold shadow-sm" onclick="return confirm('Resume distribution?')">RESUME</a>
                     <?php endif; ?>
                     <button class="btn btn-danger fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#stopPermanentlyModal">STOP PERMANENTLY</button>
@@ -66,9 +61,8 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                             <div class="card-header bg-success text-white fw-bold text-center mb-3">Live QR Scanner</div>
                             <div id="reader"></div>
                             <form action="query_record_pension_attendance.php" method="POST" class="mt-3">
-                                <input type="hidden" name="preason" value="<?php echo $event['PensionReason']; ?>">
-                                <input type="hidden" name="pdate" value="<?php echo $event['PensionDate']; ?>">
-                                <input type="hidden" name="pamount" value="<?php echo $event['PensionCashAmount']; ?>">
+                                <input type="hidden" name="eid" value="<?php echo $event['EventID']; ?>">
+                                <input type="hidden" name="pamount" value="<?php echo $event['CashAmount']; ?>">
                                 <input type="text" name="oscaID" id="scanned_id" class="form-control text-center font-weight-bold text-primary mb-2" readonly placeholder="Waiting for Scan">
                                 <button type="submit" id="submitBtn" class="btn btn-success w-100 py-2 fw-bold" disabled>MARK AS CLAIMED</button>
                             </form>
@@ -88,86 +82,77 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                         <div class="card-header bg-dark text-white font-weight-bold">Pension Master List</div>
                         <div class="card-body">
                             <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle" id="datatablesSimple">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>PayoutNo.</th>
-                                        <th>OscaIDNo.</th>
-                                        <th>Name</th>
-                                        <th>Time Claimed</th>
-                                        <th>Status</th>
-                                        <th>Control No.</th>
-                                        <th>Reason</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                     <?php
-                                         $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, pension.pensionTimeRecieve, pension.PensionAttendanceStatus, pension.PensionReason, pension.ControlNo 
-                                                                      FROM seniors 
-                                                                      LEFT JOIN pension ON seniors.OscaIDNo = pension.OscaIDNo 
-                                                                      AND pension.PensionReason = '$preason' 
-                                                                      AND pension.PensionDate = '$pdate' 
-                                                                      WHERE seniors.CitizenStatus = 'active'
-                                                                      ORDER BY pension.pensionTimeRecieve DESC, seniors.LastName ASC");
-                                         
-                                         $counter = 1;
-                                         while($display = mysqli_fetch_array($clem)){
-                                            
-                                            // Handle status checking and assignments
-                                            $status = $display['PensionAttendanceStatus'];
-                                            $controlNo = $display['ControlNo'];
-                                            
-                                            if ($controlNo == "" || $controlNo == null) {
-                                                $displayControl = "-";
-                                                $modalControl = "";
-                                            } else {
-                                                $displayControl = $controlNo;
-                                                $modalControl = $controlNo;
-                                            }
+                            <table class="table table-bordered table-hover align-middle" id="datatablesSimple" width="100%" cellspacing="0">
+    <thead class="table-light">
+        <tr>
+            <th>PayoutNo.</th>
+            <th>OscaIDNo.</th>
+            <th>Name</th>
+            <th>Time Claimed</th>
+            <th>Status</th>
+            <th>Control No.</th>
+            <th>Reason</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+         <?php
+             $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, event_attendance.TimeIn, event_attendance.Status, event_attendance.Reason, event_attendance.ControlNo 
+                                          FROM seniors 
+                                          LEFT JOIN event_attendance ON seniors.OscaIDNo = event_attendance.OscaIDNo 
+                                          AND event_attendance.EventID = '$eid' 
+                                          WHERE seniors.CitizenStatus = 'active'
+                                          ORDER BY event_attendance.TimeIn DESC, seniors.LastName ASC");
+             
+             $counter = 1;
+             while($display = mysqli_fetch_array($clem)){
+                
+                $status = $display['Status'];
+                
+                if ($status == "Claimed") {
+                    $statusText = '<span class="badge bg-success">CLAIMED</span>';
+                    $time = date("h:i A", strtotime($display['TimeIn']));
+                    $reasonText = "-";
+                    $modalReason = ""; // Added for the modal
+                } else {
+                    $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
+                    $time = "-- : --";
+                    
+                    if ($display['Reason'] == "") {
+                        $reasonText = "-";
+                        $modalReason = ""; // Added for the modal
+                    } else {
+                        $reasonText = $display['Reason'];
+                        $modalReason = $display['Reason']; // Added for the modal
+                    }
+                }
 
-                                            if ($status == 'Claimed' || $status == 'claimed') {
-                                                $statusText = '<span class="badge bg-success">CLAIMED</span>';
-                                                
-                                                $pensionTime = $display['pensionTimeRecieve'];
-                                                if ($pensionTime != "" && $pensionTime != null) {
-                                                    $time = date("h:i A", strtotime($pensionTime));
-                                                } else {
-                                                    $time = '-- : --';
-                                                }
-                                                
-                                                $reasonText = "";
-                                                $modalReason = "";
-                                            } else if ($status != "" && $status != "Unclaimed" && $status != null) {
-                                                $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
-                                                $time = '-- : --';
-                                                $reasonText = $status; // Show typed reason here
-                                                $modalReason = $status;
-                                            } else {
-                                                $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
-                                                $time = '-- : --';
-                                                $reasonText = "";
-                                                $modalReason = "";
-                                            }
-                                            ?>
-                                            <tr>
-                                                <td class="text-muted fw-bold"><?php echo $counter++; ?>.</td>
-                                                <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
-                                                <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                                <td><?php echo $time; ?></td>
-                                                <td><?php echo $statusText; ?></td>
-                                                <td class="fw-bold text-primary"><?php echo $displayControl; ?></td>
-                                                <td class="fw-bold text-danger"><?php echo $reasonText; ?></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reasonModal_<?php echo $display['OscaIDNo']; ?>">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                    <?php include("includes/pension_reason_modal.php"); ?>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                </tbody>
-                            </table>
+                if ($display['ControlNo'] == "") {
+                    $controlText = "-";
+                    $modalControl = ""; // Added for the modal
+                } else {
+                    $controlText = $display['ControlNo'];
+                    $modalControl = $display['ControlNo']; // Added for the modal
+                }
+                ?>
+                <tr>
+                    <td class="text-muted fw-bold"><?php echo $counter++; ?>.</td>
+                    <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
+                    <td><?php echo $display['LastName']; ?>, <?php echo $display['FirstName']; ?></td>
+                    <td><?php echo $time; ?></td>
+                    <td><?php echo $statusText; ?></td>
+                    <td class="fw-bold text-primary"><?php echo $controlText; ?></td>
+                    <td class="fw-bold text-danger"><?php echo $reasonText; ?></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reasonModal_<?php echo $display['OscaIDNo']; ?>">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <?php include("includes/pension_reason_modal.php"); ?>
+                    </td>
+                </tr>
+            <?php } ?>
+    </tbody>
+</table>
                             </div>
                         </div>
                     </div>
@@ -190,9 +175,7 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
                             
                             <form action="query_stop_pension.php" method="POST">
                                 <!-- Hidden context inputs -->
-                                <input type="hidden" name="preason" value="<?php echo $event['PensionReason']; ?>">
-                                <input type="hidden" name="pdate" value="<?php echo $event['PensionDate']; ?>">
-                                <input type="hidden" name="pamount" value="<?php echo $event['PensionCashAmount']; ?>">
+                                <input type="hidden" name="id" value="<?php echo $event['EventID']; ?>">
                                 
                                 <div class="d-grid gap-2 mt-3">
                                     <button type="submit" class="btn btn-danger fw-bold">Confirm & Stop</button>
@@ -217,7 +200,7 @@ $isStopped = ($event['PensionEventStatus'] == 'Stopped');
         var table = document.getElementById("datatablesSimple");
         var newWindow = window.open("", "", "width=800,height=600");
         newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
-        newWindow.document.write("<h3 class='text-center'>Pension: <?php echo $event['PensionReason']; ?></h3>");
+        newWindow.document.write("<h3 class='text-center'>Pension: <?php echo $event['EventName']; ?></h3>");
         newWindow.document.write(table.outerHTML);
         newWindow.document.close();
         setTimeout(() => { 

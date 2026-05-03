@@ -10,19 +10,18 @@
                 <div class="modal-body">
                     <!-- Hidden inputs to identify the correct record -->
                     <input type="hidden" name="oscaID" value="<?php echo $display['OscaIDNo']; ?>">
-                    <input type="hidden" name="preason" value="<?php echo $preason; ?>">
-                    <input type="hidden" name="pdate" value="<?php echo $pdate; ?>">
+                    <input type="hidden" name="eid" value="<?php echo $eid; ?>">
                     
-                    <!-- Field 1: Control No. (Now allows any number, not just 0-9) -->
+                    <!-- Field 1: Control No. (Event-level control number) -->
                     <div class="mb-3">
                         <label class="small fw-bold text-muted">Control No.:</label>
-                        <input type="number" name="new_control" class="form-control card shadow border border-1 border-black" placeholder="Enter number" value="<?php echo $modalControl; ?>">
+                        <input type="text" name="new_control" class="form-control card shadow border border-1 border-black" placeholder="Enter control number" value="<?php echo $modalControl; ?>">
                     </div>
 
-                    <!-- Field 2: Absence Reason -->
+                    <!-- Field 2: Claim Status -->
                     <div class="mb-3">
-                        <label class="small fw-bold text-muted">Absence Reason:</label>
-                        <input type="text" name="new_reason" class="form-control card shadow border border-1 border-black" placeholder="e.g. Bedridden" value="<?php echo $modalReason; ?>">
+                        <label class="small fw-bold text-muted">Reason for Absence:</label>
+                        <input type="text" name="new_reason" class="form-control card shadow border border-1 border-black" placeholder="e.g. Bedridden, Deceased" value="<?php echo $modalReason; ?>">
                     </div>
                 </div>
                 <div class="modal-footer">

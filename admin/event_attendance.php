@@ -1,13 +1,11 @@
 <?php 
 require_once('includes/session.php'); 
 $eid = $_GET['id'];
-$res = mysqli_query($conn, "SELECT * FROM events WHERE EventID = '$eid'");
+$res = mysqli_query($conn, "SELECT * FROM event_master WHERE EventID = '$eid'");
 $event = mysqli_fetch_array($res);
 if (!$event) {
-    $event = [
-        'EventName' => 'Unknown Event',
-        'EventStatus' => 'Active'
-    ];
+    echo "<script>alert('Event not found.'); window.location='events.php';</script>";
+    exit;
 }
 
 $isStopped = ($event['EventStatus'] == 'Stopped');
@@ -93,16 +91,16 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
                             <?php
                             // THE JOIN logic matches your borrow transactions template
                             $list = mysqli_query($conn, "SELECT *
-                                                        FROM attendance 
-                                                        inner JOIN seniors ON seniors.OscaIDNo = attendance.OscaIDNo 
-                                                        WHERE attendance.EventID = '$eid'
-                                                        ORDER BY attendance.attendanceTimeIn DESC");
+                                                        FROM event_attendance 
+                                                        INNER JOIN seniors ON seniors.OscaIDNo = event_attendance.OscaIDNo 
+                                                        WHERE event_attendance.EventID = '$eid'
+                                                        ORDER BY event_attendance.TimeIn DESC");
                             while($display = mysqli_fetch_array($list)){
                             ?>
                             <tr>
                                 <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
                                 <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                <td><?php echo date("h:i A", strtotime($display['attendanceTimeIn'])); ?></td>
+                                <td><?php echo date("h:i A", strtotime($display['TimeIn'])); ?></td>
                                 <td><span class="text-success fw-bold">PRESENT</span></td>
                             </tr>
                             <?php } ?>

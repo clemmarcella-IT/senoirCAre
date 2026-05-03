@@ -54,38 +54,39 @@
                                 </tr>
                             </thead>
                            <tbody>
-    <?php
-    $query = mysqli_query($conn, "SELECT * FROM events ORDER BY eventDate DESC");
-    while ($display = mysqli_fetch_array($query)) {
-        $eid = $display['EventID'];
-    ?>
-    <tr>
-        <td class="fw-bold"><?php echo $display['EventName']; ?></td>
-        <td><?php echo date("M d, Y", strtotime($display['eventDate'])); ?></td>
-        <td><?php echo date("h:i A", strtotime($display['EventTime'])); ?></td>
-        <td>
-            <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
-                <?php echo $display['EventStatus']; ?>
-            </span>
-        </td>
-        <td>
-            <div class="btn-group">
-                <a href="event_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info" title="Attendance">
-                    <i class="fa fa-qrcode"></i>
-                </a>
-                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_event_<?php echo $eid; ?>">
-                    <i class="fa fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_event_<?php echo $eid; ?>">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
-            
-            <!-- THE FIX: INCLUDE IS NOW INSIDE THE TD TAG -->
-            <?php include("includes/event_modals.php"); ?>
-        </td>
-    </tr>
-    <?php } ?>
+<?php
+// 1. Corrected SQL column names to match your DB (EventDate, EventTime)
+$query = mysqli_query($conn, "SELECT EventID, EventName, EventDate, EventTime, EventStatus 
+                             FROM event_master 
+                             WHERE EventType = 'Activity' 
+                             ORDER BY EventDate DESC");
+
+while ($display = mysqli_fetch_array($query)) {
+    $eid = $display['EventID']; 
+    $ename = $display['EventName'];
+?>
+<tr>
+    <td><?php echo $ename; ?></td>
+    <td><?php echo $display['EventDate']; ?></td>
+    <td><?php echo $display['EventTime']; ?></td>
+    <td><?php echo $display['EventStatus']; ?></td>
+    <td>
+        <div class="btn-group">
+            <a href="event_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info">
+                <i class="fa fa-qrcode"></i>
+            </a>
+            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_event_<?php echo $eid; ?>">
+                <i class="fa fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_event_<?php echo $eid; ?>">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+    </td>
+    <!-- THE FIX: The Modal include is now OUTSIDE the <td> but INSIDE the <tr> -->
+    <?php include("includes/event_modals.php"); ?>
+</tr>
+<?php } ?>
 </tbody>
                         </table>
                         </div>
@@ -94,7 +95,7 @@
             </div>
         </main>
 
-    <!-- MODAL: ADD EVENT -->
+    <!-- MODAL: ADD EVENT (Remains the same) -->
     <div class="modal fade" id="addEventModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

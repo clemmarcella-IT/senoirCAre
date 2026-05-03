@@ -1,9 +1,9 @@
 <?php
 include("../includes/db_connection.php");
 
-$name = $_GET['name'];
-$date = $_GET['date'];
+$id = $_GET['id'];
 
-mysqli_query($conn, "UPDATE healthrecords SET HealthEventStatus='Stopped' WHERE HealthName='$name' AND HealthDate='$date'");
-header("location:health_attendance.php?name=$name&date=$date");
+mysqli_query($conn, "UPDATE event_master SET EventStatus='Stopped' WHERE EventID='$id' AND EventType='Health'");
+
+header("location:health_attendance.php?id=$id");
 ?>

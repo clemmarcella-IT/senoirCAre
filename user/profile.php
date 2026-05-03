@@ -1,10 +1,13 @@
 <?php
 include("../includes/db_connection.php");
 
-if (!isset($_GET['id'])) { header("Location: login.php"); exit; }
-
 $id = $_GET['id'];
-$res = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo = '$id'");
+
+// Simple JOIN to get data from BOTH seniors and senior_documents tables
+$res = mysqli_query($conn, "SELECT seniors.*, senior_documents.ProfilePicture, senior_documents.SignaturePicture, senior_documents.ThumbmarkPicture 
+                            FROM seniors 
+                            LEFT JOIN senior_documents ON seniors.OscaIDNo = senior_documents.OscaIDNo 
+                            WHERE seniors.OscaIDNo = '$id'");
 $row = mysqli_fetch_array($res);
 
 if (!$row) { header("Location: login.php"); exit; }
@@ -53,18 +56,16 @@ if ($currentMonth < $birthMonth) {
     <div class="row justify-content-center">
         <div class="col-xl-11">
             
-            <!-- THE PROFILE CARD (The part that will be printed) -->
             <div class="profile-card" id="profileCard">
                 <div class="row g-0">
                     <!-- LEFT SIDE: PHOTO & QR -->
                     <div class="col-md-4 id-side">
-                       <img src="../uploads/<?php echo $row['Picture']; ?>" class="display-pic">
+                       <img src="../uploads/<?php echo $row['ProfilePicture']; ?>" class="display-pic">
                         <h5 class="fw-bold mb-0"><?php echo $row['FirstName']; ?></h5>
                         <p class="small opacity-75 mb-3">OscaIDNo. <?php echo $id; ?></p>
                         
                         <div id="qrcode-target"></div>
                         
-                        <!-- NEW PRINT QR BUTTON -->
                         <div class="mt-4 no-print">
                             <button onclick="printQRCodeOnly()" class="btn btn-sm btn-light fw-bold shadow-sm">
                                 <i class="fa fa-print me-1"></i> Print QR Only
@@ -76,7 +77,13 @@ if ($currentMonth < $birthMonth) {
                     <div class="col-md-8 data-side d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="section-title">Official Registry Details</span>
-                            <?php $statusClass = ($row['CitizenStatus'] == 'inactive') ? 'bg-danger' : 'bg-success'; ?>
+                            <?php 
+                            if ($row['CitizenStatus'] == 'inactive') {
+                                $statusClass = 'bg-danger';
+                            } else {
+                                $statusClass = 'bg-success';
+                            }
+                            ?>
                             <span class="badge <?php echo $statusClass; ?> no-print px-3"><?php echo $row['CitizenStatus']; ?></span>
                         </div>
 
@@ -87,7 +94,7 @@ if ($currentMonth < $birthMonth) {
                             </div>
                             <div class="col-12">
                                 <label class="label-tag">Full Legal Name</label>
-                                <div class="data-box fs-5 text-uppercase"><?php echo $row['LastName'].", ".$row['FirstName']." ".$row['MiddleName']; ?></div>
+                                <div class="data-box fs-5 text-uppercase"><?php echo $row['LastName']; ?>, <?php echo $row['FirstName']; ?> <?php echo $row['MiddleName']; ?></div>
                             </div>
                             <div class="col-md-4 col-4">
                                 <label class="label-tag">Sex</label>
@@ -103,7 +110,7 @@ if ($currentMonth < $birthMonth) {
                             </div>
                             <div class="col-12">
                                 <label class="label-tag">Permanent Address</label>
-                                <div class="data-box"><?php echo $row['Purok'].", ".$row['Barangay']; ?></div>
+                                <div class="data-box"><?php echo $row['Purok']; ?>, <?php echo $row['Barangay']; ?></div>
                             </div>
                         </div>
 
@@ -122,7 +129,7 @@ if ($currentMonth < $birthMonth) {
                             <div class="col-6">
                                 <label class="small text-muted fw-bold mb-2">THUMBMARK (Click to view)</label>
                                 <div class="d-flex justify-content-center gap-2">
-                                    <img src="../uploads/<?php echo $row['thumbNailPicture']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+                                    <img src="../uploads/<?php echo $row['ThumbmarkPicture']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
                                 </div>
                             </div>
                             
@@ -132,7 +139,7 @@ if ($currentMonth < $birthMonth) {
                              Generated: <?php echo date("M d, Y h:i A", strtotime($row['GenerateDate'])); ?>
                         </div>
 
-                        <!-- ACTIONS (Hidden during print) -->
+                        <!-- ACTIONS -->
                         <div class="mt-4 d-flex gap-2 no-print">
                             <button onclick="printCitizenRecord()" class="btn btn-forest flex-grow-1 py-2 shadow-sm">
                                 <i class="fa fa-print me-2"></i> PRINT FULL PROFILE
@@ -141,7 +148,7 @@ if ($currentMonth < $birthMonth) {
                         </div>
                     </div>
                 </div>
-            </div> <!-- End profileCard -->
+            </div> 
 
         </div>
     </div>
@@ -375,7 +382,6 @@ function printCitizenRecord() {
         <div class="form-title">SENIOR CITIZEN ID INFORMATION FORM</div>
         
         <div class="top-section">
-            <!-- LEFT SIDE: Text Fields -->
             <div class="info-fields">
                 <div class="field-row">
                     <div class="label"><span>OSCA ID NO.</span><span>:</span></div>
@@ -395,7 +401,7 @@ function printCitizenRecord() {
                 </div>
                 <div class="field-row">
                     <div class="label"><span>ADDRESS/Tirahan</span><span>:</span></div>
-                    <div class="value-line"><?php echo $row['Purok'].", ".$row['Barangay']; ?></div>
+                    <div class="value-line"><?php echo $row['Purok']; ?>, <?php echo $row['Barangay']; ?></div>
                 </div>
                 
                 <div class="field-row">
@@ -409,22 +415,21 @@ function printCitizenRecord() {
                     <div class="label"><span>SEX/Kasarian</span><span>:</span></div>
                     <div style="flex: 1; display:flex; gap: 30px; margin-left: 10px;">
                         <div class="checkbox-container">
-                            <div class="checkbox"><?php echo ($row['Sex'] == 'Male') ? '&#10003;' : ''; ?></div>
+                            <div class="checkbox"><?php if($row['Sex'] == 'Male') { echo '&#10003;'; } else { echo ''; } ?></div>
                             <span>Male</span>
                         </div>
                         <div class="checkbox-container">
-                            <div class="checkbox"><?php echo ($row['Sex'] == 'Female') ? '&#10003;' : ''; ?></div>
+                            <div class="checkbox"><?php if($row['Sex'] == 'Female') { echo '&#10003;'; } else { echo ''; } ?></div>
                             <span>Female</span>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- RIGHT SIDE: Picture Box -->
             <div class="picture-box">
                 <div class="inner-pic-box">
-                    <?php if ($row['Picture'] != '') { ?>
-                        <img src="../uploads/<?php echo $row['Picture']; ?>">
+                    <?php if ($row['ProfilePicture'] != "") { ?>
+                        <img src="../uploads/<?php echo $row['ProfilePicture']; ?>">
                     <?php } else { ?>
                         2X2 ID<br>PICTURE
                     <?php } ?>
@@ -432,7 +437,6 @@ function printCitizenRecord() {
             </div>
         </div>
 
-        <!-- THE SIGNATURE/THUMBMARK TABLE -->
         <table class="sig-table">
             <tr>
                 <th>SIGNATURE</th>
@@ -441,48 +445,47 @@ function printCitizenRecord() {
             <!-- ROW 1 -->
             <tr>
                 <td>
-                    <?php if ($row['SignaturePicture'] != '') { ?>
+                    <?php if ($row['SignaturePicture'] != "") { ?>
                         <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
                 <td>
-                    <?php if ($row['thumbNailPicture'] != '') { ?>
-                        <img src="../uploads/<?php echo $row['thumbNailPicture']; ?>" class="sig-img">
+                    <?php if ($row['ThumbmarkPicture'] != "") { ?>
+                        <img src="../uploads/<?php echo $row['ThumbmarkPicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
             </tr>
             <!-- ROW 2 -->
             <tr>
                 <td>
-                    <?php if ($row['SignaturePicture'] != '') { ?>
+                    <?php if ($row['SignaturePicture'] != "") { ?>
                         <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
                 <td>
-                    <?php if ($row['thumbNailPicture'] != '') { ?>
-                        <img src="../uploads/<?php echo $row['thumbNailPicture']; ?>" class="sig-img">
+                    <?php if ($row['ThumbmarkPicture'] != "") { ?>
+                        <img src="../uploads/<?php echo $row['ThumbmarkPicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
             </tr>
             <!-- ROW 3 -->
             <tr>
                 <td>
-                    <?php if ($row['SignaturePicture'] != '') { ?>
+                    <?php if ($row['SignaturePicture'] != "") { ?>
                         <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
                 <td>
-                    <?php if ($row['thumbNailPicture'] != '') { ?>
-                        <img src="../uploads/<?php echo $row['thumbNailPicture']; ?>" class="sig-img">
+                    <?php if ($row['ThumbmarkPicture'] != "") { ?>
+                        <img src="../uploads/<?php echo $row['ThumbmarkPicture']; ?>" class="sig-img">
                     <?php } ?>
                 </td>
             </tr>
         </table>
 
-        <!-- FOOTER -->
         <div class="footer">
             <div class="footer-sig">
-                <div class="footer-line" style="text-transform: uppercase;"><?php echo $row['FirstName'] . " " . $row['MiddleName'] . " " . $row['LastName']; ?></div>
+                <div class="footer-line" style="text-transform: uppercase;"><?php echo $row['FirstName']; ?> <?php echo $row['MiddleName']; ?> <?php echo $row['LastName']; ?></div>
                 <div>Senior Citizen</div>
             </div>
             <div class="footer-sig">

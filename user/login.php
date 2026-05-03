@@ -1,30 +1,39 @@
 <?php
 include("../includes/db_connection.php");
 
-// Fetch the Admin Contact Number
+// Fetch the Admin Contact Number to display on the screen
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
 $row_admin = mysqli_fetch_array($q_admin);
 $admin_contact = $row_admin['ContactNumber'];
 
-// Handle Login Logic
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// Handle Login Button Click
+if (isset($_POST['login_btn'])) {
+    
     $id = $_POST['login_osca'];
     
+    // Search the database for the Senior ID
     $res = mysqli_query($conn, "SELECT OscaIDNo, ApprovalStatus FROM seniors WHERE OscaIDNo = '$id'");
     $row = mysqli_fetch_array($res);
     
     if ($row) {
-        if ($row['ApprovalStatus'] == 'pending') {
+        // If account exists, check the approval status
+        $status = $row['ApprovalStatus'];
+
+        if ($status == 'pending') {
             echo "<script>alert('Your registration is still pending admin approval. Please wait.'); window.location='login.php';</script>";
-            exit;
-        } else if ($row['ApprovalStatus'] == 'rejected') {
+        } 
+        else if ($status == 'rejected') {
+            // Delete the rejected data so they can try to register again
             mysqli_query($conn, "DELETE FROM seniors WHERE OscaIDNo = '$id'");
-            echo "<script>alert('Sorry, your registration was rejected by the admin for reasons of error of filling up the form or wrong information. Please make another try to fill up the form correctly.'); window.location='register.php';</script>";
-            exit;
+            echo "<script>alert('Sorry, your registration was rejected due to incorrect information. Please try registering again.'); window.location='register.php';</script>";
+        } 
+        else {
+            // If approved, send them directly to their profile
+            header("Location: profile.php?id=$id");
         }
-        header("Location: profile.php?id=$id");
-        exit;
+
     } else {
+        // If ID does not exist
         echo "<script>alert('Error: OscaIDNo. $id not found in our records.'); window.location='login.php';</script>";
     }
 }
@@ -35,14 +44,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Login | SENIOR-CARE</title>
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom Style -->
-   <link rel="stylesheet" href="css/userStyle.css">
+    <link rel="stylesheet" href="css/userStyle.css">
 </head>
 <body>
 
-    <!-- Simple Navigation Bar -->
+    <!-- Top Navigation Bar -->
     <div class="navbar-custom d-flex flex-column text-center" style="height: auto; padding: 15px 0;">
         <div>SENIOR-CARE MANAGEMENT SYSTEM</div>
         <div style="font-size: 0.85rem; font-weight: normal; margin-top: 5px; opacity: 0.9;">
@@ -63,15 +70,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <form action="login.php" method="POST">
                         <div class="mb-4">
                             <label class="fw-bold small mb-2">OscaIDNo.</label>
-                            <input type="text" 
-                                   name="login_osca" 
-                                   class="form-control form-control-lg" 
-                                   placeholder="Digits only (e.g. 001)" 
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
-                                   required>
+                            <input type="text" name="login_osca" class="form-control form-control-lg" placeholder="Digits only (e.g. 001)" required>
                         </div>
 
-                        <button type="submit" class="btn btn-forest w-100 py-2 mb-3">
+                        <button type="submit" name="login_btn" class="btn btn-forest w-100 py-2 mb-3">
                             VIEW PROFILE & QR
                         </button>
 

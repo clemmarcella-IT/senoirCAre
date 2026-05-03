@@ -1,20 +1,20 @@
 <!-- EDIT HEALTH MODAL -->
-<div class="modal fade" id="edit_health_<?php echo $uniqueID; ?>" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="edit_health_<?php echo $eid; ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title fw-bold">Update Health Event</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="query_edit_health_event.php?old_name=<?php echo $hname; ?>&old_date=<?php echo $hdate; ?>">
+            <form method="POST" action="query_edit_health_event.php?id=<?php echo $eid; ?>">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="small fw-bold">Event Name</label>
-                        <input type="text" name="hname" class="form-control card shadow border border-1 border-black" value="<?php echo $display['HealthName']; ?>" required>
+                        <input type="text" name="hname" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventName']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Date</label>
-                        <input type="date" name="hdate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['HealthDate']; ?>" required>
+                        <input type="date" name="hdate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['EventDate']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Purpose</label>
@@ -36,7 +36,7 @@
 </div>
 
 <!-- DELETE HEALTH MODAL -->
-<div class="modal fade" id="del_health_<?php echo $uniqueID; ?>" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="del_health_<?php echo $eid; ?>" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0">
             <div class="modal-header bg-danger text-white">
@@ -45,12 +45,12 @@
             </div>
             <div class="modal-body text-center p-4">
                 <p>Are you sure you want to delete this event?</p>
-                <h4 class="fw-bold"><?php echo $display['HealthName']; ?></h4>
+                <h4 class="fw-bold"><?php echo $display['EventName']; ?></h4>
                 <p class="text-danger small">This will delete all scanned records for this health activity.</p>
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="query_delete_health_event.php?name=<?php echo $hname; ?>&date=<?php echo $hdate; ?>" class="btn btn-danger px-4">Yes, Delete</a>
+                <a href="query_delete_health_event.php?id=<?php echo $eid; ?>" class="btn btn-danger px-4">Yes, Delete</a>
             </div>
         </div>
     </div>

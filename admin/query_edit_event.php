@@ -5,7 +5,7 @@ $ename = $_POST['ename'];
 $edate = $_POST['edate'];
 $etime = $_POST['etime'];
 
-mysqli_query($conn, "UPDATE events SET EventName='$ename', eventDate='$edate', EventTime='$etime' WHERE EventID='$id'");
+mysqli_query($conn, "UPDATE event_master SET EventName='$ename', EventDate='$edate', EventTime='$etime' WHERE EventID='$id' AND EventType='Activity'");
 ?>
 <script>
     window.alert('Event Activity updated successfully!');

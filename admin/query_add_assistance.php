@@ -4,8 +4,8 @@ $name = $_POST['aname'];
 $date = $_POST['adate']; 
 $type = $_POST['atype'];
 
-mysqli_query($conn, "INSERT INTO assistance (OscaIDNo, AssistanceName, TypeAssistance, AssistanceDate, AssistanceEventStatus) 
-VALUES (NULL, '$name', '$type', '$date', 'Active')");
+mysqli_query($conn, "INSERT INTO event_master (EventName, EventDate, EventType, EventStatus) 
+VALUES ('$name', '$date', 'Assistance', 'Active')");
 ?>
 <script>
     window.alert('Assistance Record added successfully!');

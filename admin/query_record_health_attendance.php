@@ -2,21 +2,19 @@
 include("../includes/db_connection.php");
 
 $id = $_POST['oscaID']; 
-$hname = $_POST['hname']; 
-$hdate = $_POST['hdate']; 
-$hpurpose = $_POST['hpurpose'];
+$eid = $_POST['eid'];
 $time = date('H:i:s');
 
-// Use mysqli_fetch_array to check for duplicate
-$check = mysqli_query($conn, "SELECT * FROM healthrecords WHERE OscaIDNo='$id' AND HealthName='$hname' AND HealthDate='$hdate'");
+// Check if already marked present
+$check = mysqli_query($conn, "SELECT * FROM event_attendance WHERE OscaIDNo='$id' AND EventID='$eid'");
 $row = mysqli_fetch_array($check);
 
 if($row) {
     echo "<script>alert('Duplicate: Already marked as present.'); window.history.back();</script>";
 } else {
-    mysqli_query($conn, "INSERT INTO healthrecords (OscaIDNo, HealthName, HealthDate, HealthPurpose, HealthAttendanceStatus, HealthTimeIn, HealthEventStatus) 
-    VALUES ('$id', '$hname', '$hdate', '$hpurpose', 'present', '$time', 'Active')");
+    mysqli_query($conn, "INSERT INTO event_attendance (EventID, OscaIDNo, TimeIn, Status) 
+    VALUES ('$eid', '$id', '$time', 'Claimed')");
     
-    header("location:health_attendance.php?name=$hname&date=$hdate");
+    header("location:health_attendance.php?id=$eid");
 }
 ?>

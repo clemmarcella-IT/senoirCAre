@@ -1,20 +1,15 @@
 <?php 
 require_once('includes/session.php'); 
-$aname = $_GET['name'];
-$adate = $_GET['date'];
+$eid = $_GET['id'];
 
-$res = mysqli_query($conn, "SELECT * FROM assistance WHERE AssistanceName = '$aname' AND AssistanceDate = '$adate' AND OscaIDNo IS NULL");
+$res = mysqli_query($conn, "SELECT * FROM event_master WHERE EventID = '$eid'");
 $event = mysqli_fetch_array($res);
 if (!$event) {
-    $event = [
-        'AssistanceName' => $aname,
-        'TypeAssistance' => 'Unknown',
-        'AssistanceDate' => $adate,
-        'AssistanceEventStatus' => 'Active'
-    ];
+    echo "<script>alert('Event not found.'); window.location='assistance.php';</script>";
+    exit;
 }
 
-$isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
+$isStopped = ($event['EventStatus'] == 'Stopped');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +17,7 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Assistance Distribution | <?php echo $event['AssistanceName']; ?></title>
+    <title>Assistance Distribution | <?php echo $event['EventName']; ?></title>
     
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -41,8 +36,8 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
         <div class="container-fluid px-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-4 mb-4 gap-3">
                 <div>
-                    <h3 class="fw-bold text-success m-0"><?php echo $event['AssistanceName']; ?></h3>
-                    <p class="text-muted mb-1"><?php echo $event['TypeAssistance']; ?> | <?php echo date("M d, Y", strtotime($adate)); ?></p>
+                    <h3 class="fw-bold text-success m-0"><?php echo $event['EventName']; ?></h3>
+                    <p class="text-muted mb-1"><?php echo $event['EventType']; ?> | <?php echo date("M d, Y", strtotime($event['EventDate'])); ?></p>
                     <span class="badge <?php echo $isStopped ? 'bg-warning text-dark' : 'bg-success'; ?>">
                         <?php echo $isStopped ? 'PAUSED (LOCKED)' : 'ACTIVE DISTRIBUTION'; ?>
                     </span>
@@ -53,12 +48,12 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
                     
                     <!-- THE FIX: PAUSE AND RESUME TOGGLE BUTTONS -->
                     <?php if(!$isStopped): ?>
-                        <a href="query_toggle_assistance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>&status=Stopped" 
+                        <a href="query_toggle_assistance.php?id=<?php echo $event['EventID']; ?>&status=Stopped" 
                            class="btn btn-warning fw-bold shadow-sm w-100" onclick="return confirm('Pause distribution for now?')">
                            <i class="fa fa-pause"></i> PAUSE
                         </a>
                     <?php else: ?>
-                        <a href="query_toggle_assistance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>&status=Active" 
+                        <a href="query_toggle_assistance.php?id=<?php echo $event['EventID']; ?>&status=Active" 
                            class="btn btn-primary fw-bold shadow-sm w-100" onclick="return confirm('Resume distribution for late office claims?')">
                            <i class="fa fa-play"></i> RESUME
                         </a>
@@ -74,9 +69,7 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
                 <div class="card p-3 shadow-sm border-0">
                     <div id="reader"></div>
                     <form action="query_record_assistance_attendance.php" method="POST" class="mt-3">
-                        <input type="hidden" name="aname" value="<?php echo $event['AssistanceName']; ?>">
-                        <input type="hidden" name="adate" value="<?php echo $event['AssistanceDate']; ?>">
-                        <input type="hidden" name="atype" value="<?php echo $event['TypeAssistance']; ?>">
+                        <input type="hidden" name="eid" value="<?php echo $event['EventID']; ?>">
                         <input type="text" name="oscaID" id="scanned_id" class="form-control text-center font-weight-bold text-primary mb-2" readonly placeholder="Waiting for Scan">
                         <button type="submit" id="submitBtn" class="btn btn-success w-100 py-2 fw-bold" disabled>MARK AS CLAIMED</button>
                     </form>
@@ -105,36 +98,49 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                             <?php
-                                 $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, assistance.AssistanceTimeIn 
-                                                              FROM seniors 
-                                                              LEFT JOIN assistance ON seniors.OscaIDNo = assistance.OscaIDNo 
-                                                              AND assistance.AssistanceName = '$aname' 
-                                                              AND assistance.AssistanceDate = '$adate' 
-                                                              WHERE seniors.CitizenStatus = 'active'
-                                                              ORDER BY assistance.AssistanceTimeIn DESC, seniors.LastName ASC");
-                                 
-                                while($display = mysqli_fetch_array($clem)){
-                                    
-                                    if ($display['AssistanceTimeIn'] != NULL) {
-                                        $status = '<span class="badge bg-success">CLAIMED</span>';
-                                        $time = date("h:i A", strtotime($display['AssistanceTimeIn']));
-                                    } else {
-                                        $status = '<span class="badge bg-danger">UNCLAIMED</span>';
-                                        $time = '-- : --';
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
-                                        <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                        <td><?php echo $time; ?></td>
-                                        <td><?php echo $status; ?></td>
-                                    </tr>
-                                <?php
-                                }
-                                ?>
-                        </tbody>
+                        <?php 
+require_once('includes/session.php'); 
+
+// NEW LOGIC: We only need the EventID from the URL
+$eid = $_GET['id'];
+
+// Get the Event details from the master table
+$res = mysqli_query($conn, "SELECT * FROM event_master WHERE EventID = '$eid'");
+$event = mysqli_fetch_array($res);
+
+if (!$event) {
+    echo "<script>alert('Event not found.'); window.location='assistance.php';</script>";
+    exit;
+}
+
+$isStopped = ($event['EventStatus'] == 'Stopped');
+?>
+
+<!-- ... (Keep the same HTML/CSS Layout) ... -->
+
+<!-- Inside the RIGHT COLUMN (The Master List) -->
+<tbody>
+    <?php
+    // NEW LOGIC: JOIN the attendance table with the seniors table.
+    // This gets the names of people who actually showed up for THIS specific EventID.
+    $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, event_attendance.TimeIn 
+                                 FROM event_attendance 
+                                 INNER JOIN seniors ON seniors.OscaIDNo = event_attendance.OscaIDNo 
+                                 WHERE event_attendance.EventID = '$eid'
+                                 ORDER BY event_attendance.TimeIn DESC");
+    
+    while($display = mysqli_fetch_array($clem)){
+        $status = '<span class="badge bg-success">CLAIMED</span>';
+        $time = date("h:i A", strtotime($display['TimeIn']));
+    ?>
+    <tr>
+        <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
+        <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
+        <td><?php echo $time; ?></td>
+        <td><?php echo $status; ?></td>
+    </tr>
+    <?php } ?>
+</tbody>
                     </table>
                     </div>
                 </div>
@@ -157,7 +163,7 @@ $isStopped = ($event['AssistanceEventStatus'] == 'Stopped');
         var table = document.getElementById("datatablesSimple");
         var newWindow = window.open("", "", "width=800,height=600");
         newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
-        newWindow.document.write("<h3 class='text-center'>Assistance: <?php echo $event['AssistanceName']; ?></h3>");
+        newWindow.document.write("<h3 class='text-center'>Assistance: <?php echo $event['EventName']; ?></h3>");
         if (table) {
             newWindow.document.write(table.outerHTML);
         } else {

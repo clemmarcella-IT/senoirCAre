@@ -53,37 +53,41 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                       <tbody>
+                       <!-- Inside the <tbody> of assistance.php -->
+<tbody>
     <?php
-    $query = mysqli_query($conn, "SELECT DISTINCT AssistanceName, AssistanceDate, TypeAssistance, AssistanceEventStatus FROM assistance WHERE OscaIDNo IS NULL ORDER BY AssistanceDate DESC");
+    // NEW LOGIC: We query the event_master table directly. 
+    // It is already "clean" so we don't need DISTINCT.
+    $query = mysqli_query($conn, "SELECT EventID, EventName, EventDate, EventType, EventStatus FROM event_master WHERE EventType = 'Assistance' ORDER BY EventDate DESC");
+    
     while ($display = mysqli_fetch_array($query)) {
-        $aname = $display['AssistanceName'];
-        $adate = $display['AssistanceDate'];
-        $uniqueID = md5($aname . $adate);
+        $eid = $display['EventID']; // This is the real ID
+        $ename = $display['EventName'];
+        $edate = $display['EventDate'];
     ?>
     <tr>
-        <td class="fw-bold"><?php echo $display['AssistanceName']; ?></td>
-        <td><?php echo $display['TypeAssistance']; ?></td>
-        <td><?php echo date("M d, Y", strtotime($display['AssistanceDate'])); ?></td>
+        <td class="fw-bold"><?php echo $ename; ?></td>
+        <td><?php echo $display['EventType']; ?></td>
+        <td><?php echo date("M d, Y", strtotime($edate)); ?></td>
         <td>
-            <span class="badge <?php echo ($display['AssistanceEventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
-                <?php echo $display['AssistanceEventStatus']; ?>
+            <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
+                <?php echo $display['EventStatus']; ?>
             </span>
         </td>
         <td>
             <div class="btn-group">
-                <a href="assistance_attendance.php?name=<?php echo $aname; ?>&date=<?php echo $adate; ?>" class="btn btn-sm btn-info" title="Attendance">
+                <!-- NEW LOGIC: We pass the ID instead of Name and Date -->
+                <a href="assistance_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info" title="Attendance">
                     <i class="fa fa-qrcode"></i>
                 </a>
-                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_ast_<?php echo $uniqueID; ?>" title="Edit Assistance">
+                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_ast_<?php echo $eid; ?>" title="Edit Assistance">
                     <i class="fa fa-edit"></i>
                 </button>
-                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_ast_<?php echo $uniqueID; ?>" title="Delete Assistance">
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_ast_<?php echo $eid; ?>" title="Delete Assistance">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>
             
-            <!-- THE FIX: PUT INCLUDE INSIDE THIS TD TAG -->
             <?php include("includes/assistance_modals.php"); ?>
         </td>
     </tr>

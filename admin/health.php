@@ -53,33 +53,33 @@
                         </thead>
                        <tbody>
     <?php
-        $query = mysqli_query($conn, "SELECT DISTINCT HealthName, HealthDate, HealthPurpose, HealthEventStatus FROM healthrecords WHERE OscaIDNo IS NULL ORDER BY HealthDate DESC");
-        
-        while($display = mysqli_fetch_array($query)){
-            $hname = $display['HealthName'];
-            $hdate = $display['HealthDate'];
-            $uniqueID = md5($hname . $hdate);
+       $query = mysqli_query($conn, "SELECT event_master.EventID, event_master.EventName, event_master.EventDate, event_master.EventStatus, health_details.HealthPurpose FROM event_master LEFT JOIN health_details ON event_master.EventID = health_details.EventID WHERE event_master.EventType = 'Health' ORDER BY event_master.EventDate DESC");
+       
+       while($display = mysqli_fetch_array($query)){
+            $eid = $display['EventID'];
+            $hname = $display['EventName'];
+            $hdate = $display['EventDate'];
         ?>
         <tr>
-            <td class="fw-bold"><?php echo $display['HealthName']; ?></td>
-            <td><?php echo date("M d, Y", strtotime($display['HealthDate'])); ?></td>
+            <td class="fw-bold"><?php echo $display['EventName']; ?></td>
+            <td><?php echo date("M d, Y", strtotime($display['EventDate'])); ?></td>
             <td><?php echo $display['HealthPurpose']; ?></td>
             <td>
-            <span class="badge <?php echo ($display['HealthEventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
-                <?php echo $display['HealthEventStatus']; ?>
+            <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
+                <?php echo $display['EventStatus']; ?>
             </span>
             </td>
             <td>
                 <div class="btn-group">
-                    <a href="health_attendance.php?name=<?php echo $hname; ?>&date=<?php echo $hdate; ?>" class="btn btn-sm btn-info" title="Attendance">
+                    <a href="health_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info" title="Attendance">
                         <i class="fa fa-qrcode"></i>
                     </a>
                     <!-- NOTE THE TARGET ID IS edit_health_ -->
-                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_health_<?php echo $uniqueID; ?>" title="Edit">
+                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_health_<?php echo $eid; ?>" title="Edit">
                         <i class="fa fa-edit"></i>
                     </button>
                     <!-- NOTE THE TARGET ID IS del_health_ -->
-                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_health_<?php echo $uniqueID; ?>" title="Delete">
+                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_health_<?php echo $eid; ?>" title="Delete">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
