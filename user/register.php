@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<?php include("../includes/db_connection.php"); ?>
+<?php 
+include("../includes/db_connection.php"); 
+
+// Fetch the Admin Contact Number
+$q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
+$row_admin = mysqli_fetch_array($q_admin);
+$admin_contact = $row_admin['ContactNumber'];
+?>
 <html lang="en">
 <head>
     <title>Senior Enrollment | SENIOR-CARE</title>
@@ -10,7 +17,12 @@
 </head>
 <body>
 
-<div class="navbar-custom">SENIOR-CARE MANAGEMENT SYSTEM</div>
+<div class="navbar-custom d-flex flex-column text-center" style="height: auto; padding: 15px 0;">
+    <div>SENIOR-CARE MANAGEMENT SYSTEM</div>
+    <div style="font-size: 0.85rem; font-weight: normal; margin-top: 5px; opacity: 0.9;">
+        Admin Contact: <?php echo $admin_contact; ?>
+    </div>
+</div>
 
 <div class="container main-container">
     <div class="row justify-content-center">
@@ -79,7 +91,6 @@
                         </div>
 
                         <br />
-                        <!-- Changed button class to btn-forest for the correct color -->
                         <button type="button" onclick="initiateProfiling()" class="btn btn-forest w-100 py-3">SUBMIT & GENERATE QR</button>
                     </form>
                     </div>

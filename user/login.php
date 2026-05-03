@@ -1,12 +1,15 @@
 <?php
 include("../includes/db_connection.php");
 
+// Fetch the Admin Contact Number
+$q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
+$row_admin = mysqli_fetch_array($q_admin);
+$admin_contact = $row_admin['ContactNumber'];
+
 // Handle Login Logic
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Collect ID as string to preserve leading zeros (e.g., 00123)
     $id = $_POST['login_osca'];
     
-    // Check if ID exists in the database
     $res = mysqli_query($conn, "SELECT OscaIDNo, ApprovalStatus FROM seniors WHERE OscaIDNo = '$id'");
     $row = mysqli_fetch_array($res);
     
@@ -15,16 +18,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('Your registration is still pending admin approval. Please wait.'); window.location='login.php';</script>";
             exit;
         } else if ($row['ApprovalStatus'] == 'rejected') {
-            // Delete the rejected record so they can register again using the same ID
             mysqli_query($conn, "DELETE FROM seniors WHERE OscaIDNo = '$id'");
             echo "<script>alert('Sorry, your registration was rejected by the admin for reasons of error of filling up the form or wrong information. Please make another try to fill up the form correctly.'); window.location='register.php';</script>";
             exit;
         }
-        // Redirect to profile page
         header("Location: profile.php?id=$id");
         exit;
     } else {
-        // Use a simple alert if ID is not found
         echo "<script>alert('Error: OscaIDNo. $id not found in our records.'); window.location='login.php';</script>";
     }
 }
@@ -43,15 +43,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <!-- Simple Navigation Bar -->
-    <div class="navbar-custom">
-        SENIOR-CARE MANAGEMENT SYSTEM
+    <div class="navbar-custom d-flex flex-column text-center" style="height: auto; padding: 15px 0;">
+        <div>SENIOR-CARE MANAGEMENT SYSTEM</div>
+        <div style="font-size: 0.85rem; font-weight: normal; margin-top: 5px; opacity: 0.9;">
+            Admin Contact: <?php echo $admin_contact; ?>
+        </div>
     </div>
 
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-5 col-lg-4">
                 
-                <!-- Centered Login Card -->
                 <div class="card p-4 shadow">
                     <div class="text-center mb-4">
                         <h4 class="fw-bold" style="color: var(--forest-deep);">Senior Citizen Login</h4>
@@ -80,16 +82,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </a>
                         </div>
                     </form>
-                    <!-- Find the end of your form and add this before the </div> of the card -->
+                    
                     <div class="text-center mt-3 pt-3 border-top">
                         <p class="small text-muted mb-2">Staff or Administrator?</p>
                         <a href="../admin/login.php" class="btn btn-outline-dark btn-sm w-100 py-2 shadow-sm">
                             <i class="fa-solid fa-user-shield me-2"></i> GO TO ADMIN LOGIN
                         </a>
-                        </div>
+                    </div>
                 </div>
 
-                <!-- Simple Footer Note -->
                 <div class="text-center mt-4 opacity-50">
                     <small>Barangay Kalawag 1 Management System</small>
                 </div>

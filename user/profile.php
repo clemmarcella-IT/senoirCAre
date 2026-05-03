@@ -9,6 +9,11 @@ $row = mysqli_fetch_array($res);
 
 if (!$row) { header("Location: login.php"); exit; }
 
+// Fetch the Admin Contact Number
+$q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
+$row_admin = mysqli_fetch_array($q_admin);
+$admin_contact = $row_admin['ContactNumber'];
+
 // Simple age calculation from Birthday
 $birthYear  = date("Y", strtotime($row['Birthday']));
 $birthMonth = date("m", strtotime($row['Birthday']));
@@ -37,7 +42,12 @@ if ($currentMonth < $birthMonth) {
 </head>
 <body>
 
-<div class="navbar-custom no-print">SENIOR-CARE PORTAL</div>
+<div class="navbar-custom no-print d-flex flex-column text-center" style="height: auto; padding: 15px 0;">
+    <div>SENIOR-CARE PORTAL</div>
+    <div style="font-size: 0.85rem; font-weight: normal; margin-top: 5px; opacity: 0.9;">
+        Admin Contact: <?php echo $admin_contact; ?>
+    </div>
+</div>
 
 <div class="container py-4 main-container">
     <div class="row justify-content-center">
@@ -98,25 +108,25 @@ if ($currentMonth < $birthMonth) {
                         </div>
 
                         <h5 class="fw-bold border-bottom pb-2 mb-3 mt-5 text-success">Documentary Verifications</h5>
-<div class="row g-3 text-center no-print">
-    
-    <!-- SIGNATURE SIDE -->
-    <div class="col-6">
-        <label class="small text-muted fw-bold mb-2">SIGNATURE (Click to view)</label>
-        <div class="d-flex justify-content-center">
-            <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
-        </div>
-    </div>
-    
-    <!-- THUMBMARK SIDE -->
-    <div class="col-6">
-        <label class="small text-muted fw-bold mb-2">THUMBMARK (Click to view)</label>
-        <div class="d-flex justify-content-center gap-2">
-            <img src="../uploads/<?php echo $row['thumbNailPicture']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
-        </div>
-    </div>
-    
-</div>
+                        <div class="row g-3 text-center no-print">
+                            
+                            <!-- SIGNATURE SIDE -->
+                            <div class="col-6">
+                                <label class="small text-muted fw-bold mb-2">SIGNATURE (Click to view)</label>
+                                <div class="d-flex justify-content-center">
+                                    <img src="../uploads/<?php echo $row['SignaturePicture']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+                                </div>
+                            </div>
+                            
+                            <!-- THUMBMARK SIDE -->
+                            <div class="col-6">
+                                <label class="small text-muted fw-bold mb-2">THUMBMARK (Click to view)</label>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <img src="../uploads/<?php echo $row['thumbNailPicture']; ?>" class="doc-img rounded shadow-sm" style="width: 90px !important; height: 90px !important; object-fit: contain !important; background-color: #f8f9fa; border: 1px solid #ccc;" onclick="viewImage(this)">
+                                </div>
+                            </div>
+                            
+                        </div>
 
                         <div class="mt-2 text-muted small border-top pt-2">
                              Generated: <?php echo date("M d, Y h:i A", strtotime($row['GenerateDate'])); ?>
@@ -166,14 +176,11 @@ if ($currentMonth < $birthMonth) {
     }
 
   function printQRCodeOnly() {
-    // 1. Grab the QR container
     const qrContainer = document.getElementById("qrcode-target");
     const qrContent = qrContainer.innerHTML;
 
-    // 2. Open a small window
     const newWindow = window.open("", "", "width=800,height=800");
 
-    // 3. Write minimal HTML to the popup
     newWindow.document.write(`
         <html>
         <head>

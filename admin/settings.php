@@ -4,14 +4,19 @@ require_once('includes/session.php');
 if(isset($_POST['update_admin'])) {
     $new_osca = $_POST['admin_osca'];
     $new_pass = $_POST['admin_pass'];
+    $new_contact = $_POST['admin_contact'];
     
     // Hash the password before saving
     $hashedPassword = password_hash($new_pass, PASSWORD_DEFAULT);
     
-    mysqli_query($conn, "UPDATE admin_users SET AdminOscaID='$new_osca', Password='$hashedPassword' WHERE AdminID=1");
+    mysqli_query($conn, "UPDATE admin_users SET AdminOscaID='$new_osca', Password='$hashedPassword', ContactNumber='$new_contact' WHERE AdminID=1");
     $_SESSION['admin_osca'] = $new_osca;
     echo "<script>alert('Admin Credentials Updated!'); window.location='settings.php';</script>";
 }
+
+// Fetch admin details to prefill the form
+$q_admin = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminID=1");
+$admin_row = mysqli_fetch_array($q_admin);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,19 +46,25 @@ if(isset($_POST['update_admin'])) {
                             <div class="mb-4">
                                 <label class="label-tag">Update Admin OscaIDNo.</label>
                                 <input type="text" name="admin_osca" class="form-control form-control-lg" 
-                                       value="<?php echo $_SESSION['admin_osca']; ?>" 
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                       value="<?php echo $admin_row['AdminOscaID']; ?>" 
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 <small class="text-muted">This is used for your two-step login.</small>
                             </div>
                             
                             <div class="mb-4">
                                 <label class="label-tag">Update Admin Password</label>
                                 <div class="input-group">
-                                    <input type="password" name="admin_pass" id="settingsPass" class="form-control form-control-lg" placeholder="New Password" required>
+                                    <input type="password" name="admin_pass" id="settingsPass" class="form-control form-control-lg" placeholder="New Password">
                                     <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('settingsPass', 'setEye')">
                                         <i id="setEye" class="fa fa-eye"></i>
                                     </button>
                                 </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="label-tag">Update Admin Contact Number</label>
+                                <input type="text" name="admin_contact" class="form-control form-control-lg" value="<?php echo $admin_row['ContactNumber']; ?>" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <small class="text-muted">This number will be displayed on the User Portal for support.</small>
                             </div>
 
                             <div class="alert alert-success border-0 small py-2 mb-4">
@@ -61,7 +72,6 @@ if(isset($_POST['update_admin'])) {
                                 Security is active. All updates take effect immediately.
                             </div>
 
-                            <!-- NEW DESIGNED BUTTON -->
                             <button type="submit" name="update_admin" class="btn-save-custom">
                                 <i class="fa-solid fa-floppy-disk"></i> SAVE ALL UPDATES
                             </button>
