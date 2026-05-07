@@ -42,27 +42,48 @@ $admin_contact = $row_admin['ContactNumber'];
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php
-                            $clem = mysqli_query($conn, "SELECT monthly_dues_master.Contribution_Name, dues_payments.Amount_Paid, dues_payments.Date_Paid, dues_payments.Time_Paid, dues_payments.Payment_Status 
-                                                         FROM dues_payments 
-                                                         LEFT JOIN monthly_dues_master ON dues_payments.DuesID = monthly_dues_master.DuesID 
-                                                         WHERE dues_payments.OscaIDNo = '$id' 
-                                                         ORDER BY dues_payments.Date_Paid DESC");
+                    <!-- Replace the <tbody> section in your existing user/dues_records.php with this -->
+<tbody>
+    <?php
+        // Complex query to get required amount and cumulative sums for calculating the balance
+        $clem = mysqli_query($conn, "
+            SELECT dp.PaymentID, dp.Amount_Paid, dp.Date_Paid, dp.Time_Paid, dp.Payment_Status,
+                   m.Contribution_Name, m.Amount_Required,
+                   (SELECT SUM(dp2.Amount_Paid) 
+                    FROM dues_payments dp2 
+                    WHERE dp2.OscaIDNo = dp.OscaIDNo 
+                    AND dp2.DuesID = dp.DuesID 
+                    AND dp2.PaymentID <= dp.PaymentID) as cumulative_paid
+            FROM dues_payments dp 
+            LEFT JOIN monthly_dues_master m ON dp.DuesID = m.DuesID 
+            WHERE dp.OscaIDNo = '$id' 
+            ORDER BY dp.Date_Paid DESC, dp.Time_Paid DESC
+        ");
 
-                            while($display = mysqli_fetch_array($clem)){
-                        ?>
-                        <tr>
-                            <td><?php echo $display['Date_Paid']; ?></td>
-                            <td><?php echo date("h:i A", strtotime($display['Time_Paid'])); ?></td>
-                            <td class="fw-bold"><?php echo $display['Contribution_Name']; ?></td>
-                            <td class="text-success fw-bold">₱<?php echo number_format($display['Amount_Paid'], 2); ?></td>
-                            <td><span class="badge bg-warning text-dark"><?php echo $display['Payment_Status']; ?></span></td>
-                        </tr>
-                        <?php
-                            }
-                        ?>
-                    </tbody>
+        while($display = mysqli_fetch_array($clem)){
+            // The display formula
+            $remaining_balance = $display['Amount_Required'] - $display['cumulative_paid'];
+            $remaining_balance = ($remaining_balance < 0) ? 0 : $remaining_balance; // Prevent negatives
+    ?>
+    <tr>
+        <td class="text-secondary"><?php echo $display['Date_Paid']; ?></td>
+        <td><?php echo date("h:i A", strtotime($display['Time_Paid'])); ?></td>
+        <td class="fw-bold"><?php echo $display['Contribution_Name']; ?></td>
+        <td class="text-success fw-bold">+ ₱<?php echo number_format($display['Amount_Paid'], 2); ?></td>
+        
+        <!-- REMAINING BALANCE CALCULATION -->
+        <td class="text-danger fw-bold">₱<?php echo number_format($remaining_balance, 2); ?></td>
+        
+        <td>
+            <?php if($display['Payment_Status'] == 'Paid'): ?>
+                <span class="badge bg-success">CLEARED</span>
+            <?php else: ?>
+                <span class="badge bg-warning text-dark">PARTIAL</span>
+            <?php endif; ?>
+        </td>
+    </tr>
+    <?php } ?>
+</tbody>
                 </table>
 
             </div>
