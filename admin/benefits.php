@@ -20,11 +20,18 @@
             <h2 class="mt-4 fw-bold text-success"><i class="fa fa-hand-holding-heart me-2"></i> Benefit Claims</h2>
 
             <div class="card mb-4 border-0 shadow-sm mt-3">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <span class="text-muted small fw-bold">BENEFIT DISTRIBUTION MANAGEMENT</span>
-                    <button type="button" class="btn btn-forest shadow-sm" data-bs-toggle="modal" data-bs-target="#addBenefitModal">
-                        <i class="fa fa-plus me-2"></i> Schedule Benefit Distribution
-                    </button>
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">BENEFIT DISTRIBUTION MANAGEMENT</span>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="button" class="btn btn-forest shadow-sm w-100" data-bs-toggle="modal" data-bs-target="#addBenefitModal">
+                                <i class="fa fa-plus me-2"></i> Schedule Benefit Distribution
+                            </button>
+                            <button onclick="printTable()" class="btn btn-success fw-bold shadow-sm w-100">
+                                <i class="fa fa-print me-2"></i> Print Report
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -176,5 +183,29 @@
     <script src="js/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="js/datatables-simple-demo.js"></script>
+    <script>
+    function printTable() {
+        var table = document.getElementById("datatablesSimple");
+        var newWindow = window.open("", "", "width=900,height=800");
+        newWindow.document.write("<html><head><title>Benefit Claims Report</title>");
+        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
+        newWindow.document.write("<style>body{padding:40px;font-family:sans-serif;}table{width:100%;border-collapse:collapse;margin-top:20px;}th,td{border:1px solid #ddd;padding:10px;text-align:left;}th{background:#1F4B2C!important;color:white!important;text-transform:uppercase;font-size:12px;}</style>");
+        newWindow.document.write("</head><body>");
+        newWindow.document.write("<div style='text-align:center;border-bottom:2px solid #1F4B2C;padding-bottom:10px;margin-bottom:20px;'><h2>BARANGAY KALAWAG 1</h2><p style='margin:0;'>Benefit Claims Report</p></div>");
+        if (table) {
+            var tableClone = table.cloneNode(true);
+            var rows = tableClone.rows;
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].cells.length > 0) rows[i].deleteCell(-1);
+            }
+            newWindow.document.write(tableClone.outerHTML);
+        } else {
+            newWindow.document.write('<p style="text-align:center;margin-top:30px;">No data found.</p>');
+        }
+        newWindow.document.write("</body></html>");
+        newWindow.document.close();
+        setTimeout(function() { newWindow.print(); newWindow.close(); }, 750);
+    }
+    </script>
 </body>
 </html>

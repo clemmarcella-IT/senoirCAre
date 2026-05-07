@@ -19,18 +19,17 @@
             <h2 class="mt-4 fw-bold text-success"><i class="fa fa-money-bill-wave me-2"></i> Monthly Dues Management</h2>
 
             <div class="card mb-4 border-0 shadow-sm mt-3">
-                <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                    <div>
-                        <div class="text-muted small fw-bold">DUES SETUP (STEP 1)</div>
-                        <div class="text-secondary" style="font-size:0.95rem;">Manage contribution definitions and track payment status.</div>
-                    </div>
-                    <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
-                        <button type="button" class="btn btn-forest shadow-sm" data-bs-toggle="modal" data-bs-target="#addDuesModal">
-                            <i class="fa fa-plus me-2"></i> Add Contribution
-                        </button>
-                        <button type="button" class="btn btn-success shadow-sm" onclick="printTable()">
-                            <i class="fa fa-print me-2"></i> Print Report
-                        </button>
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">DUES MANAGEMENT</span>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="button" class="btn btn-forest shadow-sm w-100" data-bs-toggle="modal" data-bs-target="#addDuesModal">
+                                <i class="fa fa-plus me-2"></i> Add New Dues
+                            </button>
+                            <button type="button" class="btn btn-success fw-bold shadow-sm w-100" onclick="printTable()">
+                                <i class="fa fa-print me-2"></i> Print Report
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,5 +128,29 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="js/datatables-simple-demo.js"></script>
     <script src="js/scripts.js"></script>
+    <script>
+    function printTable() {
+        var table = document.getElementById("datatablesSimple");
+        var newWindow = window.open("", "", "width=900,height=800");
+        newWindow.document.write("<html><head><title>Monthly Dues Report</title>");
+        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
+        newWindow.document.write("<style>body{padding:40px;font-family:sans-serif;}table{width:100%;border-collapse:collapse;margin-top:20px;}th,td{border:1px solid #ddd;padding:10px;text-align:left;}th{background:#1F4B2C!important;color:white!important;text-transform:uppercase;font-size:12px;}</style>");
+        newWindow.document.write("</head><body>");
+        newWindow.document.write("<div style='text-align:center;border-bottom:2px solid #1F4B2C;padding-bottom:10px;margin-bottom:20px;'><h2>BARANGAY KALAWAG 1</h2><p style='margin:0;'>Monthly Dues Report</p></div>");
+        if (table) {
+            var tableClone = table.cloneNode(true);
+            var rows = tableClone.rows;
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].cells.length > 0) rows[i].deleteCell(-1);
+            }
+            newWindow.document.write(tableClone.outerHTML);
+        } else {
+            newWindow.document.write('<p style="text-align:center;margin-top:30px;">No data found.</p>');
+        }
+        newWindow.document.write("</body></html>");
+        newWindow.document.close();
+        setTimeout(function() { newWindow.print(); newWindow.close(); }, 750);
+    }
+    </script>
 </body>
 </html>

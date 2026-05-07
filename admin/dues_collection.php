@@ -1,11 +1,12 @@
 <?php 
 require_once('includes/session.php'); 
 $did = $_GET['id'];
+
+// Get Dues Details
 $res = mysqli_query($conn, "SELECT * FROM monthly_dues_master WHERE DuesID = '$did'");
 $dues = mysqli_fetch_array($res);
-
 if (!$dues) {
-    echo "<script>alert('Dues record not found.'); window.location='monthly_dues.php';</script>";
+    echo "<script>alert('Dues not found.'); window.location='monthly_dues.php';</script>";
     exit;
 }
 $amount_required = $dues['Amount_Required'];
@@ -14,11 +15,25 @@ $amount_required = $dues['Amount_Required'];
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Installment Collection | <?php echo $dues['Contribution_Name']; ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Dues Collection | <?php echo $dues['Contribution_Name']; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container .select2-selection--single {
+            height: 38px;
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 4px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+    </style>
 </head>
 <body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
@@ -28,62 +43,65 @@ $amount_required = $dues['Amount_Required'];
         <div class="container-fluid px-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-4 mb-4 gap-3">
                 <div>
-                    <h3 class="fw-bold text-success m-0">Collection: <?php echo $dues['Contribution_Name']; ?></h3>
-                    <p class="text-muted mb-1">Target Due: ₱<?php echo number_format($amount_required, 2); ?> | <span class="text-danger fw-bold">Active Status requires full payment.</span></p>
+                    <h3 class="fw-bold text-success m-0"><?php echo $dues['Contribution_Name']; ?></h3>
+                    <p class="text-muted mb-1">Required Amount: ₱<?php echo number_format($amount_required, 2); ?> | Due: <?php echo date("M d, Y", strtotime($dues['Due_Date'])); ?></p>
                 </div>
-                <div class="no-print d-flex gap-2">
-                    <a href="monthly_dues.php" class="btn btn-secondary shadow-sm">Back</a>
+                <div class="no-print d-flex flex-column flex-sm-row gap-2">
+                    <a href="monthly_dues.php" class="btn btn-secondary fw-bold shadow-sm w-100">Back</a>
+                    <button type="button" class="btn btn-success fw-bold shadow-sm w-100" onclick="printTable()">
+                        <i class="fa fa-print me-2"></i> Print Report
+                    </button>
                 </div>
             </div>
 
             <div class="row">
-                <!-- LEFT SIDE: MANUAL ENTRY FORM -->
+                <!-- LEFT: PAYMENT FORM -->
                 <div class="col-md-4">
                     <div class="card shadow-sm border-0 mb-4">
-                        <div class="card-header bg-primary text-white fw-bold">Receive Payment</div>
-                        <div class="card-body p-4">
-                            <form action="query_record_payment.php" method="POST">
+                        <div class="card-header bg-success text-white fw-bold">Record Office Payment</div>
+                        <div class="card-body">
+                            <form action="query_collect_dues.php" method="POST">
                                 <input type="hidden" name="dues_id" value="<?php echo $did; ?>">
+                                <input type="hidden" name="amount_required" value="<?php echo $amount_required; ?>">
                                 
                                 <div class="mb-3">
-                                    <label class="small fw-bold text-muted mb-1">Search Senior (Name / OSCA ID)</label>
-                                    <select name="oscaID" id="oscaID_select" class="form-select border-black shadow-sm" onchange="updateBalance()" required>
-                                        <option value="" selected disabled>-- Select Senior --</option>
+                                    <label class="small fw-bold text-muted mb-1">Select Senior</label>
+                                    <select name="osca_id" class="form-select select2-senior" required>
+                                        <option value="">Search by ID or Name...</option>
                                         <?php
-                                        // Fetch seniors who have NOT fully paid yet (Cumulative Check)
-                                        $sen_q = mysqli_query($conn, "
-                                            SELECT s.OscaIDNo, s.FirstName, s.LastName, 
-                                                   COALESCE(SUM(dp.Amount_Paid), 0) as total_paid
+                                        // Finds seniors who haven't fully paid. If fully paid, it's removed from selection.
+                                        $senior_q = mysqli_query($conn, "
+                                            SELECT s.OscaIDNo, s.LastName, s.FirstName,
+                                            COALESCE((SELECT SUM(Amount_Paid) FROM dues_payments dp WHERE dp.OscaIDNo = s.OscaIDNo AND dp.DuesID = '$did'), 0) as total_paid
                                             FROM seniors s
-                                            LEFT JOIN dues_payments dp ON s.OscaIDNo = dp.OscaIDNo AND dp.DuesID = '$did'
-                                            GROUP BY s.OscaIDNo
                                             HAVING total_paid < $amount_required
                                             ORDER BY s.LastName ASC
                                         ");
-                                        while($s = mysqli_fetch_array($sen_q)){
-                                            echo "<option value='".$s['OscaIDNo']."'>".$s['LastName'].", ".$s['FirstName']." (ID: ".$s['OscaIDNo'].")</option>";
-                                        }
+                                        while ($s = mysqli_fetch_array($senior_q)) {
+                                            $balance = $amount_required - $s['total_paid'];
                                         ?>
+                                            <option value="<?php echo $s['OscaIDNo']; ?>">
+                                                <?php echo $s['OscaIDNo'] . " - " . $s['LastName'] . ", " . $s['FirstName'] . " (Bal: ₱" . number_format($balance, 2) . ")"; ?>
+                                            </option>
+                                        <?php } ?>
                                     </select>
                                 </div>
+
                                 <div class="mb-3">
-                                    <label class="small fw-bold text-muted mb-1">Amount Received (₱)</label>
-                                    <input type="number" step="0.01" min="1" name="amount" id="amount_input" class="form-control border-black shadow-sm" placeholder="Enter amount..." required>
-                                    <small class="text-danger fw-bold" id="balance_display">Select a senior to view balance.</small>
+                                    <label class="small fw-bold text-muted mb-1">Amount Paid (₱)</label>
+                                    <input type="number" step="0.01" name="amount_paid" class="form-control card shadow border border-1 border-black" required>
                                 </div>
-                                
-                                <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mt-2">
-                                    RECORD PAYMENT
-                                </button>
+
+                                <button type="submit" class="btn btn-success w-100 py-2 fw-bold">RECORD PAYMENT & ACTIVATE</button>
                             </form>
                         </div>
                     </div>
                 </div>
 
-                <!-- RIGHT SIDE: PAYMENT LIST -->
+                <!-- RIGHT: COLLECTION RECORDS -->
                 <div class="col-md-8">
                     <div class="card shadow-sm border-0">
-                        <div class="card-header bg-dark text-white font-weight-bold">Transaction History (Partials & Full)</div>
+                        <div class="card-header bg-dark text-white fw-bold">Recent Collections</div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="datatablesSimple" class="table table-hover align-middle">
@@ -91,33 +109,41 @@ $amount_required = $dues['Amount_Required'];
                                         <tr>
                                             <th>OscaIDNo.</th>
                                             <th>Senior Name</th>
-                                            <th>Date Paid</th>
-                                            <th>Amount</th>
+                                            <th>Total Paid</th>
+                                            <th>Last Payment Date</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $list = mysqli_query($conn, "SELECT dp.*, s.FirstName, s.LastName 
-                                                                    FROM dues_payments dp 
-                                                                    INNER JOIN seniors s ON s.OscaIDNo = dp.OscaIDNo 
-                                                                    WHERE dp.DuesID = '$did'
-                                                                    ORDER BY dp.Date_Paid DESC, dp.Time_Paid DESC");
-                                        while($display = mysqli_fetch_array($list)){
+                                        // UPDATED LOGIC: Group by senior and sum the total payments to avoid duplication
+                                        $list = mysqli_query($conn, "
+                                            SELECT dp.OscaIDNo, s.LastName, s.FirstName, 
+                                                   SUM(dp.Amount_Paid) as Total_Paid, 
+                                                   MAX(dp.Date_Paid) as Last_Date_Paid,
+                                                   MAX(dp.Time_Paid) as Last_Time_Paid
+                                            FROM dues_payments dp
+                                            JOIN seniors s ON dp.OscaIDNo = s.OscaIDNo
+                                            WHERE dp.DuesID = '$did'
+                                            GROUP BY dp.OscaIDNo, s.LastName, s.FirstName
+                                            ORDER BY Last_Date_Paid DESC, Last_Time_Paid DESC
+                                        ");
+                                        while ($row = mysqli_fetch_array($list)) {
+                                            $total_paid = $row['Total_Paid'];
                                         ?>
-                                        <tr>
-                                            <td class="fw-bold text-primary"><?php echo $display['OscaIDNo']; ?></td>
-                                            <td class="fw-bold"><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                            <td><?php echo date("M d, Y", strtotime($display['Date_Paid'])) . " | " . date("h:i A", strtotime($display['Time_Paid'])); ?></td>
-                                            <td class="fw-bold">₱<?php echo number_format($display['Amount_Paid'], 2); ?></td>
-                                            <td>
-                                                <?php if($display['Payment_Status'] == 'Paid'): ?>
-                                                    <span class="badge bg-success">PAID (CLEARED)</span>
-                                                <?php else: ?>
-                                                    <span class="badge bg-warning text-dark">PARTIAL</span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td class="fw-bold"><?php echo $row['OscaIDNo']; ?></td>
+                                                <td><?php echo $row['LastName'] . ", " . $row['FirstName']; ?></td>
+                                                <td class="text-success fw-bold">₱<?php echo number_format($total_paid, 2); ?></td>
+                                                <td><?php echo date("M d, Y", strtotime($row['Last_Date_Paid'])) . " " . date("h:i A", strtotime($row['Last_Time_Paid'])); ?></td>
+                                                <td>
+                                                    <?php if($total_paid >= $amount_required): ?>
+                                                        <span class="badge bg-success">CLEARED</span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-warning text-dark">PARTIAL</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -129,36 +155,42 @@ $amount_required = $dues['Amount_Required'];
         </div>
     </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
-<script src="js/datatables-simple-demo.js"></script>
-<script src="js/scripts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
+    <script src="js/datatables-simple-demo.js"></script>
+    <script src="js/scripts.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Apply select2 dropdown for easy finding
+            $('.select2-senior').select2({
+                placeholder: "Search by ID or Name...",
+                allowClear: true,
+                width: '100%'
+            });
+        });
 
-<!-- DYNAMIC BALANCE JAVASCRIPT -->
-<script>
-    // Load remaining balances into a JS object
-    const balances = {
-        <?php
-        mysqli_data_seek($sen_q, 0); // Reset pointer
-        while($s = mysqli_fetch_assoc($sen_q)) {
-            $remaining = $amount_required - $s['total_paid'];
-            echo "'".$s['OscaIDNo']."': ".$remaining.",";
-        }
-        ?>
-    };
-
-    function updateBalance() {
-        const oscaID = document.getElementById('oscaID_select').value;
-        const amountInput = document.getElementById('amount_input');
-        const balanceDisplay = document.getElementById('balance_display');
         
-        if(balances[oscaID]) {
-            // Set max payable and suggest the full remaining balance
-            amountInput.value = balances[oscaID];
-            amountInput.max = balances[oscaID];
-            balanceDisplay.innerHTML = "Remaining Balance: ₱" + balances[oscaID].toFixed(2);
+    function printTable() {
+        var table = document.getElementById("datatablesSimple");
+        var newWindow = window.open("", "", "width=900,height=800");
+        newWindow.document.write("<html><head><title>Dues Collection Report</title>");
+        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
+        newWindow.document.write("<style>body{padding:40px;font-family:sans-serif;}table{width:100%;border-collapse:collapse;margin-top:20px;}th,td{border:1px solid #ddd;padding:10px;text-align:left;}th{background:#1F4B2C!important;color:white!important;text-transform:uppercase;font-size:12px;}</style>");
+        newWindow.document.write("</head><body>");
+        newWindow.document.write("<div style='text-align:center;border-bottom:2px solid #1F4B2C;padding-bottom:10px;margin-bottom:20px;'><h2><?php echo $dues['Contribution_Name']; ?> - Dues Collection Report</h2><p style='margin:0;'>Required Amount: ₱<?php echo number_format($amount_required, 2); ?> | Due Date: <?php echo date('M d, Y', strtotime($dues['Due_Date'])); ?></p></div>");
+        if (table) {
+            var tableClone = table.cloneNode(true);
+            newWindow.document.write(tableClone.outerHTML);
+        } else {
+            newWindow.document.write('<p style="text-align:center;margin-top:30px;">No data found.</p>');
         }
+        newWindow.document.write("</body></html>");
+        newWindow.document.close();
+        setTimeout(function() { newWindow.print(); newWindow.close(); }, 750);
     }
-</script>
+   
+    </script>
 </body>
 </html>

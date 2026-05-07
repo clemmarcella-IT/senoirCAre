@@ -41,7 +41,7 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
                     </span>
                 </div>
                 <div class="no-print d-flex flex-column flex-sm-row gap-2">
-                    <a href="events.php" class="btn btn-secondary shadow-sm w-100">Back</a>
+                    <a href="activity.php" class="btn btn-secondary shadow-sm w-100">Back</a>
                     <button onclick="printTable()" class="btn btn-success shadow-sm w-100"><i class="fa fa-print"></i> Print</button>
                     <?php if(!$isStopped): ?>
                         <a href="query_stop_event.php?id=<?php echo $eid; ?>" 
@@ -90,17 +90,18 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
                         <tbody>
                             <?php
                             // THE JOIN logic matches your borrow transactions template
-                            $list = mysqli_query($conn, "SELECT *
-                                                        FROM event_attendance 
-                                                        INNER JOIN seniors ON seniors.OscaIDNo = event_attendance.OscaIDNo 
-                                                        WHERE event_attendance.EventID = '$eid'
-                                                        ORDER BY event_attendance.TimeIn DESC");
+                            $list = mysqli_query($conn, "SELECT transaction_records.*, seniors.LastName, seniors.FirstName
+                                                        FROM transaction_records 
+                                                        INNER JOIN seniors ON seniors.OscaIDNo = transaction_records.OscaIDNo 
+                                                        WHERE transaction_records.EventID = '$eid'
+                                                        AND transaction_records.Transaction_Type = 'Attendance'
+                                                        ORDER BY transaction_records.Time_Recorded DESC");
                             while($display = mysqli_fetch_array($list)){
                             ?>
                             <tr>
                                 <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
                                 <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                <td><?php echo date("h:i A", strtotime($display['TimeIn'])); ?></td>
+                                <td><?php echo date("h:i A", strtotime($display['Time_Recorded'])); ?></td>
                                 <td><span class="text-success fw-bold">PRESENT</span></td>
                             </tr>
                             <?php } ?>
