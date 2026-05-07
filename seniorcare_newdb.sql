@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2026 at 08:50 AM
+-- Generation Time: May 07, 2026 at 11:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -170,6 +170,7 @@ CREATE TABLE `transaction_records` (
   `Time_Recorded` time NOT NULL,
   `ControlNo` varchar(50) DEFAULT NULL,
   `Status` varchar(50) DEFAULT 'Claimed',
+  `Amount_Used` decimal(10,2) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -177,9 +178,9 @@ CREATE TABLE `transaction_records` (
 -- Dumping data for table `transaction_records`
 --
 
-INSERT INTO `transaction_records` (`RecordID`, `OscaIDNo`, `EventID`, `Transaction_Type`, `Date_Recorded`, `Time_Recorded`, `ControlNo`, `Status`, `Reason`) VALUES
-(1, '00123', 1, 'Pension_Claim', '2026-04-22', '08:15:00', 'CN-1001', 'Claimed', NULL),
-(2, '055455', 2, 'Attendance', '2026-05-01', '13:00:00', NULL, 'Present', NULL);
+INSERT INTO `transaction_records` (`RecordID`, `OscaIDNo`, `EventID`, `Transaction_Type`, `Date_Recorded`, `Time_Recorded`, `ControlNo`, `Status`, `Amount_Used`, `Reason`) VALUES
+(1, '00123', 1, 'Pension_Claim', '2026-04-22', '08:15:00', 'CN-1001', 'Claimed', NULL, NULL),
+(2, '055455', 2, 'Attendance', '2026-05-01', '13:00:00', NULL, 'Present', NULL, NULL);
 
 --
 -- Indexes for dumped tables

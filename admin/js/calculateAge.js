@@ -24,6 +24,6 @@ function calculateAge(rowId = '') {
     // Update the display text
     const displayElement = document.getElementById(displayId);
     if (displayElement) {
-        displayElement.innerText = "Derived Age: " + (isNaN(age) ? "--" : age + " Years Old");
+        displayElement.innerText = "Derived Age:" + (isNaN(age) ? "--" : age + " Years Old");
     }
 }
