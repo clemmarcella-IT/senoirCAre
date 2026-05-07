@@ -1,0 +1,139 @@
+<?php include('includes/session.php'); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Activity Records | SENIOR-CARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="css/style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="sb-nav-fixed">
+    <?php include('includes/header.php'); ?>
+    <?php include('includes/sidebar.php'); ?>
+
+    <main id="main-content">
+        <div class="container-fluid px-4">
+            <h2 class="mt-4 fw-bold text-success"><i class="fa fa-calendar-check me-2"></i> Activity Records</h2>
+
+            <div class="card mb-4 border-0 shadow-sm mt-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <span class="text-muted small fw-bold">ACTIVITY MANAGEMENT</span>
+                    <button type="button" class="btn btn-forest shadow-sm" data-bs-toggle="modal" data-bs-target="#addActivityModal">
+                        <i class="fa fa-plus me-2"></i> Schedule New Activity
+                    </button>
+                </div>
+            </div>
+
+            <div class="card mb-4 shadow border-0">
+                <div class="card-header bg-dark text-white fw-bold">Scheduled Activities (Meetings & Assemblies)</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="datatablesSimple" class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Activity Name</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $query = mysqli_query($conn, "SELECT * FROM event_master WHERE EventType = 'Meeting' ORDER BY EventDate DESC");
+                                while ($row = mysqli_fetch_array($query)) {
+                                    $eid = $row['EventID'];
+                                ?>
+                                <tr>
+                                    <td class="fw-bold"><?php echo $row['EventName']; ?></td>
+                                    <td><?php echo $row['EventType']; ?></td>
+                                    <td><?php echo date("M d, Y", strtotime($row['EventDate'])); ?></td>
+                                    <td><?php echo $row['EventTime'] ? $row['EventTime'] : '—'; ?></td>
+                                    <td>
+                                        <span class="badge <?php echo ($row['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
+                                            <?php echo $row['EventStatus']; ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="event_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info text-white" title="View Attendance">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_act_<?php echo $eid; ?>" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="del_act_<?php echo $eid; ?>" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Delete Activity</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body text-center p-4">
+                                                    <p>Are you sure you want to delete <strong><?php echo $row['EventName']; ?></strong>?</p>
+                                                    <p class="text-danger small">This will also delete all attendance records for this activity.</p>
+                                                </div>
+                                                <div class="modal-footer justify-content-center">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <a href="query_delete_event.php?id=<?php echo $eid; ?>" class="btn btn-danger">Confirm Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Activity Modal -->
+    <div class="modal fade" id="addActivityModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa fa-calendar-plus me-2"></i> Schedule New Activity</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" action="query_add_event.php">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="small fw-bold text-muted mb-1">Activity Name</label>
+                            <input type="text" name="ename" class="form-control card shadow border border-1 border-black" placeholder="e.g. General Assembly" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small fw-bold text-muted mb-1">Date</label>
+                            <input type="date" name="edate" class="form-control card shadow border border-1 border-black" value="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small fw-bold text-muted mb-1">Time Start</label>
+                            <input type="time" name="etime" class="form-control card shadow border border-1 border-black">
+                        </div>
+                        <!-- Hidden: always Meeting type for activity page -->
+                        <input type="hidden" name="etype" value="Meeting">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success fw-bold">Save Activity</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
+    <script src="js/datatables-simple-demo.js"></script>
+</body>
+</html>

@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form role="form" method="POST" action="query_edit_senior.php?id=<?php echo $id; ?>" enctype="multipart/form-data">
+            <form role="form" method="POST" action="query_edit_senior.php?id=<?php echo $id; ?>">
                 <div class="modal-body p-4" style="background-color: #f8f9fa;">
                     <div class="row g-3">
                         
@@ -61,8 +61,8 @@
                         <div class="col-md-4">
                             <label class="small fw-bold text-muted">Citizen Status</label>
                             <select name="status" class="form-select card shadow border border-1 border-black">
-                                <option value="active" <?php if($row['CitizenStatus']=='active'){ echo 'selected'; } ?>>Active</option>
-                                <option value="inactive" <?php if($row['CitizenStatus']=='inactive'){ echo 'selected'; } ?>>Inactive</option>
+                                <option value="Active" <?php if($row['CitizenStatus']=='Active'){ echo 'selected'; } ?>>Active</option>
+                                <option value="Inactive" <?php if($row['CitizenStatus']=='Inactive'){ echo 'selected'; } ?>>Inactive</option>
                             </select>
                         </div>
                         <div class="col-md-8">

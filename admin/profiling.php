@@ -60,7 +60,7 @@
                                     <td><?php echo $row['PensionerStatus']; ?></td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="view_senior_details.php?id=<?php echo $id; ?>" class="btn btn-sm btn-info text-white"><i class="fa fa-qrcode"></i></a>
+                                            <a href="view_senior_details.php?id=<?php echo $id; ?>" class="btn btn-sm btn-info text-white" title="View Details"><i class="fa fa-eye"></i></a>
                                             <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $id; ?>"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete_<?php echo $id; ?>"><i class="fa fa-trash"></i></button>
                                         </div>
@@ -75,7 +75,10 @@
             </div>
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="js/datatables-simple-demo.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/calculateAge.js"></script>
 </body>
 </html>

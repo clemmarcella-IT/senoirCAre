@@ -1,13 +1,16 @@
 <?php
-include("../includes/db_connection.php");
-$name = $_POST['ename']; 
-$date = $_POST['edate']; 
-$time = $_POST['etime'];
+include("includes/session.php");
 
-mysqli_query($conn, "INSERT INTO event_master (EventName, EventDate, EventTime, EventType, EventStatus) 
-VALUES ('$name', '$date', '$time', 'Activity', 'Active')");
+if(isset($_POST['ename'])){
+    $name = $_POST['ename']; 
+    $date = $_POST['edate']; 
+    $time = $_POST['etime'];
+    $type = $_POST['etype']; // 'Meeting', 'Pension', or 'Benefit Distribution'
+
+    mysqli_query($conn, "INSERT INTO event_master (EventName, EventDate, EventTime, EventType, EventStatus) 
+    VALUES ('$name', '$date', '$time', '$type', 'Active')");
+
+    $redirect = ($type == 'Meeting') ? 'activity.php' : (($type == 'Pension') ? 'pension.php' : 'benefits.php');
+    echo "<script>alert('Activity scheduled successfully!'); window.location='$redirect';</script>";
+}
 ?>
-<script>
-    window.alert('Event Activity added successfully!');
-    window.location="events.php";
-</script>
