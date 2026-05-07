@@ -70,25 +70,6 @@
                             <input type="text" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Barangay']; ?>" readonly>
                         </div>
 
-                        <!-- Row 4: Profile Picture -->
-                        <div class="col-12 mt-4 border-top pt-3">
-                            <label class="fw-bold text-success">1. PROFILE PICTURE</label>
-                            <input type="file" name="pic" class="form-control card shadow border border-1 border-black" accept="image/*">
-                            <div class="upload-instruction">Note: Picture must have a plain <strong>white background</strong>.</div>
-                        </div>
-
-                        <!-- Row 5: Signature & Thumbmarks -->
-                        <div class="col-md-6 mt-3">
-                            <label class="fw-bold text-success">2. SIGNATURE</label>
-                            <input type="file" name="sig1" class="form-control card shadow border border-1 border-black">
-                            <div class="upload-instruction">Note: Sign on <strong>white paper</strong> and upload.</div>
-                        </div>
-
-                        <div class="col-md-6 mt-3">
-                            <label class="fw-bold text-success">3. THUMBMARK</label>
-                            <input type="file" name="thumb1" class="form-control card shadow border border-1 border-black mb-2">
-                            <div class="upload-instruction">Note: Upload single thumbprint.</div>
-                        </div>
                     </div>
                 </div>
                 
@@ -121,49 +102,3 @@
         </div>
     </div>
 </div>
-
-<?php if($isPending == true) { ?>
-<!-- Approve Modal -->
-<div class="modal fade" id="approve_<?php echo $id; ?>" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="approve_senior.php">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Approve Registration</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to approve the registration for <strong><?php echo $row['FirstName']; ?> <?php echo $row['LastName']; ?></strong>?</p>
-                    <input type="hidden" name="approve_id" value="<?php echo $id; ?>">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" name="approve_btn" class="btn btn-success">Approve</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Reject Modal -->
-<div class="modal fade" id="reject_<?php echo $id; ?>" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="reject_senior.php">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Reject Registration</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to <strong>reject</strong> the registration for <strong><?php echo $row['FirstName']; ?> <?php echo $row['LastName']; ?></strong>?</p>
-                    <input type="hidden" name="reject_id" value="<?php echo $id; ?>">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" name="reject_btn" class="btn btn-danger">Reject</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<?php } ?>

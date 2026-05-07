@@ -90,23 +90,6 @@ CREATE TABLE `events` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `healthrecords`
---
-
-CREATE TABLE `healthrecords` (
-  `HealthRecordID` int(11) NOT NULL,
-  `OscaIDNo` varchar(50) DEFAULT NULL,
-  `HealthName` varchar(255) DEFAULT NULL,
-  `HealthDate` date DEFAULT NULL,
-  `HealthPurpose` varchar(255) DEFAULT NULL,
-  `HealthAttendanceStatus` varchar(50) DEFAULT 'present',
-  `HealthTimeIn` time DEFAULT NULL,
-  `HealthEventStatus` enum('Active','Stopped') DEFAULT 'Active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `pension`
 --
 
@@ -137,12 +120,8 @@ CREATE TABLE `seniors` (
   `Purok` varchar(50) DEFAULT NULL,
   `Barangay` varchar(100) DEFAULT 'Kalawag 1',
   `Birthday` date NOT NULL,
-  `Picture` varchar(255) DEFAULT NULL,
   `QRCode` varchar(255) DEFAULT NULL,
-  `CitizenStatus` enum('active','inactive') DEFAULT 'active',
-  `SignaturePicture` varchar(255) DEFAULT NULL,
-  `thumbNailPicture` varchar(255) DEFAULT NULL,
-  `GenerateDate` datetime DEFAULT NULL
+  `CitizenStatus` enum('active','inactive') DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -175,13 +154,6 @@ ALTER TABLE `attendance`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`EventID`);
-
---
--- Indexes for table `healthrecords`
---
-ALTER TABLE `healthrecords`
-  ADD PRIMARY KEY (`HealthRecordID`),
-  ADD KEY `fk_health_seniors` (`OscaIDNo`);
 
 --
 -- Indexes for table `pension`
@@ -225,12 +197,6 @@ ALTER TABLE `events`
   MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `healthrecords`
---
-ALTER TABLE `healthrecords`
-  MODIFY `HealthRecordID` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `pension`
 --
 ALTER TABLE `pension`
@@ -252,12 +218,6 @@ ALTER TABLE `assistance`
 ALTER TABLE `attendance`
   ADD CONSTRAINT `fk_attendance_events` FOREIGN KEY (`EventID`) REFERENCES `events` (`EventID`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_attendance_seniors` FOREIGN KEY (`OscaIDNo`) REFERENCES `seniors` (`OscaIDNo`) ON DELETE CASCADE;
-
---
--- Constraints for table `healthrecords`
---
-ALTER TABLE `healthrecords`
-  ADD CONSTRAINT `fk_health_seniors` FOREIGN KEY (`OscaIDNo`) REFERENCES `seniors` (`OscaIDNo`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `pension`

@@ -98,31 +98,6 @@ CREATE TABLE `events` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `healthrecords`
---
-
-CREATE TABLE `healthrecords` (
-  `HealthRecordID` int(11) NOT NULL,
-  `OscaIDNo` varchar(50) DEFAULT NULL,
-  `HealthName` varchar(255) DEFAULT NULL,
-  `HealthDate` date DEFAULT NULL,
-  `HealthPurpose` varchar(255) DEFAULT NULL,
-  `HealthAttendanceStatus` varchar(50) DEFAULT 'present',
-  `HealthTimeIn` time DEFAULT NULL,
-  `HealthEventStatus` enum('Active','Stopped') DEFAULT 'Active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `healthrecords`
---
-
-INSERT INTO `healthrecords` (`HealthRecordID`, `OscaIDNo`, `HealthName`, `HealthDate`, `HealthPurpose`, `HealthAttendanceStatus`, `HealthTimeIn`, `HealthEventStatus`) VALUES
-(1, '055455', 'dad', '2026-04-16', 'Check up', 'present', '08:03:53', 'Stopped'),
-(4, NULL, 'sqad', '2026-04-16', 'Check up', 'present', NULL, 'Stopped');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `pension`
 --
 
@@ -161,24 +136,17 @@ CREATE TABLE `seniors` (
   `Purok` varchar(50) DEFAULT NULL,
   `Barangay` varchar(100) DEFAULT 'Kalawag 1',
   `Birthday` date NOT NULL,
-  `Age` int(3) DEFAULT NULL,
-  `Picture` varchar(255) DEFAULT NULL,
   `QRCode` varchar(255) DEFAULT NULL,
-  `CitizenStatus` enum('active','inactive') DEFAULT 'active',
-  `SignaturePicture` varchar(255) DEFAULT NULL,
-  `thumbNailPicture1` varchar(255) DEFAULT NULL,
-  `thumbNailPicture2` varchar(255) DEFAULT NULL,
-  `thumbNailPicture3` varchar(255) DEFAULT NULL,
-  `GenerateDate` datetime DEFAULT NULL
+  `CitizenStatus` enum('active','inactive') DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `seniors`
 --
 
-INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `Age`, `Picture`, `QRCode`, `CitizenStatus`, `SignaturePicture`, `thumbNailPicture1`, `thumbNailPicture2`, `thumbNailPicture3`, `GenerateDate`) VALUES
-('00123', 'MARCELLA', 'CLEM', 'A', 'Female', 'Zone 6', 'Kalawag 1', '1945-06-18', 80, '00123_profile.jpg', '00123', 'active', '00123_sig.jpg', '00123_thumb1.jpg', '00123_thumb2.jpg', '00123_thumb3.jpg', '2026-04-18 09:46:47'),
-('055455', 'Reyes', 'Luz', 'B', 'Female', 'Zone 1', 'Kalawag 1', '1961-01-12', 65, '055455_profile.jpg', '055455', 'active', '055455_sig1.jpg', '055455_thumb1.jpg', '055455_thumb2.jpg', '055455_thumb3.jpg', '2026-04-16 13:36:30');
+INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `QRCode`, `CitizenStatus`) VALUES
+('00123', 'MARCELLA', 'CLEM', 'A', 'Female', 'Zone 6', 'Kalawag 1', '1945-06-18', '00123', 'active'),
+('055455', 'Reyes', 'Luz', 'B', 'Female', 'Zone 1', 'Kalawag 1', '1961-01-12', '055455', 'active');
 
 --
 -- Indexes for dumped tables
@@ -210,13 +178,6 @@ ALTER TABLE `attendance`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`EventID`);
-
---
--- Indexes for table `healthrecords`
---
-ALTER TABLE `healthrecords`
-  ADD PRIMARY KEY (`HealthRecordID`),
-  ADD UNIQUE KEY `unique_health_scan` (`OscaIDNo`,`HealthDate`,`HealthName`);
 
 --
 -- Indexes for table `pension`
@@ -260,12 +221,6 @@ ALTER TABLE `events`
   MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `healthrecords`
---
-ALTER TABLE `healthrecords`
-  MODIFY `HealthRecordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
 -- AUTO_INCREMENT for table `pension`
 --
 ALTER TABLE `pension`
@@ -287,12 +242,6 @@ ALTER TABLE `assistance`
 ALTER TABLE `attendance`
   ADD CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`OscaIDNo`) REFERENCES `seniors` (`OscaIDNo`) ON DELETE CASCADE,
   ADD CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`EventID`) REFERENCES `events` (`EventID`) ON DELETE CASCADE;
-
---
--- Constraints for table `healthrecords`
---
-ALTER TABLE `healthrecords`
-  ADD CONSTRAINT `healthrecords_ibfk_1` FOREIGN KEY (`OscaIDNo`) REFERENCES `seniors` (`OscaIDNo`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `pension`

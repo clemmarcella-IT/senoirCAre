@@ -45,13 +45,6 @@
                     <h6>Total Assistance</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card border-red">
-                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM event_master WHERE EventType='Health'");
-                    while($row = mysqli_fetch_array($query)){ ?>
-                    <h6>Total Medical Event</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
-                </div>
-            </div>
         </div>
 
         <!-- Row 2: Attendance & Status -->

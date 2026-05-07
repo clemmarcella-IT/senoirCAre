@@ -23,36 +23,12 @@
 			Sex = '$sex', 
 			Birthday = '$bday', 
 			Purok = '$purok', 
-			CitizenStatus = '$status'";
+			CitizenStatus = '$status' WHERE OscaIDNo = '$id'";
 
-	// 4. Set where we want to save the photos
-	$folder = "../uploads/";
-
-	// 5. PROFILE PICTURE: Check if the admin chose a new file
-	if($_FILES['pic']['name'] != "") {
-		$picName = $id . "_updated_profile.jpg";
-		move_uploaded_file($_FILES['pic']['tmp_name'], $folder . $picName);
-		// Add this new filename to our SQL command
-		$sql .= ", Picture = '$picName'";
-	}
-
-	// 6. SIGNATURE: Check updated signature upload
-	if($_FILES['sig1']['name'] != "") {
-		$fileName = $id . "_updated_sig.jpg";
-		move_uploaded_file($_FILES['sig1']['tmp_name'], $folder . $fileName);
-		$sql .= ", SignaturePicture = '$fileName'";
-	}
-
-	// 7. Thumbnail update
-	if($_FILES['thumb1']['name'] != "") {
-		$fileName = $id . "_updated_thumb.jpg";
-		move_uploaded_file($_FILES['thumb1']['tmp_name'], $folder . $fileName);
-        $sql .= ", ThumbmarkPicture = '$fileName'";
-	}
-	// 9. Run the command in the database
+	// 4. Run the command in the database
 	mysqli_query($conn, $sql);
 	
-	// 10. Show a simple alert and go back to the list
+	// 5. Show a simple alert and go back to the list
 	?>
 		<script>
 			window.alert('Senior Citizen Profile updated successfully!');

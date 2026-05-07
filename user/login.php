@@ -8,32 +8,14 @@ $admin_contact = $row_admin['ContactNumber'];
 
 // Handle Login Button Click
 if (isset($_POST['login_btn'])) {
-    
     $id = $_POST['login_osca'];
-    
-    // Search the database for the Senior ID
-    $res = mysqli_query($conn, "SELECT OscaIDNo, ApprovalStatus FROM seniors WHERE OscaIDNo = '$id'");
+    $res = mysqli_query($conn, "SELECT OscaIDNo FROM seniors WHERE OscaIDNo = '$id'");
     $row = mysqli_fetch_array($res);
-    
+
     if ($row) {
-        // If account exists, check the approval status
-        $status = $row['ApprovalStatus'];
-
-        if ($status == 'pending') {
-            echo "<script>alert('Your registration is still pending admin approval. Please wait.'); window.location='login.php';</script>";
-        } 
-        else if ($status == 'rejected') {
-            // Delete the rejected data so they can try to register again
-            mysqli_query($conn, "DELETE FROM seniors WHERE OscaIDNo = '$id'");
-            echo "<script>alert('Sorry, your registration was rejected due to incorrect information. Please try registering again.'); window.location='register.php';</script>";
-        } 
-        else {
-            // If approved, send them directly to their profile
-            header("Location: profile.php?id=$id");
-        }
-
+        header("Location: profile.php?id=$id");
+        exit;
     } else {
-        // If ID does not exist
         echo "<script>alert('Error: OscaIDNo. $id not found in our records.'); window.location='login.php';</script>";
     }
 }
@@ -77,16 +59,10 @@ if (isset($_POST['login_btn'])) {
                             VIEW PROFILE & QR
                         </button>
 
-                        <div class="text-center mt-2 border-top pt-3">
-                            <p class="small text-muted mb-0">No account yet?</p>
-                            <a href="register.php" class="text-success small fw-bold text-decoration-none">
-                                Click here to register profiling
-                            </a>
-                        </div>
                     </form>
                     
                     <div class="text-center mt-3 pt-3 border-top">
-                        <p class="small text-muted mb-2">Staff or Administrator?</p>
+                        <p class="small text-muted mb-2">To access your QR history and transaction records, enter your OscaIDNo.</p>
                         <a href="../admin/login.php" class="btn btn-outline-dark btn-sm w-100 py-2 shadow-sm">
                             <i class="fa-solid fa-user-shield me-2"></i> GO TO ADMIN LOGIN
                         </a>
