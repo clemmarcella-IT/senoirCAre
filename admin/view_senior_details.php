@@ -19,7 +19,7 @@ if (!$data) {
 }
 
 // Logic for Pensioner Status Display (In-adjust para sa $data variable)
-if ($data['PensionerStatus'] == 'Yes') {
+if ($data['PensionerStatus'] == 'Pensioner' || $data['PensionerStatus'] == 'Yes') {
     $pension_text = "Pensioner";
     $pension_color = "text-success";
 } else {

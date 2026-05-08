@@ -1,24 +1,27 @@
 <?php
 include("../includes/db_connection.php");
 
-$id = $_GET['id'];
+$oscaID = $_POST['oscaID'];
+$pid = $_POST['pid'];
+$new_control = mysqli_real_escape_string($conn, $_POST['new_control']);
+$new_reason = mysqli_real_escape_string($conn, $_POST['new_reason']);
 
-// Get the NEW values from the Form
-$new_date = $_POST['pdate'];
-$new_amount = $_POST['pamount'];
-
-// Automatically create the Payout Name based on the Date selected
-$new_name = 'Pension Payout - ' . $new_date;
-
-// Update event_master table
-mysqli_query($conn, "UPDATE event_master SET EventName='$new_name', EventDate='$new_date' WHERE EventID='$id'");
-
-// Update pension_details table
-mysqli_query($conn, "UPDATE pension_details SET CashAmount='$new_amount' WHERE EventID='$id'");
+$existing = mysqli_query($conn, "SELECT * FROM transaction_logs WHERE OscaIDNo='$oscaID' AND PensionMasterID='$pid' AND ClaimType='Pension Claim'");
+if (mysqli_num_rows($existing) > 0) {
+    mysqli_query($conn, "UPDATE transaction_logs SET ControlNo='$new_control', Reason='$new_reason', Status='Claimed' WHERE OscaIDNo='$oscaID' AND PensionMasterID='$pid' AND ClaimType='Pension Claim'");
+} else {
+    $amount_q = mysqli_query($conn, "SELECT CashAmount FROM pension_master WHERE PensionMasterID='$pid'");
+    $amount_row = mysqli_fetch_array($amount_q);
+    $amount = $amount_row ? $amount_row['CashAmount'] : 0;
+    $date = date('Y-m-d');
+    $time = date('H:i:s');
+    mysqli_query($conn, "INSERT INTO transaction_logs (OscaIDNo, PensionMasterID, ClaimType, Amount_Released, DateRecorded, TimeRecorded, Status, ControlNo, Reason) 
+        VALUES ('$oscaID', '$pid', 'Pension Claim', '$amount', '$date', '$time', 'Claimed', '$new_control', '$new_reason')");
+}
 ?>
 
 <!-- Alert and Redirect -->
 <script>
-    window.alert('Pension Payout updated successfully!');
-    window.location="pension.php";
+    window.alert('Pension payout record updated successfully!');
+    window.location="pension_attendance.php?id=<?php echo $pid; ?>";
 </script>

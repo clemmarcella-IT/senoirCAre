@@ -83,8 +83,8 @@
                             <div class="col-md-4">
                                 <label class="fw-bold small text-muted">Pensioner Status</label>
                                 <select class="form-select card shadow border border-1 border-black" name="pension_status">
-                                    <option value="No">No</option>
-                                    <option value="Yes">Yes</option>
+                                    <option value="Non-Pensioner">Non-Pensioner</option>
+                                    <option value="Pensioner">Pensioner</option>
                                 </select>
                             </div>
 

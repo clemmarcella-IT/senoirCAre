@@ -52,9 +52,9 @@
                                3. We COUNT the attendance records for that event.
                                4. We ORDER BY the count DESC (Highest to Lowest).
                             */
-                            $query = mysqli_query($conn, "SELECT event_master.EventName, COUNT(event_attendance.AttendanceID) 
-                            AS total_attendees FROM event_master LEFT JOIN event_attendance 
-                            ON event_master.EventID = event_attendance.EventID GROUP BY event_master.EventID ORDER BY total_attendees DESC");
+                            $query = mysqli_query($conn, "SELECT activities.ActivityName, COUNT(transaction_logs.LogID) 
+                            AS total_attendees FROM activities LEFT JOIN transaction_logs 
+                            ON activities.ActivityID = transaction_logs.ActivityID GROUP BY activities.ActivityID ORDER BY total_attendees DESC");
 
                             $clem = 1; // Counter for the Rank column
 
@@ -62,7 +62,7 @@
                             ?>
                             <tr>
                                 <td><?php echo $clem++; ?></td>
-                                <td><?php echo $display['EventName']; ?></td>
+                                <td><?php echo $display['ActivityName']; ?></td>
                                 <td>
                                     <span class="badge <?php echo ($display['total_attendees'] > 0) ? 'bg-success' : 'bg-secondary'; ?>">
                                         <?php echo $display['total_attendees']; ?> People

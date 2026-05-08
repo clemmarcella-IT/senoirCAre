@@ -45,29 +45,23 @@ $admin_contact = $row_admin['ContactNumber'];
                     </thead>
                     <tbody>
                         <?php
-                            // SIMPLE LOGIC: Kasama na ang Amount_Used sa query
-                            $clem = mysqli_query($conn, "SELECT event_master.EventName, transaction_records.Date_Recorded, transaction_records.Time_Recorded, transaction_records.Status, transaction_records.Reason, transaction_records.Amount_Used 
-                                                         FROM transaction_records 
-                                                         LEFT JOIN event_master ON transaction_records.EventID = event_master.EventID 
-                                                         WHERE transaction_records.OscaIDNo = '$id' 
-                                                         AND transaction_records.Transaction_Type = 'Benefit_Claim' 
-                                                         ORDER BY transaction_records.Date_Recorded DESC");
+                            $clem = mysqli_query($conn, "SELECT DateRecorded, TimeRecorded, Status, Reason, Amount_Released FROM transaction_logs WHERE OscaIDNo = '$id' AND ClaimType = 'Benefit Claim' ORDER BY DateRecorded DESC, TimeRecorded DESC");
 
                             while($display = mysqli_fetch_array($clem)){
-                                if($display['Time_Recorded'] != NULL && $display['Time_Recorded'] != '') {
-                                    $time_claimed = date("h:i A", strtotime($display['Time_Recorded']));
+                                if($display['TimeRecorded'] != NULL && $display['TimeRecorded'] != '') {
+                                    $time_claimed = date("h:i A", strtotime($display['TimeRecorded']));
                                 } else {
                                     $time_claimed = '--:--';
                                 }
                         ?>
                         <tr>
-                            <td><?php echo $display['Date_Recorded']; ?></td>
+                            <td><?php echo date('M d, Y', strtotime($display['DateRecorded'])); ?></td>
                             <td><?php echo $time_claimed; ?></td>
-                            <td class="fw-bold"><?php echo $display['EventName']; ?></td> 
+                            <td class="fw-bold">Benefit Claim</td>
                             
                             <!-- DISPLAY NG AMOUNT -->
                             <td class="text-success fw-bold">
-                                <?php echo ($display['Amount_Used'] > 0) ? "₱".number_format($display['Amount_Used'], 2) : "-"; ?>
+                                <?php echo ($display['Amount_Released'] > 0) ? "₱".number_format($display['Amount_Released'], 2) : "-"; ?>
                             </td>
 
                             <td><span class="badge bg-primary"><?php echo $display['Status']; ?></span></td>

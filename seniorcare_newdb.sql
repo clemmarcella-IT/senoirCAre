@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2026 at 11:33 AM
+-- Generation Time: May 08, 2026 at 12:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `activities`
+--
+
+CREATE TABLE `activities` (
+  `ActivityID` int(11) NOT NULL,
+  `ActivityName` varchar(255) NOT NULL,
+  `ActivityDate` date NOT NULL,
+  `ActivityTimeStart` time NOT NULL,
+  `ActivityStatus` varchar(20) DEFAULT 'Active'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `activities`
+--
+
+INSERT INTO `activities` (`ActivityID`, `ActivityName`, `ActivityDate`, `ActivityTimeStart`, `ActivityStatus`) VALUES
+(1, 'General Assembly', '2026-05-15', '08:00:00', 'Active');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `admin_users`
 --
 
@@ -31,8 +52,8 @@ CREATE TABLE `admin_users` (
   `AdminID` int(11) NOT NULL,
   `AdminOscaID` varchar(50) NOT NULL,
   `Password` varchar(255) NOT NULL,
-  `ContactNumber` varchar(50) DEFAULT NULL,
-  `ResetCode` varchar(6) DEFAULT NULL,
+  `ContactNumber` varchar(15) DEFAULT NULL,
+  `ResetCode` varchar(10) DEFAULT NULL,
   `CodeExpiry` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -41,7 +62,7 @@ CREATE TABLE `admin_users` (
 --
 
 INSERT INTO `admin_users` (`AdminID`, `AdminOscaID`, `Password`, `ContactNumber`, `ResetCode`, `CodeExpiry`) VALUES
-(1, '001', '$2y$10$OaGp7lBCyxQDmDPXxnT7QeBVLUMdfLvXjdOiZXd4UdaSz3z1L9.ha', '09365250520', NULL, NULL);
+(1, 'ADMIN-001', '$2y$10$OaGp7lBCyxQDmDPXxnT7QeBVLUMdfLvXjdOiZXd4UdaSz3z1L9.ha', '09123456789', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -55,39 +76,15 @@ CREATE TABLE `dues_payments` (
   `DuesID` int(11) NOT NULL,
   `Amount_Paid` decimal(10,2) NOT NULL,
   `Date_Paid` date NOT NULL,
-  `Time_Paid` time NOT NULL,
-  `Payment_Status` varchar(50) DEFAULT 'Paid'
+  `Payment_Status` varchar(20) DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `dues_payments`
 --
 
-INSERT INTO `dues_payments` (`PaymentID`, `OscaIDNo`, `DuesID`, `Amount_Paid`, `Date_Paid`, `Time_Paid`, `Payment_Status`) VALUES
-(1, '00123', 1, 50.00, '2026-01-15', '09:30:00', 'Paid');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `event_master`
---
-
-CREATE TABLE `event_master` (
-  `EventID` int(11) NOT NULL,
-  `EventName` varchar(255) NOT NULL,
-  `EventDate` date NOT NULL,
-  `EventTime` time DEFAULT NULL,
-  `EventType` enum('Meeting','Pension','Benefit Distribution') NOT NULL,
-  `EventStatus` enum('Active','Stopped') DEFAULT 'Active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_master`
---
-
-INSERT INTO `event_master` (`EventID`, `EventName`, `EventDate`, `EventTime`, `EventType`, `EventStatus`) VALUES
-(1, 'Q1 Monthly Pension', '2026-04-22', NULL, 'Pension', 'Active'),
-(2, 'General Assembly', '2026-05-01', NULL, 'Meeting', 'Active');
+INSERT INTO `dues_payments` (`PaymentID`, `OscaIDNo`, `DuesID`, `Amount_Paid`, `Date_Paid`, `Payment_Status`) VALUES
+(1, 'OSCA-00123', 1, 50.00, '2026-05-08', 'Paid');
 
 -- --------------------------------------------------------
 
@@ -97,7 +94,7 @@ INSERT INTO `event_master` (`EventID`, `EventName`, `EventDate`, `EventTime`, `E
 
 CREATE TABLE `monthly_dues_master` (
   `DuesID` int(11) NOT NULL,
-  `Contribution_Name` varchar(255) NOT NULL,
+  `Contribution_Name` varchar(100) NOT NULL,
   `Amount_Required` decimal(10,2) NOT NULL,
   `Due_Date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -107,26 +104,26 @@ CREATE TABLE `monthly_dues_master` (
 --
 
 INSERT INTO `monthly_dues_master` (`DuesID`, `Contribution_Name`, `Amount_Required`, `Due_Date`) VALUES
-(1, 'January Damayan Fund', 50.00, '2026-01-31');
+(1, 'MonthlyDue_May_2026', 50.00, '2026-05-31');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pension_details`
+-- Table structure for table `pension_master`
 --
 
-CREATE TABLE `pension_details` (
-  `PensionDataID` int(11) NOT NULL,
-  `EventID` int(11) NOT NULL,
+CREATE TABLE `pension_master` (
+  `PensionMasterID` int(11) NOT NULL,
+  `PayoutDate` date NOT NULL,
   `CashAmount` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `pension_details`
+-- Dumping data for table `pension_master`
 --
 
-INSERT INTO `pension_details` (`PensionDataID`, `EventID`, `CashAmount`) VALUES
-(1, 1, 1500.00);
+INSERT INTO `pension_master` (`PensionMasterID`, `PayoutDate`, `CashAmount`) VALUES
+(1, '2026-05-20', 1500.00);
 
 -- --------------------------------------------------------
 
@@ -141,10 +138,10 @@ CREATE TABLE `seniors` (
   `MiddleName` varchar(100) DEFAULT NULL,
   `Sex` enum('Male','Female') NOT NULL,
   `Purok` varchar(50) DEFAULT NULL,
-  `Barangay` varchar(100) DEFAULT 'Kalawag 1',
+  `Barangay` varchar(100) DEFAULT NULL,
   `Birthday` date NOT NULL,
   `CitizenStatus` enum('Active','Inactive') DEFAULT 'Active',
-  `PensionerStatus` enum('Yes','No') DEFAULT 'No'
+  `PensionerStatus` enum('Pensioner','Non-Pensioner') DEFAULT 'Non-Pensioner'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -152,45 +149,54 @@ CREATE TABLE `seniors` (
 --
 
 INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `CitizenStatus`, `PensionerStatus`) VALUES
-('00123', 'ARCELLA', 'CLEM', 'A', 'Male', 'Zone 1', 'Kalawag 1', '1960-09-19', 'Active', 'Yes'),
-('055455', 'MARCELLA', 'CLEM', 'A', 'Male', 'Zone 2', 'Kalawag 1', '1926-07-21', 'Active', 'No');
+('OSCA-00123', 'DELA CRUZ', 'JUAN', 'M', 'Male', 'Zone 1', 'Bagumbayan', '1955-05-15', 'Active', 'Pensioner'),
+('OSCA-00124', 'SANTOS', 'MARIA', 'C', 'Female', 'Zone 2', 'Bagumbayan', '1958-08-22', 'Active', 'Non-Pensioner');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transaction_records`
+-- Table structure for table `transaction_logs`
 --
 
-CREATE TABLE `transaction_records` (
-  `RecordID` int(11) NOT NULL,
+CREATE TABLE `transaction_logs` (
+  `LogID` int(11) NOT NULL,
   `OscaIDNo` varchar(50) NOT NULL,
-  `EventID` int(11) NOT NULL,
-  `Transaction_Type` enum('Attendance','Pension_Claim','Benefit_Claim') NOT NULL,
-  `Date_Recorded` date NOT NULL,
-  `Time_Recorded` time NOT NULL,
+  `ActivityID` int(11) DEFAULT NULL,
+  `PensionMasterID` int(11) DEFAULT NULL,
+  `ClaimType` varchar(50) DEFAULT NULL,
+  `Amount_Released` decimal(10,2) DEFAULT NULL,
+  `DateRecorded` date NOT NULL,
+  `TimeRecorded` time NOT NULL,
+  `Status` varchar(20) DEFAULT 'Unclaimed',
   `ControlNo` varchar(50) DEFAULT NULL,
-  `Status` varchar(50) DEFAULT 'Claimed',
-  `Amount_Used` decimal(10,2) DEFAULT NULL,
-  `Reason` varchar(255) DEFAULT NULL
+  `Reason` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `transaction_records`
+-- Dumping data for table `transaction_logs`
 --
 
-INSERT INTO `transaction_records` (`RecordID`, `OscaIDNo`, `EventID`, `Transaction_Type`, `Date_Recorded`, `Time_Recorded`, `ControlNo`, `Status`, `Amount_Used`, `Reason`) VALUES
-(1, '00123', 1, 'Pension_Claim', '2026-04-22', '08:15:00', 'CN-1001', 'Claimed', NULL, NULL),
-(2, '055455', 2, 'Attendance', '2026-05-01', '13:00:00', NULL, 'Present', NULL, NULL);
+INSERT INTO `transaction_logs` (`LogID`, `OscaIDNo`, `ActivityID`, `PensionMasterID`, `ClaimType`, `Amount_Released`, `DateRecorded`, `TimeRecorded`, `Status`, `ControlNo`, `Reason`) VALUES
+(1, 'OSCA-00123', 1, NULL, NULL, NULL, '2026-05-15', '07:45:00', 'Present', NULL, NULL),
+(2, 'OSCA-00123', NULL, 1, 'Pension Claim', 1500.00, '2026-05-20', '09:15:00', 'Claimed', 'CTRL-1001', NULL),
+(3, 'OSCA-00124', NULL, NULL, 'Emergency', 2000.00, '2026-05-08', '14:30:00', 'Claimed', 'AID-5001', 'Bedridden Financial Assistance');
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `activities`
+--
+ALTER TABLE `activities`
+  ADD PRIMARY KEY (`ActivityID`);
+
+--
 -- Indexes for table `admin_users`
 --
 ALTER TABLE `admin_users`
-  ADD PRIMARY KEY (`AdminID`);
+  ADD PRIMARY KEY (`AdminID`),
+  ADD UNIQUE KEY `uk_admin_osca` (`AdminOscaID`);
 
 --
 -- Indexes for table `dues_payments`
@@ -201,23 +207,16 @@ ALTER TABLE `dues_payments`
   ADD KEY `fk_dues_master` (`DuesID`);
 
 --
--- Indexes for table `event_master`
---
-ALTER TABLE `event_master`
-  ADD PRIMARY KEY (`EventID`);
-
---
 -- Indexes for table `monthly_dues_master`
 --
 ALTER TABLE `monthly_dues_master`
   ADD PRIMARY KEY (`DuesID`);
 
 --
--- Indexes for table `pension_details`
+-- Indexes for table `pension_master`
 --
-ALTER TABLE `pension_details`
-  ADD PRIMARY KEY (`PensionDataID`),
-  ADD UNIQUE KEY `fk_pension_event` (`EventID`);
+ALTER TABLE `pension_master`
+  ADD PRIMARY KEY (`PensionMasterID`);
 
 --
 -- Indexes for table `seniors`
@@ -226,16 +225,23 @@ ALTER TABLE `seniors`
   ADD PRIMARY KEY (`OscaIDNo`);
 
 --
--- Indexes for table `transaction_records`
+-- Indexes for table `transaction_logs`
 --
-ALTER TABLE `transaction_records`
-  ADD PRIMARY KEY (`RecordID`),
+ALTER TABLE `transaction_logs`
+  ADD PRIMARY KEY (`LogID`),
   ADD KEY `fk_trans_senior` (`OscaIDNo`),
-  ADD KEY `fk_trans_event` (`EventID`);
+  ADD KEY `fk_trans_activity` (`ActivityID`),
+  ADD KEY `fk_trans_pension` (`PensionMasterID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `activities`
+--
+ALTER TABLE `activities`
+  MODIFY `ActivityID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `admin_users`
@@ -250,28 +256,22 @@ ALTER TABLE `dues_payments`
   MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `event_master`
---
-ALTER TABLE `event_master`
-  MODIFY `EventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT for table `monthly_dues_master`
 --
 ALTER TABLE `monthly_dues_master`
   MODIFY `DuesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `pension_details`
+-- AUTO_INCREMENT for table `pension_master`
 --
-ALTER TABLE `pension_details`
-  MODIFY `PensionDataID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `pension_master`
+  MODIFY `PensionMasterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `transaction_records`
+-- AUTO_INCREMENT for table `transaction_logs`
 --
-ALTER TABLE `transaction_records`
-  MODIFY `RecordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `transaction_logs`
+  MODIFY `LogID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -285,16 +285,11 @@ ALTER TABLE `dues_payments`
   ADD CONSTRAINT `fk_dues_senior` FOREIGN KEY (`OscaIDNo`) REFERENCES `seniors` (`OscaIDNo`) ON DELETE CASCADE;
 
 --
--- Constraints for table `pension_details`
+-- Constraints for table `transaction_logs`
 --
-ALTER TABLE `pension_details`
-  ADD CONSTRAINT `fk_pension_event` FOREIGN KEY (`EventID`) REFERENCES `event_master` (`EventID`) ON DELETE CASCADE;
-
---
--- Constraints for table `transaction_records`
---
-ALTER TABLE `transaction_records`
-  ADD CONSTRAINT `fk_trans_event` FOREIGN KEY (`EventID`) REFERENCES `event_master` (`EventID`) ON DELETE CASCADE,
+ALTER TABLE `transaction_logs`
+  ADD CONSTRAINT `fk_trans_activity` FOREIGN KEY (`ActivityID`) REFERENCES `activities` (`ActivityID`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_trans_pension` FOREIGN KEY (`PensionMasterID`) REFERENCES `pension_master` (`PensionMasterID`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_trans_senior` FOREIGN KEY (`OscaIDNo`) REFERENCES `seniors` (`OscaIDNo`) ON DELETE CASCADE;
 COMMIT;
 

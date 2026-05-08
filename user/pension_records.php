@@ -46,13 +46,12 @@ $admin_contact = $row_admin['ContactNumber'];
                     </thead>
                     <tbody>
                         <?php
-                            $clem = mysqli_query($conn, "SELECT transaction_records.Date_Recorded, transaction_records.Time_Recorded, transaction_records.Status, transaction_records.ControlNo, transaction_records.Reason, pension_details.CashAmount 
-                                                         FROM transaction_records 
-                                                         LEFT JOIN event_master ON transaction_records.EventID = event_master.EventID 
-                                                         LEFT JOIN pension_details ON event_master.EventID = pension_details.EventID 
-                                                         WHERE transaction_records.OscaIDNo = '$id' 
-                                                         AND transaction_records.Transaction_Type = 'Pension_Claim' 
-                                                         ORDER BY transaction_records.Date_Recorded DESC, transaction_records.Time_Recorded DESC");
+                            $clem = mysqli_query($conn, "SELECT transaction_logs.DateRecorded, transaction_logs.TimeRecorded, transaction_logs.Status, transaction_logs.ControlNo, transaction_logs.Reason, pension_master.CashAmount 
+                                                         FROM transaction_logs 
+                                                         LEFT JOIN pension_master ON transaction_logs.PensionMasterID = pension_master.PensionMasterID 
+                                                         WHERE transaction_logs.OscaIDNo = '$id' 
+                                                         AND transaction_logs.ClaimType = 'Pension Claim' 
+                                                         ORDER BY transaction_logs.DateRecorded DESC, transaction_logs.TimeRecorded DESC");
 
                             while($display = mysqli_fetch_array($clem)){
                                 if($display['Time_Recorded'] != NULL && $display['Time_Recorded'] != '') {

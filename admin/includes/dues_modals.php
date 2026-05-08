@@ -9,16 +9,15 @@
             <form method="POST" action="query_edit_dues.php?id=<?php echo $did; ?>">
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="small fw-bold">Contribution Name</label>
-                        <input type="text" name="cname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Contribution_Name']; ?>" required>
-                    </div>
-                    <div class="mb-3">
                         <label class="small fw-bold">Amount Required (₱)</label>
                         <input type="number" step="0.01" min="1" name="amount" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Amount_Required']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="small fw-bold">Due Date</label>
                         <input type="date" name="due_date" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Due_Date']; ?>" required>
+                    </div>
+                    <div class="alert alert-info small mb-0">
+                        Contribution name will be regenerated from the chosen Due Date as <strong>MonthlyDue_Month_Year</strong>.
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -65,7 +65,11 @@
                                             <?php echo $row['CitizenStatus']; ?>
                                         </span>
                                     </td>
-                                    <td><?php echo $row['PensionerStatus']; ?></td>
+                                    <td>
+                                        <span class="badge <?php echo ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') ? 'bg-success' : 'bg-danger'; ?>">
+                                            <?php echo ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') ? 'Pensioner' : 'Non-Pensioner'; ?>
+                                        </span>
+                                    </td>
                                     <td>
                                         <div class="btn-group">
                                             <a href="view_senior_details.php?id=<?php echo $id; ?>" class="btn btn-sm btn-info text-white" title="View Details"><i class="fa fa-eye"></i></a>

@@ -1,22 +1,20 @@
 <?php 
 require_once('includes/session.php'); 
-$eid = $_GET['id'];
+$pid = $_GET['id'];
 
-$res = mysqli_query($conn, "SELECT em.EventID, em.EventName, em.EventDate, em.EventStatus, pd.CashAmount FROM event_master em LEFT JOIN pension_details pd ON em.EventID = pd.EventID WHERE em.EventID = '$eid' AND em.EventType = 'Pension'");
-$event = mysqli_fetch_array($res);
-if (!$event) {
-    echo "<script>alert('Pension event not found.'); window.location='pension.php';</script>";
+$res = mysqli_query($conn, "SELECT PensionMasterID, PayoutDate, CashAmount FROM pension_master WHERE PensionMasterID = '$pid'");
+$payout = mysqli_fetch_array($res);
+if (!$payout) {
+    echo "<script>alert('Pension payout not found.'); window.location='pension.php';</script>";
     exit;
 }
-
-$isStopped = ($event['EventStatus'] == 'Stopped');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Pension Claim | <?php echo $event['EventName']; ?></title>
+    <title>Pension Claim | Pension Payout</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,47 +31,27 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
         <div class="container-fluid px-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-4 mb-4 gap-3">
                 <div>
-                    <h3 class="fw-bold text-success m-0"><?php echo $event['EventName']; ?></h3>
-                    <p class="text-muted mb-1"><?php echo date("M d, Y", strtotime($event['EventDate'])); ?> | ₱<?php echo number_format($event['CashAmount'], 2); ?></p>
-                    <span class="badge <?php echo $isStopped ? 'bg-warning text-dark' : 'bg-success'; ?>">
-                        <?php echo $isStopped ? 'PAUSED (LOCKED)' : 'ACTIVE DISTRIBUTION'; ?>
-                    </span>
+                    <h3 class="fw-bold text-success m-0">Pension Payout</h3>
+                    <p class="text-muted mb-1"><?php echo date("M d, Y", strtotime($payout['PayoutDate'])); ?> | ₱<?php echo number_format($payout['CashAmount'], 2); ?></p>
                 </div>
                 <div class="no-print d-flex flex-column flex-sm-row gap-2">
-                    <a href="pension.php" class="btn btn-secondary shadow-sm">Back</a>
-                    <button onclick="printTable()" class="btn btn-success shadow-sm"><i class="fa fa-print"></i> Print</button>
-                    <?php if(!$isStopped): ?>
-                        <a href="query_toggle_pension.php?id=<?php echo $event['EventID']; ?>&status=Stopped" 
-                           class="btn btn-warning fw-bold shadow-sm" onclick="return confirm('Pause distribution?')">PAUSE</a>
-                    <?php else: ?>
-                        <a href="query_toggle_pension.php?id=<?php echo $event['EventID']; ?>&status=Active" 
-                           class="btn btn-primary fw-bold shadow-sm" onclick="return confirm('Resume distribution?')">RESUME</a>
-                    <?php endif; ?>
-                    <button class="btn btn-danger fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#stopPermanentlyModal">STOP PERMANENTLY</button>
+                    <a href="pension.php" class="btn btn-secondary shadow-sm w-100 py-2">Back</a>
+                    <button onclick="printTable()" class="btn btn-success shadow-sm w-100 py-2"><i class="fa fa-print me-2"></i>Print</button>
                 </div>
             </div>
 
             <div class="row">
                 <!-- LEFT: SCANNER -->
                 <div class="col-md-4">
-                    <?php if(!$isStopped): ?>
-                        <div class="card p-3 shadow-sm border-0">
-                            <div class="card-header bg-success text-white fw-bold text-center mb-3">Live QR Scanner</div>
-                            <div id="reader"></div>
-                            <form action="query_record_pension_attendance.php" method="POST" class="mt-3">
-                                <input type="hidden" name="eid" value="<?php echo $event['EventID']; ?>">
-                                <input type="hidden" name="pamount" value="<?php echo $event['CashAmount']; ?>">
-                                <input type="text" name="oscaID" id="scanned_id" class="form-control text-center font-weight-bold text-primary mb-2" readonly placeholder="Waiting for Scan">
-                                <button type="submit" id="submitBtn" class="btn btn-success w-100 py-2 fw-bold" disabled>MARK AS CLAIMED</button>
-                            </form>
-                        </div>
-                    <?php else: ?>
-                        <div class="alert alert-warning text-center py-5 shadow-sm border-0">
-                            <i class="fa fa-pause-circle fa-3x mb-3 text-warning"></i>
-                            <h5 class="fw-bold text-dark">Distribution is Paused</h5>
-                            <p class="small text-dark m-0">Click <b>RESUME</b> at the top to re-open the scanner.</p>
-                        </div>
-                    <?php endif; ?>
+                    <div class="card p-3 shadow-sm border-0">
+                        <div class="card-header bg-success text-white fw-bold text-center mb-3">Live QR Scanner</div>
+                        <div id="reader"></div>
+                        <form action="query_record_pension_attendance.php" method="POST" class="mt-3" id="pensionScannerForm">
+                            <input type="hidden" name="pid" value="<?php echo $payout['PensionMasterID']; ?>">
+                            <input type="text" name="oscaID" id="scanned_id" class="form-control text-center font-weight-bold text-primary mb-2" readonly placeholder="Waiting for Scan">
+                            <button type="submit" id="submitBtn" class="btn btn-success w-100 py-2 fw-bold" disabled>MARK AS CLAIMED</button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- RIGHT: MASTER LIST -->
@@ -97,43 +75,28 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
     </thead>
     <tbody>
          <?php
-             $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, event_attendance.TimeIn, event_attendance.Status, event_attendance.Reason, event_attendance.ControlNo 
+             $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, transaction_logs.DateRecorded, transaction_logs.TimeRecorded, transaction_logs.Status, transaction_logs.Reason, transaction_logs.ControlNo 
                                           FROM seniors 
-                                          LEFT JOIN event_attendance ON seniors.OscaIDNo = event_attendance.OscaIDNo 
-                                          AND event_attendance.EventID = '$eid' 
-                                          WHERE seniors.CitizenStatus = 'active'
-                                          ORDER BY event_attendance.TimeIn DESC, seniors.LastName ASC");
+                                          LEFT JOIN transaction_logs ON seniors.OscaIDNo = transaction_logs.OscaIDNo 
+                                          AND transaction_logs.PensionMasterID = '$pid' 
+                                          AND transaction_logs.ClaimType = 'Pension Claim' 
+                                          WHERE seniors.PensionerStatus = 'Pensioner'
+                                          ORDER BY transaction_logs.DateRecorded DESC, transaction_logs.TimeRecorded DESC, seniors.LastName ASC");
              
              $counter = 1;
              while($display = mysqli_fetch_array($clem)){
-                
                 $status = $display['Status'];
                 
                 if ($status == "Claimed") {
                     $statusText = '<span class="badge bg-success">CLAIMED</span>';
-                    $time = date("h:i A", strtotime($display['TimeIn']));
-                    $reasonText = "-";
-                    $modalReason = ""; // Added for the modal
+                    $time = $display['TimeRecorded'] ? date("h:i A", strtotime($display['TimeRecorded'])) : "-- : --";
                 } else {
                     $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
                     $time = "-- : --";
-                    
-                    if ($display['Reason'] == "") {
-                        $reasonText = "-";
-                        $modalReason = ""; // Added for the modal
-                    } else {
-                        $reasonText = $display['Reason'];
-                        $modalReason = $display['Reason']; // Added for the modal
-                    }
                 }
 
-                if ($display['ControlNo'] == "") {
-                    $controlText = "-";
-                    $modalControl = ""; // Added for the modal
-                } else {
-                    $controlText = $display['ControlNo'];
-                    $modalControl = $display['ControlNo']; // Added for the modal
-                }
+                $reasonText = $display['Reason'] ? $display['Reason'] : '-';
+                $controlText = $display['ControlNo'] ? $display['ControlNo'] : '-';
                 ?>
                 <tr>
                     <td class="text-muted fw-bold"><?php echo $counter++; ?>.</td>
@@ -161,38 +124,9 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
         </div>
     </main>
 
-    <div class="modal fade" id="stopPermanentlyModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0 shadow">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title fw-bold">Stop Permanently</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body text-center py-4">
-                            <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-                            <p class="fw-bold">Are you sure you want to end this session?</p>
-                            <p class="text-muted small">To record reasons for absentees (e.g. Bedridden), please use the <b>Edit</b> icon in the list.</p>
-                            
-                            <form action="query_stop_pension.php" method="POST">
-                                <!-- Hidden context inputs -->
-                                <input type="hidden" name="id" value="<?php echo $event['EventID']; ?>">
-                                
-                                <div class="d-grid gap-2 mt-3">
-                                    <button type="submit" class="btn btn-danger fw-bold">Confirm & Stop</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </modal>
-
 <script src="js/scripts.js"></script>
 <script src="js/qr_scanner_logic.js"></script>
-<?php if(!$isStopped): ?>
-    <script>startScanner();</script>
-<?php endif; ?>
+<script>startScanner();</script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 <script src="js/datatables-simple-demo.js"></script>
 <script>
@@ -200,7 +134,7 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
         var table = document.getElementById("datatablesSimple");
         var newWindow = window.open("", "", "width=800,height=600");
         newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
-        newWindow.document.write("<h3 class='text-center'>Pension: <?php echo $event['EventName']; ?></h3>");
+        newWindow.document.write("<h3 class='text-center'>Pension Payout</h3>");
         newWindow.document.write(table.outerHTML);
         newWindow.document.close();
         setTimeout(() => { 

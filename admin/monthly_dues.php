@@ -103,16 +103,15 @@
                 <form method="POST" action="query_add_dues.php">
                     <div class="modal-body p-4">
                         <div class="mb-3">
-                            <label class="small fw-bold">Contribution Name (e.g. July 2024 Fund)</label>
-                            <input type="text" name="cname" class="form-control card shadow border border-1 border-black" required>
-                        </div>
-                        <div class="mb-3">
                             <label class="small fw-bold">Amount Required (₱)</label>
                             <input type="number" step="0.01" name="amount" class="form-control card shadow border border-1 border-black" required>
                         </div>
                         <div class="mb-3">
                             <label class="small fw-bold">Due Date</label>
                             <input type="date" name="due_date" class="form-control card shadow border border-1 border-black" value="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+                        <div class="alert alert-info small mb-0">
+                            Contribution name will be generated automatically as <strong>MonthlyDue_Month_Year</strong> when saved.
                         </div>
                     </div>
                     <div class="modal-footer">

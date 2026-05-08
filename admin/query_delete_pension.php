@@ -5,7 +5,7 @@ include("../includes/db_connection.php");
 $id = $_GET['id'];
 
 // Perform the deletion
-mysqli_query($conn, "DELETE FROM event_master WHERE EventID='$id' AND EventType='Pension'");
+mysqli_query($conn, "DELETE FROM pension_master WHERE PensionMasterID='$id'");
 ?>
 
 <!-- Alert and Redirect -->

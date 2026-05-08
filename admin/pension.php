@@ -46,34 +46,28 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Amount</th>
-                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $query = mysqli_query($conn, "SELECT event_master.EventID, event_master.EventName, event_master.EventDate, event_master.EventStatus, pension_details.CashAmount FROM event_master LEFT JOIN pension_details ON event_master.EventID = pension_details.EventID WHERE event_master.EventType = 'Pension' ORDER BY event_master.EventDate DESC");
+                            $query = mysqli_query($conn, "SELECT PensionMasterID, PayoutDate, CashAmount FROM pension_master ORDER BY PayoutDate DESC");
                             while ($display = mysqli_fetch_array($query)) {
-                                $eid = $display['EventID'];
-                                $date = $display['EventDate'];
+                                $pid = $display['PensionMasterID'];
+                                $date = $display['PayoutDate'];
                             ?>
                             <tr>
                                 <td class="fw-bold"><?php echo date("M d, Y", strtotime($date)); ?></td>
                                 <td class="text-primary fw-bold">₱<?php echo number_format($display['CashAmount'], 2); ?></td>
                                 <td>
-                                    <span class="badge <?php echo ($display['EventStatus'] == 'Active') ? 'bg-success' : 'bg-danger'; ?>">
-                                        <?php echo $display['EventStatus']; ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="pension_attendance.php?id=<?php echo $eid; ?>" class="btn btn-sm btn-info">
+                                    <div class="btn-group" role="group">
+                                        <a href="pension_attendance.php?id=<?php echo $pid; ?>" class="btn btn-sm btn-info text-white" title="QR Scan & Distribution">
                                             <i class="fa fa-qrcode"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#edit_pen_<?php echo $eid; ?>">
+                                        <button type="button" class="btn btn-sm btn-success" title="Edit Payout" data-bs-toggle="modal" data-bs-target="#edit_pen_<?php echo $pid; ?>">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#del_pen_<?php echo $eid; ?>">
+                                        <button type="button" class="btn btn-sm btn-danger" title="Delete Payout" data-bs-toggle="modal" data-bs-target="#del_pen_<?php echo $pid; ?>">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </div>

@@ -12,18 +12,22 @@
                 <div class="modal-body p-4" style="background-color: #f8f9fa;">
                     <div class="row g-3">
                         
-                        <!-- Row 1: Names -->
-                        <div class="col-md-4">
-                            <label class="small fw-bold text-muted">First Name</label>
-                            <input type="text" name="fname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['FirstName']; ?>">
+                        <!-- Row 1: OSCA ID and Names -->
+                        <div class="col-md-3">
+                            <label class="small fw-bold text-muted">OSCA ID</label>
+                            <input type="text" name="oscaid" class="form-control card shadow border border-1 border-black" value="<?php echo $row['OscaIDNo']; ?>" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label class="small fw-bold text-muted">First Name</label>
+                            <input type="text" name="fname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['FirstName']; ?>" required>
+                        </div>
+                        <div class="col-md-3">
                             <label class="small fw-bold text-muted">Middle Name</label>
                             <input type="text" name="mi" class="form-control card shadow border border-1 border-black" value="<?php echo $row['MiddleName']; ?>">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="small fw-bold text-muted">Last Name</label>
-                            <input type="text" name="lname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['LastName']; ?>">
+                            <input type="text" name="lname" class="form-control card shadow border border-1 border-black" value="<?php echo $row['LastName']; ?>" required>
                         </div>
 
                         <!-- Row 2: Sex, Purok, Birthday -->
@@ -65,7 +69,14 @@
                                 <option value="Inactive" <?php if($row['CitizenStatus']=='Inactive'){ echo 'selected'; } ?>>Inactive</option>
                             </select>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
+                            <label class="small fw-bold text-muted">Pensioner Status</label>
+                            <select name="pension_status" class="form-select card shadow border border-1 border-black">
+                                <option value="Pensioner" <?php if($row['PensionerStatus']=='Pensioner'){ echo 'selected'; } ?>>Pensioner</option>
+                                <option value="Non-Pensioner" <?php if($row['PensionerStatus']=='Non-Pensioner'){ echo 'selected'; } ?>>Non-Pensioner</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
                             <label class="small fw-bold text-muted">Barangay</label>
                             <input type="text" class="form-control card shadow border border-1 border-black" value="<?php echo $row['Barangay']; ?>" readonly>
                         </div>

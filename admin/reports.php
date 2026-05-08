@@ -33,7 +33,7 @@
                     <i class="fa fa-star text-warning fs-1 mb-3"></i>
                     <h5>Most Attended</h5>
                     <p class="small text-muted">Ranking of most popular events.</p>
-                    <a href="report_event_popularity.php" class="btn btn-warning">Open Report</a>
+                    <a href="report_activity_popularity.php" class="btn btn-warning">Open Report</a>
                 </div>
             </div>
 

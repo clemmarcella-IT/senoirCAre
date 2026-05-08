@@ -1,14 +1,14 @@
 <?php 
 require_once('includes/session.php'); 
-$eid = $_GET['id'];
-$res = mysqli_query($conn, "SELECT * FROM event_master WHERE EventID = '$eid'");
-$event = mysqli_fetch_array($res);
-if (!$event) {
-    echo "<script>alert('Event not found.'); window.location='events.php';</script>";
+$aid = $_GET['id'];
+$res = mysqli_query($conn, "SELECT * FROM activities WHERE ActivityID = '$aid'");
+$activity = mysqli_fetch_array($res);
+if (!$activity) {
+    echo "<script>alert('Activity not found.'); window.location='activity.php';</script>";
     exit;
 }
 
-$isStopped = ($event['EventStatus'] == 'Stopped');
+$isStopped = ($activity['ActivityStatus'] == 'Stopped');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,7 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Attendance | <?php echo $event['EventName']; ?></title>
+    <title>Attendance | <?php echo $activity['ActivityName']; ?></title>
     
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -35,7 +35,7 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
         <div class="container-fluid px-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-4 mb-4 gap-3">
                 <div>
-                    <h3 class="fw-bold text-success m-0"><?php echo $event['EventName']; ?></h3>
+                    <h3 class="fw-bold text-success m-0"><?php echo $activity['ActivityName']; ?></h3>
                     <span class="badge <?php echo $isStopped ? 'bg-danger' : 'bg-success'; ?>">
                         <?php echo $isStopped ? 'CLOSED (VIEW ONLY)' : 'ACTIVE SESSION'; ?>
                     </span>
@@ -44,7 +44,7 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
                     <a href="activity.php" class="btn btn-secondary shadow-sm w-100">Back</a>
                     <button onclick="printTable()" class="btn btn-success shadow-sm w-100"><i class="fa fa-print"></i> Print</button>
                     <?php if(!$isStopped): ?>
-                        <a href="query_stop_event.php?id=<?php echo $eid; ?>" 
+                        <a href="query_stop_activity.php?id=<?php echo $aid; ?>" 
                            class="btn btn-danger fw-bold shadow-sm w-100" onclick="return confirm('Stop permanently?')">
                            STOP ATTENDANCE
                         </a>
@@ -58,8 +58,8 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
             <?php if(!$isStopped): ?>
                 <div class="card p-3 shadow-sm border-0">
                     <div id="reader"></div>
-                    <form action="query_record_event_attendance.php" method="POST" class="mt-3">
-                        <input type="hidden" name="event_id" value="<?php echo $eid; ?>">
+                        <form action="query_record_activity_attendance.php" method="POST" class="mt-3">
+                        <input type="hidden" name="activity_id" value="<?php echo $aid; ?>">
                         <input type="text" name="oscaID" id="scanned_id" class="form-control text-center font-weight-bold text-primary mb-2" readonly placeholder="Waiting for Scan">
                         <button type="submit" id="submitBtn" class="btn btn-success w-100 py-2 fw-bold" disabled>MARK AS PRESENT</button>
                     </form>
@@ -90,18 +90,17 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
                         <tbody>
                             <?php
                             // THE JOIN logic matches your borrow transactions template
-                            $list = mysqli_query($conn, "SELECT transaction_records.*, seniors.LastName, seniors.FirstName
-                                                        FROM transaction_records 
-                                                        INNER JOIN seniors ON seniors.OscaIDNo = transaction_records.OscaIDNo 
-                                                        WHERE transaction_records.EventID = '$eid'
-                                                        AND transaction_records.Transaction_Type = 'Attendance'
-                                                        ORDER BY transaction_records.Time_Recorded DESC");
+                            $list = mysqli_query($conn, "SELECT transaction_logs.*, seniors.LastName, seniors.FirstName
+                                                        FROM transaction_logs 
+                                                        LEFT JOIN seniors ON transaction_logs.OscaIDNo = seniors.OscaIDNo 
+                                                        WHERE transaction_logs.ActivityID = '$aid' 
+                                                        ORDER BY transaction_logs.TimeRecorded DESC");
                             while($display = mysqli_fetch_array($list)){
                             ?>
                             <tr>
                                 <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
                                 <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                <td><?php echo date("h:i A", strtotime($display['Time_Recorded'])); ?></td>
+                                <td><?php echo date("h:i A", strtotime($display['TimeRecorded'])); ?></td>
                                 <td><span class="text-success fw-bold">PRESENT</span></td>
                             </tr>
                             <?php } ?>
@@ -128,7 +127,7 @@ $isStopped = ($event['EventStatus'] == 'Stopped');
         var table = document.getElementById("datatablesSimple");
         var newWindow = window.open("", "", "width=800,height=600");
         newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
-        newWindow.document.write("<h3 class='text-center'>Attendance: <?php echo $event['EventName']; ?></h3>");
+        newWindow.document.write("<h3 class='text-center'>Attendance: <?php echo $activity['ActivityName']; ?></h3>");
         if (table) {
             newWindow.document.write(table.outerHTML);
         } else {

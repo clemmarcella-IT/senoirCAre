@@ -120,13 +120,12 @@ $amount_required = $dues['Amount_Required'];
                                         $list = mysqli_query($conn, "
                                             SELECT dp.OscaIDNo, s.LastName, s.FirstName, 
                                                    SUM(dp.Amount_Paid) as Total_Paid, 
-                                                   MAX(dp.Date_Paid) as Last_Date_Paid,
-                                                   MAX(dp.Time_Paid) as Last_Time_Paid
+                                                   MAX(dp.Date_Paid) as Last_Date_Paid
                                             FROM dues_payments dp
                                             JOIN seniors s ON dp.OscaIDNo = s.OscaIDNo
                                             WHERE dp.DuesID = '$did'
                                             GROUP BY dp.OscaIDNo, s.LastName, s.FirstName
-                                            ORDER BY Last_Date_Paid DESC, Last_Time_Paid DESC
+                                            ORDER BY Last_Date_Paid DESC
                                         ");
                                         while ($row = mysqli_fetch_array($list)) {
                                             $total_paid = $row['Total_Paid'];
@@ -135,7 +134,7 @@ $amount_required = $dues['Amount_Required'];
                                                 <td class="fw-bold"><?php echo $row['OscaIDNo']; ?></td>
                                                 <td><?php echo $row['LastName'] . ", " . $row['FirstName']; ?></td>
                                                 <td class="text-success fw-bold">₱<?php echo number_format($total_paid, 2); ?></td>
-                                                <td><?php echo date("M d, Y", strtotime($row['Last_Date_Paid'])) . " " . date("h:i A", strtotime($row['Last_Time_Paid'])); ?></td>
+                                                <td><?php echo date("M d, Y", strtotime($row['Last_Date_Paid'])); ?></td>
                                                 <td>
                                                     <?php if($total_paid >= $amount_required): ?>
                                                         <span class="badge bg-success">CLEARED</span>

@@ -1,21 +1,36 @@
 function onScanSuccess(decodedText, decodedResult) {
     console.log("QR Code scanned successfully:", decodedText);
     const idInput = document.getElementById('scanned_id');
+    const nameInput = document.getElementById('scanned_name');
     const submitBtn = document.getElementById('submitBtn');
 
-    if(idInput) {
+    if (idInput) {
         idInput.value = decodedText; // Sets the OscaIDNo
         console.log("Set scanned_id to:", decodedText);
-        if(submitBtn) {
-            submitBtn.disabled = false;
-            console.log("Enabled submit button");
-            // Automatically submit if you want faster check-ins:
-            // document.getElementById('attendanceForm').submit();
-        } else {
-            console.log("Submit button not found");
-        }
-    } else {
-        console.log("scanned_id input not found");
+    }
+
+    if (nameInput) {
+        nameInput.value = 'Loading...';
+        fetch(`query_fetch_senior.php?oscaID=${encodeURIComponent(decodedText)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    nameInput.value = data.name;
+                    if (submitBtn) submitBtn.disabled = false;
+                } else {
+                    nameInput.value = 'Senior not found';
+                    if (submitBtn) submitBtn.disabled = true;
+                    alert('Senior not found in the database. Please verify the QR code.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching senior name:', error);
+                nameInput.value = 'Error loading name';
+                if (submitBtn) submitBtn.disabled = true;
+            });
+    } else if (submitBtn) {
+        submitBtn.disabled = false;
+        console.log("Enabled submit button");
     }
 }
 

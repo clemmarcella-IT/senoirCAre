@@ -44,19 +44,18 @@ $admin_contact = $row_admin['ContactNumber'];
                     </thead>
                     <tbody>
                         <?php
-                            $clem = mysqli_query($conn, "SELECT event_master.EventName, transaction_records.Date_Recorded, transaction_records.Time_Recorded, transaction_records.Status 
-                                                         FROM transaction_records 
-                                                         LEFT JOIN event_master ON transaction_records.EventID = event_master.EventID 
-                                                         WHERE transaction_records.OscaIDNo = '$id' 
-                                                         AND transaction_records.Transaction_Type = 'Attendance' 
-                                                         ORDER BY transaction_records.Date_Recorded DESC");
+                            $clem = mysqli_query($conn, "SELECT activities.ActivityName, transaction_logs.DateRecorded, transaction_logs.TimeRecorded, transaction_logs.Status 
+                                                         FROM transaction_logs 
+                                                         LEFT JOIN activities ON transaction_logs.ActivityID = activities.ActivityID 
+                                                         WHERE transaction_logs.OscaIDNo = '$id' 
+                                                         ORDER BY transaction_logs.DateRecorded DESC");
 
                             while($display = mysqli_fetch_array($clem)){
                         ?>
                         <tr>
-                            <td><?php echo $display['Date_Recorded']; ?></td>
-                            <td><?php echo date("h:i A", strtotime($display['Time_Recorded'])); ?></td>
-                            <td class="fw-bold"><?php echo $display['EventName']; ?></td>
+                            <td><?php echo $display['DateRecorded']; ?></td>
+                            <td><?php echo date("h:i A", strtotime($display['TimeRecorded'])); ?></td>
+                            <td class="fw-bold"><?php echo $display['ActivityName']; ?></td>
                             <td><span class="badge bg-info text-dark"><?php echo $display['Status']; ?></span></td>
                         </tr>
                         <?php
@@ -74,5 +73,28 @@ $admin_contact = $row_admin['ContactNumber'];
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 <!-- USING YOUR NEW JS FILE -->
 <script src="js/datatables-simple-demo.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+function checkNewAttendance() {
+    var lastTime = localStorage.getItem('lastAttendanceTime_<?php echo $id; ?>') || '0000-00-00 00:00:00';
+    $.ajax({
+        url: 'check_new_attendance.php',
+        type: 'POST',
+        data: {id: '<?php echo $id; ?>', lastTime: lastTime},
+        success: function(response) {
+            var data = JSON.parse(response);
+            if (data.new) {
+                showNotification(data.message);
+                localStorage.setItem('lastAttendanceTime_<?php echo $id; ?>', data.newTime);
+                location.reload(); // Reload to update table
+            }
+        }
+    });
+}
+setInterval(checkNewAttendance, 10000); // Check every 10 seconds
+function showNotification(message) {
+    alert(message); // Simple alert, can be replaced with toast
+}
+</script>
 </body>
 </html>

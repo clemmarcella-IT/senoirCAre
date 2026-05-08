@@ -6,13 +6,16 @@ if(isset($_GET['id'])) {
     $id = $_GET['id'];
     
     // Get the updated values from the Edit Modal form
-    $cname = $_POST['cname'];
     $amount = $_POST['amount'];
     $due_date = $_POST['due_date'];
 
+    $month = date("F", strtotime($due_date));
+    $year = date("Y", strtotime($due_date));
+    $contribution_name = "MonthlyDue_{$month}_{$year}";
+
     // Update the record in the monthly_dues_master table
     $update_query = "UPDATE monthly_dues_master 
-                     SET Contribution_Name = '$cname', 
+                     SET Contribution_Name = '$contribution_name', 
                          Amount_Required = '$amount', 
                          Due_Date = '$due_date' 
                      WHERE DuesID = '$id'";
