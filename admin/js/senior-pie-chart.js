@@ -1,7 +1,8 @@
 // Citizen Status Pie Chart
 var pieCanvas = document.getElementById("seniorPieChart");
 if (pieCanvas && typeof Chart !== 'undefined') {
-    var pieChart = new Chart(pieCanvas, {
+    var pieCtx = pieCanvas.getContext('2d');
+    var pieChart = new Chart(pieCtx, {
         type: 'pie',
         data: {
             labels: ["Active", "Inactive"],

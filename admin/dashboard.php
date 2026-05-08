@@ -5,8 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Dashboard | Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Added crossorigin="anonymous" to prevent tracking warnings -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="sb-nav-fixed">
@@ -60,7 +62,49 @@
             </div>
         </div>
 
-        <!-- Row 2: Attendance & Status -->
+        <!-- Prepare Chart Data for JS -->
+        <?php
+            // Count Active Citizens
+            $active_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'active'");
+            $active_row = mysqli_fetch_array($active_query);
+            $p_act = $active_row[0];
+            
+            // Count Inactive Citizens
+            $inactive_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'inactive'");
+            $inactive_row = mysqli_fetch_array($inactive_query);
+            $p_inact = $inactive_row[0];
+            
+            // Monthly Dues Collection by Month (current year grouped totals)
+            $current_year = date('Y');
+            $month_names =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            $bar_vals = array_fill(0, 12, 0);
+
+            $dues_collection_query = mysqli_query($conn, "SELECT MONTH(Date_Paid) AS month_num, SUM(Amount_Paid) AS monthly_total FROM dues_payments WHERE Payment_Status='Paid' AND YEAR(Date_Paid) = '$current_year' GROUP BY MONTH(Date_Paid) ORDER BY MONTH(Date_Paid) ASC");
+            while($dues_row = mysqli_fetch_array($dues_collection_query)){
+                $month_index = (int)$dues_row['month_num'] - 1;
+                if ($month_index >= 0 && $month_index < 12) {
+                    $bar_vals[$month_index] = (float)$dues_row['monthly_total'];
+                }
+            }
+
+            $highest_month_amount = max($bar_vals);
+            $highest_month_label = "No payments yet";
+            if ($highest_month_amount > 0) {
+                $highest_month_label = $month_names[array_search($highest_month_amount, $bar_vals)];
+            }
+            
+            // Count Attendance by Month
+            $attendance_query = mysqli_query($conn, "SELECT DateRecorded FROM transaction_logs WHERE ActivityID IS NOT NULL");
+            $area_vals = array_fill(0, 12, 0);
+            
+            while($attendance_row = mysqli_fetch_array($attendance_query)){
+                $event_date = $attendance_row['DateRecorded'];
+                $month = substr($event_date, 5, 2);
+                $month_index = (int)$month - 1;
+                $area_vals[$month_index]++;
+            }
+        ?>
+
         <div class="row g-3 mb-3">
             <div class="col-lg-8">
                 <div class="card chart-card">
@@ -81,58 +125,30 @@
             <div class="col-lg-12">
                 <div class="card chart-card" style="height: 260px;">
                     <div class="chart-title">Monthly Dues Collection Trend</div>
-                    <div style="height: 160px;"><canvas id="seniorBarChart" width="100%" height="40"></canvas></div>
+                    <div style="height: 160px;"><canvas id="seniorBarChart" style="width:100%; height:160px;"></canvas></div>
+                    <div class="mt-2 small text-muted">
+                        Highest collection month this year: <strong><?php echo $highest_month_label; ?></strong>
+                        (₱<?php echo number_format($highest_month_amount, 2); ?>)
+                    </div>
                 </div>
             </div>
         </div>
         <br>
     </main>
 
-    <!-- Prepare Chart Data for JS -->
-    <?php
-        // Count Active Citizens
-        $active_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'active'");
-        $active_row = mysqli_fetch_array($active_query);
-        $p_act = $active_row[0];
-        
-        // Count Inactive Citizens
-        $inactive_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'inactive'");
-        $inactive_row = mysqli_fetch_array($inactive_query);
-        $p_inact = $inactive_row[0];
-        
-        // Monthly Dues Collection by Month
-        $dues_collection_query = mysqli_query($conn, "SELECT Date_Paid, Amount_Paid FROM dues_payments WHERE Payment_Status='Paid'");
-        $bar_vals = array_fill(0, 12, 0);
-        
-        while($dues_row = mysqli_fetch_array($dues_collection_query)){
-            $date_paid = $dues_row['Date_Paid'];
-            $month = substr($date_paid, 5, 2);
-            $month_index = (int)$month - 1;
-            $bar_vals[$month_index] += $dues_row['Amount_Paid'];
-        }
-        
-        // Count Attendance by Month
-        $attendance_query = mysqli_query($conn, "SELECT DateRecorded FROM transaction_logs WHERE ActivityID IS NOT NULL");
-        $area_vals = array_fill(0, 12, 0);
-        
-        while($attendance_row = mysqli_fetch_array($attendance_query)){
-            $event_date = $attendance_row['DateRecorded'];
-            $month = substr($event_date, 5, 2);
-            $month_index = (int)$month - 1;
-            $area_vals[$month_index]++;
-        }
-    ?>
-
     <script>
         var php_statusData = [<?php echo $p_act; ?>, <?php echo $p_inact; ?>];
         var php_duesData = <?php echo json_encode($bar_vals); ?>;
         var php_attendanceData = <?php echo json_encode($area_vals); ?>;
+        var php_highestMonthLabel = '<?php echo $highest_month_label; ?>';
+        var php_highestMonthAmount = <?php echo $highest_month_amount; ?>;
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <!-- Added crossorigin="anonymous" to prevent tracking warnings -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/scripts.js"></script>
     <script src="js/senior-area-chart.js"></script>
-    <script src="js/senior-bar-chart.js"></script>
+    <script src="js/senior-bar-chart.js?v=<?php echo time(); ?>"></script>
     <script src="js/senior-pie-chart.js"></script>
 </body>
 </html>

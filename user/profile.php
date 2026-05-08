@@ -23,7 +23,7 @@ $currentYear = date("Y");
 $age = $currentYear - $birthYear;
 
 // Logic for Pensioner Status Display
-if ($row['PensionerStatus'] == 'Yes') {
+if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') {
     $pension_text = "Pensioner";
     $pension_color = "text-success";
 } else {

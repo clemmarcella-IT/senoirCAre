@@ -1,7 +1,8 @@
 // Monthly Attendance Chart
 var areaCanvas = document.getElementById("seniorAreaChart");
 if (areaCanvas && typeof Chart !== 'undefined') {
-    var areaChart = new Chart(areaCanvas, {
+    var areaCtx = areaCanvas.getContext('2d');
+    var areaChart = new Chart(areaCtx, {
         type: 'line',
         data: {
             labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
