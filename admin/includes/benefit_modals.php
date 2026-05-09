@@ -15,7 +15,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="fw-bold text-muted small">Reason</label>
-                        <input type="text" name="reason" class="form-control" value="<?php echo htmlspecialchars($row['Reason']); ?>" required>
+                        <input type="text" name="reason" class="form-control" value="<?php echo $row['Reason']; ?>" required>
                     </div>
                     <div class="mb-3">
                         <label class="fw-bold text-muted small">Date Recorded</label>
