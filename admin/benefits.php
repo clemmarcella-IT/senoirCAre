@@ -76,14 +76,11 @@ include('../includes/db_connection.php');
                                     <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $row['LogID']; ?>">
                                         <i class="fa fa-edit"></i>
                                     </button>
-                                    <form action="query_benefits_crud.php" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this benefit claim?');">
-                                        <input type="hidden" name="log_id" value="<?php echo $row['LogID']; ?>">
-                                        <button type="submit" name="delete_claim" class="btn btn-sm btn-outline-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $row['LogID']; ?>">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
 
-                                    <?php include('includes/benefit_edit_modal.php'); ?>
+                                    <?php include('includes/benefit_modals.php'); ?>
                                 </td>
                             </tr>
                             <?php } ?>
