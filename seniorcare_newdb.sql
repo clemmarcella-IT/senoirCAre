@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2026 at 08:26 AM
+-- Generation Time: May 09, 2026 at 11:58 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,6 +35,14 @@ CREATE TABLE `activities` (
   `ActivityStatus` varchar(20) DEFAULT 'Active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `activities`
+--
+
+INSERT INTO `activities` (`ActivityID`, `ActivityName`, `ActivityDate`, `ActivityTimeStart`, `ActivityStatus`) VALUES
+(1, 'sada', '2026-05-09', '16:22:00', 'Stopped'),
+(2, 'sada', '2026-05-09', '17:25:00', 'Stopped');
+
 -- --------------------------------------------------------
 
 --
@@ -55,7 +63,7 @@ CREATE TABLE `admin_users` (
 --
 
 INSERT INTO `admin_users` (`AdminID`, `AdminOscaID`, `Password`, `ContactNumber`, `ResetCode`, `CodeExpiry`) VALUES
-(1, '001', '$2y$10$OaGp7lBCyxQDmDPXxnT7QeBVLUMdfLvXjdOiZXd4UdaSz3z1L9.ha', '09123456789', NULL, NULL);
+(1, '001', '$2y$10$40jacbDAJxAxwt2Nkg3by.wsTjBrjotr6OfqdRQgXhfH9f4DUW0XK', '09123456789', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -71,7 +79,7 @@ CREATE TABLE `dues_payments` (
   `Date_Paid` date NOT NULL,
   `Time_Paid` time DEFAULT NULL,
   `Payment_Status` varchar(20) DEFAULT 'Pending',
- 
+  `notification_seen` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -79,11 +87,10 @@ CREATE TABLE `dues_payments` (
 --
 
 INSERT INTO `dues_payments` (`PaymentID`, `OscaIDNo`, `DuesID`, `Amount_Paid`, `Date_Paid`, `Time_Paid`, `Payment_Status`, `notification_seen`) VALUES
-(26, '055455', 15, 400.00, '2026-05-09', NULL, 'Paid', 1),
-(27, '055455', 16, 50.00, '2026-05-09', NULL, 'Partial', 1),
-(28, '055455', 16, 50.00, '2026-05-09', NULL, 'Paid', 1),
-(29, '055455', 17, 50.00, '2026-05-09', NULL, 'Partial', 1),
-(30, '055455', 17, 50.00, '2026-05-09', NULL, 'Paid', 1);
+(3, '055455', 18, 200.00, '2026-05-09', NULL, 'Partial'),
+(4, '055455', 18, 100.00, '2026-05-09', NULL, 'Paid'),
+(5, '055455', 19, 100.00, '2026-05-09', NULL, 'Partial'),
+(6, '055455', 19, 300.00, '2026-05-09', NULL, 'Paid');
 
 -- --------------------------------------------------------
 
@@ -103,9 +110,8 @@ CREATE TABLE `monthly_dues_master` (
 --
 
 INSERT INTO `monthly_dues_master` (`DuesID`, `Contribution_Name`, `Amount_Required`, `Due_Date`) VALUES
-(15, 'MonthlyDue_May_2026', 400.00, '2026-05-09'),
-(16, 'MonthlyDue_May_2026', 100.00, '2026-05-09'),
-(17, 'MonthlyDue_May_2026', 100.00, '2026-05-09');
+(18, 'MonthlyDue_May_2026', 300.00, '2026-05-09'),
+(19, 'MonthlyDue_May_2026', 400.00, '2026-05-09');
 
 -- --------------------------------------------------------
 
@@ -124,7 +130,7 @@ CREATE TABLE `pension_master` (
 --
 
 INSERT INTO `pension_master` (`PensionMasterID`, `PayoutDate`, `CashAmount`) VALUES
-(2, '2026-05-09', 4000.00);
+(3, '2026-05-09', 4000.00);
 
 -- --------------------------------------------------------
 
@@ -170,7 +176,7 @@ CREATE TABLE `transaction_logs` (
   `Status` varchar(20) DEFAULT 'Unclaimed',
   `ControlNo` varchar(50) DEFAULT NULL,
   `Reason` text DEFAULT NULL,
-  
+  `IsRead` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -178,8 +184,11 @@ CREATE TABLE `transaction_logs` (
 --
 
 INSERT INTO `transaction_logs` (`LogID`, `OscaIDNo`, `ActivityID`, `PensionMasterID`, `ClaimType`, `Amount_Released`, `DateRecorded`, `TimeRecorded`, `Status`, `ControlNo`, `Reason`, `IsRead`) VALUES
-(17, '055455', NULL, 2, 'Pension Claim', 4000.00, '2026-05-09', '05:42:46', 'Claimed', '4565676', '', 0),
-(18, '055455', NULL, NULL, 'Benefit Claim', 50.00, '2026-05-09', '06:00:27', 'Claimed', NULL, 'medical', 1);
+(1, '055455', NULL, NULL, 'Pension Claim', 4000.00, '2026-05-09', '09:09:30', 'Claimed', '4565676', ''),
+(2, '055455', NULL, NULL, 'Benefit Claim', 50.00, '2026-05-09', '10:21:43', 'Claimed', NULL, 'medical'),
+(3, '055455', 1, NULL, NULL, NULL, '2026-05-09', '10:22:51', 'Present', NULL, NULL),
+(4, '055455', NULL, 3, 'Pension Claim', 4000.00, '2026-05-09', '10:33:31', 'Claimed', '4565676', ''),
+(6, '055455', 2, NULL, NULL, NULL, '2026-05-09', '11:26:44', 'Present', NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -241,7 +250,7 @@ ALTER TABLE `transaction_logs`
 -- AUTO_INCREMENT for table `activities`
 --
 ALTER TABLE `activities`
-  MODIFY `ActivityID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ActivityID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `admin_users`
@@ -253,25 +262,25 @@ ALTER TABLE `admin_users`
 -- AUTO_INCREMENT for table `dues_payments`
 --
 ALTER TABLE `dues_payments`
-  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `monthly_dues_master`
 --
 ALTER TABLE `monthly_dues_master`
-  MODIFY `DuesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `DuesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `pension_master`
 --
 ALTER TABLE `pension_master`
-  MODIFY `PensionMasterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `PensionMasterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `transaction_logs`
 --
 ALTER TABLE `transaction_logs`
-  MODIFY `LogID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `LogID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
