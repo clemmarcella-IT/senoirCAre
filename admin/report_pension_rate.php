@@ -44,24 +44,20 @@
                                     <th>Barangay</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                include("../includes/db_connection.php");
-
-                                $clem = mysqli_query($conn, "SELECT OscaIDNo, LastName, FirstName, MiddleName, Purok, Barangay FROM seniors WHERE PensionerStatus = 'Pensioner' ORDER BY LastName ASC");
-
-                                while ($display = mysqli_fetch_array($clem)) {
-                                ?>
-                                <tr>
-                                    <td><?php echo $display['OscaIDNo']; ?></td>
-                                    <td><?php echo $display['LastName']; ?></td>
-                                    <td><?php echo $display['FirstName']; ?></td>
-                                    <td><?php echo $display['MiddleName']; ?></td>
-                                    <td><?php echo $display['Purok']; ?></td>
-                                    <td><?php echo $display['Barangay']; ?></td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
+                            <?php
+                            include("../includes/db_connection.php");
+                            $clem = mysqli_query($conn, "SELECT OscaIDNo, LastName, FirstName, MiddleName, Purok, Barangay FROM seniors WHERE PensionerStatus = 'Pensioner' ORDER BY LastName ASC");
+                            while($display = mysqli_fetch_array($clem)){
+                            ?>
+                            <tr>
+                                <td><?php echo $display['OscaIDNo']; ?></td>
+                                <td><?php echo $display['LastName']; ?></td>
+                                <td><?php echo $display['FirstName']; ?></td>
+                                <td><?php echo $display['MiddleName']; ?></td>
+                                <td><?php echo $display['Purok']; ?></td>
+                                <td><?php echo $display['Barangay']; ?></td>
+                            </tr>
+                            <?php } ?>
                         </table>
                     </div>
                 </div>

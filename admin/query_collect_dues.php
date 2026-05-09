@@ -19,7 +19,7 @@ if (isset($_POST['dues_id']) && isset($_POST['osca_id']) && isset($_POST['amount
     // Check if the new total exceeds the required amount
     if ($new_total > $amount_required) {
         $excess = $new_total - $amount_required;
-        echo "<script>alert('Overpayment detected. The required amount is ₱" . number_format($amount_required, 2) . ". Previously paid: ₱" . number_format($total_previously_paid, 2) . ". This payment would exceed by ₱" . number_format($excess, 2) . ". Please adjust the amount.'); window.history.back();</script>";
+        echo "<script>alert('Overpayment detected. The required amount is ₱$amount_required. Previously paid: ₱$total_previously_paid. This payment would exceed by ₱$excess. Please adjust the amount.'); window.history.back();</script>";
         exit;
     }
     
@@ -35,7 +35,8 @@ if (isset($_POST['dues_id']) && isset($_POST['osca_id']) && isset($_POST['amount
         mysqli_query($conn, "UPDATE seniors SET CitizenStatus = 'Active' WHERE OscaIDNo = '$osca_id'");
         $msg = 'Payment recorded successfully! Status upgraded to Active.';
     } else {
-        $msg = 'Partial payment recorded successfully. Remaining balance: ₱' . number_format($amount_required - $new_total, 2);
+        $balance = $amount_required - $new_total;
+        $msg = "Partial payment recorded successfully. Remaining balance: ₱$balance";
     }
 
     echo "<script>alert('$msg'); window.location='dues_collection.php?id=$dues_id';</script>";

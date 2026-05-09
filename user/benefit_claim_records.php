@@ -34,71 +34,40 @@ $admin_contact = $row_admin['ContactNumber'];
         <div class="card-body p-4">
             <div class="table-responsive">
                 
-                <table class="table table-bordered table-hover align-middle" id="datatablesSimple" width="100%" cellspacing="0">
-                    <thead class="table-light">
+                <table class="table table-bordered" id="datatablesSimple" width="100%" cellspacing="0">
+                    <thead>
                         <tr>
                             <th>Date</th>
                             <th>Time</th>
                             <th>Benefit Description</th>
-                            <th>Amount Used</th> 
+                            <th>Amount Used</th>
                             <th>Status</th>
                             <th>Specific Details</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php
-                            $clem = mysqli_query($conn, "SELECT DateRecorded AS Date_Recorded, 
-                                                                TimeRecorded AS Time_Recorded, 
-                                                                Status, 
-                                                                Reason, 
-                                                                Amount_Released 
-                                                         FROM transaction_logs 
-                                                         WHERE OscaIDNo = '$id' 
-                                                         AND ClaimType = 'Benefit Claim' 
-                                                         ORDER BY DateRecorded DESC, TimeRecorded DESC");
-
-                            if (!$clem) {
-                                echo '<tr><td colspan="6" class="text-center text-danger">Error loading benefit claim records</td></tr>';
+                    <?php
+                    $clem = mysqli_query($conn, "SELECT DateRecorded, TimeRecorded, Status, Reason, Amount_Released FROM transaction_logs WHERE OscaIDNo = '$id' AND ClaimType = 'Benefit Claim' ORDER BY DateRecorded DESC, TimeRecorded DESC");
+                    while($display = mysqli_fetch_array($clem)){
+                    ?>
+                    <tr>
+                        <td><?php echo date('M d, Y', strtotime($display['DateRecorded'])); ?></td>
+                        <td><?php echo date("h:i A", strtotime($display['TimeRecorded'])); ?></td>
+                        <td>Benefit Claim</td>
+                        <td><?php echo ($display['Amount_Released'] > 0) ? "₱".number_format($display['Amount_Released'], 2) : "-"; ?></td>
+                        <td>
+                            <?php
+                            if($display['Status'] == 'Claimed'){
+                                echo '<span class="badge bg-success">CLAIMED</span>';
+                            } else if($display['Status'] == 'Absent'){
+                                echo '<span class="badge bg-danger">ABSENT</span>';
                             } else {
-                                $count = 0;
-                                while($display = mysqli_fetch_array($clem)){
-                                    $count++;
-                                    if($display['Time_Recorded'] != NULL && $display['Time_Recorded'] != '') {
-                                        $time_claimed = date("h:i A", strtotime($display['Time_Recorded']));
-                                    } else {
-                                        $time_claimed = '--:--';
-                                    }
-                        ?>
-                        <tr>
-                            <td><?php echo date('M d, Y', strtotime($display['Date_Recorded'])); ?></td>
-                            <td><?php echo $time_claimed; ?></td>
-                            <td class="fw-bold">Benefit Claim</td>
-                            
-                            <td class="text-success fw-bold">
-                                <?php echo ($display['Amount_Released'] > 0) ? "₱".number_format($display['Amount_Released'], 2) : "-"; ?>
-                            </td>
-
-                            <td>
-                                <?php 
-                                    if($display['Status'] == 'Claimed') {
-                                        echo '<span class="badge bg-success">CLAIMED</span>';
-                                    } else if($display['Status'] == 'Absent') {
-                                        echo '<span class="badge bg-danger">ABSENT</span>';
-                                    } else {
-                                        echo '<span class="badge bg-primary">'.$display['Status'].'</span>';
-                                    }
-                                ?>
-                            </td>
-                            <td class="text-secondary small"><?php echo ($display['Reason'] != "" && $display['Reason'] != NULL) ? $display['Reason'] : "-"; ?></td>
-                        </tr>
-                        <?php 
-                                }
-                                if($count == 0) {
-                                    echo '<tr><td colspan="6" class="text-center text-muted">No benefit claim records found</td></tr>';
-                                }
+                                echo '<span class="badge bg-primary">'.$display['Status'].'</span>';
                             }
-                        ?>
-                    </tbody>
+                            ?>
+                        </td>
+                        <td><?php echo ($display['Reason'] != "" && $display['Reason'] != NULL) ? $display['Reason'] : "-"; ?></td>
+                    </tr>
+                    <?php } ?>
                 </table>
 
             </div>

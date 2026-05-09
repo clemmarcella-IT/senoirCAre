@@ -33,8 +33,8 @@ $admin_contact = $row_admin['ContactNumber'];
         <div class="card-body p-4">
             <div class="table-responsive">
                 
-                <table class="table table-bordered table-hover align-middle" id="datatablesSimple" width="100%" cellspacing="0">
-                    <thead class="table-light">
+                <table class="table table-bordered" id="datatablesSimple" width="100%" cellspacing="0">
+                    <thead>
                         <tr>
                             <th>Date</th>
                             <th>Time</th>
@@ -42,51 +42,27 @@ $admin_contact = $row_admin['ContactNumber'];
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php
-                            $clem = mysqli_query($conn, "SELECT activities.ActivityName, 
-                                                         transaction_logs.DateRecorded AS Date_Recorded, 
-                                                         transaction_logs.TimeRecorded AS Time_Recorded, 
-                                                         transaction_logs.Status 
-                                                         FROM transaction_logs 
-                                                         LEFT JOIN activities ON transaction_logs.ActivityID = activities.ActivityID 
-                                                         WHERE transaction_logs.OscaIDNo = '$id' 
-                                                         AND transaction_logs.ActivityID IS NOT NULL
-                                                         AND (transaction_logs.ClaimType IS NULL OR transaction_logs.ClaimType = '')
-                                                         ORDER BY transaction_logs.DateRecorded DESC, transaction_logs.TimeRecorded DESC");
-
-                            if (!$clem) {
-                                echo '<tr><td colspan="4" class="text-center text-danger">Error loading activity records</td></tr>';
+                    <?php
+                    $clem = mysqli_query($conn, "SELECT ActivityName, DateRecorded, TimeRecorded, Status FROM transaction_logs LEFT JOIN activities ON transaction_logs.ActivityID = activities.ActivityID WHERE transaction_logs.OscaIDNo = '$id' AND transaction_logs.ActivityID IS NOT NULL AND (transaction_logs.ClaimType IS NULL OR transaction_logs.ClaimType = '') ORDER BY DateRecorded DESC, TimeRecorded DESC");
+                    while($display = mysqli_fetch_array($clem)){
+                    ?>
+                    <tr>
+                        <td><?php echo date('M d, Y', strtotime($display['DateRecorded'])); ?></td>
+                        <td><?php echo $display['TimeRecorded'] ? date("h:i A", strtotime($display['TimeRecorded'])) : '--:--'; ?></td>
+                        <td><?php echo $display['ActivityName']; ?></td>
+                        <td>
+                            <?php
+                            if($display['Status'] == 'Present'){
+                                echo '<span class="badge bg-success">PRESENT</span>';
+                            } else if($display['Status'] == 'Absent'){
+                                echo '<span class="badge bg-danger">ABSENT</span>';
                             } else {
-                                $count = 0;
-                                while($display = mysqli_fetch_array($clem)){
-                                    $count++;
-                        ?>
-                        <tr>
-                            <td><?php echo date('M d, Y', strtotime($display['Date_Recorded'])); ?></td>
-                            <td><?php echo date("h:i A", strtotime($display['Time_Recorded'])); ?></td>
-                            <td class="fw-bold"><?php echo ($display['ActivityName']) ? $display['ActivityName'] : 'N/A'; ?></td>
-                            <td>
-                                <?php
-                                    $status = $display['Status'];
-                                    if($status == 'Present') {
-                                        echo '<span class="badge bg-success">PRESENT</span>';
-                                    } else if($status == 'Absent') {
-                                        echo '<span class="badge bg-danger">ABSENT</span>';
-                                    } else {
-                                        echo '<span class="badge bg-info text-dark">'.$status.'</span>';
-                                    }
-                                ?>
-                            </td>
-                        </tr>
-                        <?php 
-                                }
-                                if($count == 0) {
-                                    echo '<tr><td colspan="4" class="text-center text-muted">No activity records found</td></tr>';
-                                }
+                                echo '<span class="badge bg-info text-dark">'.$display['Status'].'</span>';
                             }
-                        ?>
-                    </tbody>
+                            ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
                 </table>
 
             </div>
@@ -98,30 +74,6 @@ $admin_contact = $row_admin['ContactNumber'];
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
 <!-- USING YOUR NEW JS FILE -->
 <script src="js/datatables-simple-demo.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>
-function checkNewAttendance() {
-    var lastTime = localStorage.getItem('lastAttendanceTime_<?php echo $id; ?>') || '0000-00-00 00:00:00';
-    $.ajax({
-        url: 'check_new_attendance.php',
-        type: 'POST',
-        data: {id: '<?php echo $id; ?>', lastTime: lastTime},
-        success: function(response) {
-            var dataParts = response.split('|');
-            if (dataParts[0] === 'true') {
-                var message = dataParts[1];
-                var newTime = dataParts[2];
-                showNotification(message);
-                localStorage.setItem('lastAttendanceTime_<?php echo $id; ?>', newTime);
-                location.reload(); // Reload to update table
-            }
-        }
-    });
-}
-setInterval(checkNewAttendance, 10000); // Check every 10 seconds
-function showNotification(message) {
-    alert(message); // Simple alert, can be replaced with toast
-}
-</script>
+
 </body>
 </html>

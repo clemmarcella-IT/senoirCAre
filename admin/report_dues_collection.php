@@ -50,25 +50,17 @@
                                     <th>Total Lifetime Contribution</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                $clem = mysqli_query($conn, "SELECT s.OscaIDNo, s.LastName, s.FirstName, 
-                                       SUM(dp.Amount_Paid) as Individual_Total_Contribution
-                                       FROM seniors s 
-                                       JOIN dues_payments dp ON s.OscaIDNo = dp.OscaIDNo 
-                                       GROUP BY s.OscaIDNo 
-                                       ORDER BY s.LastName ASC");
-
-                                while ($display = mysqli_fetch_array($clem)) {
-                                ?>
-                                <tr>
-                                    <td><?php echo $display['OscaIDNo']; ?></td>
-                                    <td><?php echo $display['LastName']; ?></td>
-                                    <td><?php echo $display['FirstName']; ?></td>
-                                    <td class="text-success fw-bold">₱<?php echo number_format($display['Individual_Total_Contribution'], 2); ?></td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
+                            <?php
+                            $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, LastName, FirstName, SUM(Amount_Paid) AS Individual_Total_Contribution FROM seniors JOIN dues_payments ON seniors.OscaIDNo = dues_payments.OscaIDNo GROUP BY seniors.OscaIDNo ORDER BY LastName ASC");
+                            while($display = mysqli_fetch_array($clem)){
+                            ?>
+                            <tr>
+                                <td><?php echo $display['OscaIDNo']; ?></td>
+                                <td><?php echo $display['LastName']; ?></td>
+                                <td><?php echo $display['FirstName']; ?></td>
+                                <td><?php echo number_format($display['Individual_Total_Contribution'], 2); ?></td>
+                            </tr>
+                            <?php } ?>
                         </table>
                     </div>
                 </div>

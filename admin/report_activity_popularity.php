@@ -44,29 +44,19 @@
                                     <th>Attendance Percentage</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                include("../includes/db_connection.php");
-
-                                $clem = mysqli_query($conn, "SELECT a.ActivityName, a.ActivityDate, 
-                                       COUNT(tl.LogID) as Total_Attendees,
-                                       (SELECT COUNT(*) FROM seniors) as Total_Members,
-                                       (COUNT(tl.LogID) / (SELECT COUNT(*) FROM seniors) * 100) as Attendance_Percentage 
-                                       FROM activities a 
-                                       LEFT JOIN transaction_logs tl ON a.ActivityID = tl.ActivityID 
-                                       GROUP BY a.ActivityID");
-
-                                while ($display = mysqli_fetch_array($clem)) {
-                                ?>
-                                <tr>
-                                    <td><?php echo $display['ActivityName']; ?></td>
-                                    <td><?php echo $display['ActivityDate']; ?></td>
-                                    <td><?php echo $display['Total_Attendees']; ?></td>
-                                    <td><?php echo $display['Total_Members']; ?></td>
-                                    <td><?php echo number_format($display['Attendance_Percentage'], 2); ?>%</td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
+                            <?php
+                            include("../includes/db_connection.php");
+                            $clem = mysqli_query($conn, "SELECT ActivityName, ActivityDate, COUNT(LogID) AS Total_Attendees, (SELECT COUNT(*) FROM seniors) AS Total_Members, (COUNT(LogID) / (SELECT COUNT(*) FROM seniors) * 100) AS Attendance_Percentage FROM activities LEFT JOIN transaction_logs USING(ActivityID) GROUP BY ActivityID");
+                            while($display = mysqli_fetch_array($clem)){
+                            ?>
+                            <tr>
+                                <td><?php echo $display['ActivityName']; ?></td>
+                                <td><?php echo $display['ActivityDate']; ?></td>
+                                <td><?php echo $display['Total_Attendees']; ?></td>
+                                <td><?php echo $display['Total_Members']; ?></td>
+                                <td><?php echo number_format($display['Attendance_Percentage'], 2); ?>%</td>
+                            </tr>
+                            <?php } ?>
                         </table>
                     </div>
                 </div>
