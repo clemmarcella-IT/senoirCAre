@@ -17,33 +17,33 @@
         <h2 class="mb-4">Reports Generation</h2>
         
         <div class="row">
-            <!-- Report 1: Active Seniors -->
-            <div class="col-md-4">
-                <div class="card p-4 text-center shadow-sm">
-                    <i class="fa fa-user-check text-success fs-1 mb-3"></i>
-                    <h5>Active Seniors</h5>
-                    <p class="small text-muted">List of all active citizens.</p>
-                    <a href="report_active_seniors.php" class="btn btn-success">Open Report</a>
-                </div>
-            </div>
-
-            <!-- Report 2: Most Attended -->
-            <div class="col-md-4">
-                <div class="card p-4 text-center shadow-sm">
-                    <i class="fa fa-star text-warning fs-1 mb-3"></i>
-                    <h5>Most Attended</h5>
-                    <p class="small text-muted">Ranking of most popular events.</p>
-                    <a href="report_activity_popularity.php" class="btn btn-warning">Open Report</a>
-                </div>
-            </div>
-
-            <!-- Report 3: Pension Summary -->
-            <div class="col-md-4">
-                <div class="card p-4 text-center shadow-sm">
+            <!-- Report 1: List of Pensioners -->
+            <div class="col-md-4 mb-3">
+                <div class="card p-4 text-center shadow-sm h-100 d-flex flex-column">
                     <i class="fa fa-money-check-alt text-info fs-1 mb-3"></i>
-                    <h5>Pension Summary</h5>
-                    <p class="small text-muted">Claim rates per person.</p>
-                    <a href="report_pension_rate.php" class="btn btn-info text-white">Open Report</a>
+                    <h5>List of Pensioners</h5>
+                    <p class="small text-muted flex-grow-1">Displays all seniors eligible for the pension for budget planning.</p>
+                    <a href="report_pension_rate.php" class="btn btn-info text-white mt-auto">Open Report</a>
+                </div>
+            </div>
+
+            <!-- Report 2: Member Engagement -->
+            <div class="col-md-4 mb-3">
+                <div class="card p-4 text-center shadow-sm h-100 d-flex flex-column">
+                    <i class="fa fa-star text-warning fs-1 mb-3"></i>
+                    <h5>Member Engagement & Activity Impact</h5>
+                    <p class="small text-muted flex-grow-1">Shows the turnout for every activity to measure program effectiveness.</p>
+                    <a href="report_activity_popularity.php" class="btn btn-warning mt-auto">Open Report</a>
+                </div>
+            </div>
+
+            <!-- Report 3: Senior Contribution & Dues -->
+            <div class="col-md-4 mb-3">
+                <div class="card p-4 text-center shadow-sm h-100 d-flex flex-column">
+                    <i class="fa fa-wallet text-success fs-1 mb-3"></i>
+                    <h5>Senior Contribution & Dues Collection</h5>
+                    <p class="small text-muted flex-grow-1">Financial audit report for collections and overall active status.</p>
+                    <a href="report_dues_collection.php" class="btn btn-success mt-auto">Open Report</a>
                 </div>
             </div>
         </div>

@@ -29,49 +29,46 @@
             
             <div class="card mb-4">
                 <div class="card-header">
-                    <i class="fas fa-star me-1"></i> Event Attendance Ranking
+                    <i class="fas fa-star me-1"></i> Member Engagement & Activity Impact Report
                 </div>
                 <div class="card-body">
-                    <p class="text-muted small">This report shows which events have the highest number of participants.</p>
-                    <table id="example" class="table table-bordered nowrap" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Rank (#)</th>
-                                <th>Event Name</th>
-                                <th>Total Attendees</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            include("../includes/db_connection.php");
+                    <p class="text-muted small">This report shows the turnout for every activity to measure program effectiveness.</p>
+                    <div class="table-responsive">
+                        <table id="example" class="table table-bordered nowrap" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Activity Name</th>
+                                    <th>Activity Date</th>
+                                    <th>Total Attendees</th>
+                                    <th>Total Members</th>
+                                    <th>Attendance Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                include("../includes/db_connection.php");
 
-                            /* 
-                               LOGIC:
-                               1. We JOIN events and attendance.
-                               2. We GROUP BY EventName so each event appears only once.
-                               3. We COUNT the attendance records for that event.
-                               4. We ORDER BY the count DESC (Highest to Lowest).
-                            */
-                            $query = mysqli_query($conn, "SELECT activities.ActivityName, COUNT(transaction_logs.LogID) 
-                            AS total_attendees FROM activities LEFT JOIN transaction_logs 
-                            ON activities.ActivityID = transaction_logs.ActivityID GROUP BY activities.ActivityID ORDER BY total_attendees DESC");
+                                $clem = mysqli_query($conn, "SELECT a.ActivityName, a.ActivityDate, 
+                                       COUNT(tl.LogID) as Total_Attendees,
+                                       (SELECT COUNT(*) FROM seniors) as Total_Members,
+                                       (COUNT(tl.LogID) / (SELECT COUNT(*) FROM seniors) * 100) as Attendance_Percentage 
+                                       FROM activities a 
+                                       LEFT JOIN transaction_logs tl ON a.ActivityID = tl.ActivityID 
+                                       GROUP BY a.ActivityID");
 
-                            $clem = 1; // Counter for the Rank column
-
-                            while ($display = mysqli_fetch_array($query)) {
-                            ?>
-                            <tr>
-                                <td><?php echo $clem++; ?></td>
-                                <td><?php echo $display['ActivityName']; ?></td>
-                                <td>
-                                    <span class="badge <?php echo ($display['total_attendees'] > 0) ? 'bg-success' : 'bg-secondary'; ?>">
-                                        <?php echo $display['total_attendees']; ?> People
-                                    </span>
-                                </td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
+                                while ($display = mysqli_fetch_array($clem)) {
+                                ?>
+                                <tr>
+                                    <td><?php echo $display['ActivityName']; ?></td>
+                                    <td><?php echo $display['ActivityDate']; ?></td>
+                                    <td><?php echo $display['Total_Attendees']; ?></td>
+                                    <td><?php echo $display['Total_Members']; ?></td>
+                                    <td><?php echo number_format($display['Attendance_Percentage'], 2); ?>%</td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
