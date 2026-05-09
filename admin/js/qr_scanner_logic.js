@@ -1,8 +1,10 @@
 function onScanSuccess(decodedText, decodedResult) {
     console.log("QR Code scanned successfully:", decodedText);
     const idInput = document.getElementById('scanned_id');
+    const nameInput = document.getElementById('scanned_name');
     const submitBtn = document.getElementById('submitBtn');
 
+<<<<<<< HEAD
     if(idInput) {
         idInput.value = decodedText; // Sets the OscaIDNo
         console.log("Set scanned_id to:", decodedText);
@@ -16,6 +18,36 @@ function onScanSuccess(decodedText, decodedResult) {
         }
     } else {
         console.log("scanned_id input not found");
+=======
+    if (idInput) {
+        idInput.value = decodedText; // Sets the OscaIDNo
+        console.log("Set scanned_id to:", decodedText);
+    }
+
+    if (nameInput) {
+        nameInput.value = 'Loading...';
+        fetch(`query_fetch_senior.php?oscaID=${encodeURIComponent(decodedText.trim())}`)
+            .then(response => response.text())
+            .then(text => {
+                var dataParts = text.split('|');
+                if (dataParts[0] === "true") {
+                    nameInput.value = dataParts[1];
+                    if (submitBtn) submitBtn.disabled = false;
+                } else {
+                    nameInput.value = 'Senior not found';
+                    if (submitBtn) submitBtn.disabled = true;
+                    alert('Senior not found in the database. Please verify the QR code.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching senior name:', error);
+                nameInput.value = 'Error loading name';
+                if (submitBtn) submitBtn.disabled = true;
+            });
+    } else if (submitBtn) {
+        submitBtn.disabled = false;
+        console.log("Enabled submit button");
+>>>>>>> newrevisesystem
     }
 }
 

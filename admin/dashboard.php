@@ -5,8 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Dashboard | Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Added crossorigin="anonymous" to prevent tracking warnings -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="sb-nav-fixed">
@@ -24,37 +26,95 @@
         <!-- Row 1: Stat Cards -->
         <div class="row g-3 mb-3">
             <div class="col-md-3">
-                <div class="card stat-card border-green">
+                <div class="card stat-card border-green mb-3">
                     <?php include('../includes/db_connection.php');
                     $query = mysqli_query($conn, "SELECT count(*) FROM seniors");
                     while($row = mysqli_fetch_array($query)){ ?>
                     <h6>Total Seniors</h6><h3><?php echo number_format($row[0]); ?></h3><?php } ?>
                 </div>
-            </div>
-            <div class="col-md-3">
                 <div class="card stat-card border-blue">
-                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM events");
+                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM seniors WHERE PensionerStatus='Pensioner'");
                     while($row = mysqli_fetch_array($query)){ ?>
-                    <h6>Total Events</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
+                    <h6>Total Pensioners</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card border-lime">
-                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM assistance");
-                    while($row = mysqli_fetch_array($query)){ ?>
-                    <h6>Total Assistance</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
+                    <?php 
+                    $dues_query = mysqli_query($conn, "SELECT SUM(Amount_Paid) AS total_dues FROM dues_payments WHERE Payment_Status IN ('Paid', 'Partial')");
+                    $dues_row = mysqli_fetch_array($dues_query);
+                    $total_dues_collected = $dues_row['total_dues'] ? floatval($dues_row['total_dues']) : 0;
+                    
+                    $benefits_claimed_query = mysqli_query($conn, "SELECT SUM(Amount_Released) AS total_claimed FROM transaction_logs WHERE ClaimType='Benefit Claim' AND Status='Claimed'");
+                    $benefits_claimed_row = mysqli_fetch_array($benefits_claimed_query);
+                    $total_claimed = $benefits_claimed_row['total_claimed'] ? floatval($benefits_claimed_row['total_claimed']) : 0;
+                    
+                    // Available dues = Total collected - Total claimed benefits
+                    $available_balance = $total_dues_collected - $total_claimed;
+                    ?>
+                    <h6>Total Monthly Dues</h6><h3>₱<?php echo number_format($total_dues_collected, 2); ?></h3>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card stat-card border-red">
-                    <?php $query = mysqli_query($conn, "SELECT count(*) FROM healthrecords");
-                    while($row = mysqli_fetch_array($query)){ ?>
-                    <h6>Total Medical Event</h6><h3><?php echo $row[0]; ?></h3><?php } ?>
+                <div class="card stat-card border-orange">
+                    <?php 
+                    $benefits_query = mysqli_query($conn, "SELECT SUM(Amount_Released) AS total_benefits FROM transaction_logs WHERE ClaimType='Benefit Claim' AND Status='Claimed'");
+                    $benefits_row = mysqli_fetch_array($benefits_query);
+                    $total_benefits = $benefits_row['total_benefits'] ? $benefits_row['total_benefits'] : 0;
+                    ?>
+                    <h6>Total Claim Benefits</h6><h3>₱<?php echo number_format($total_benefits, 2); ?></h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card border-info">
+                    <h6>Available Balance</h6><h3>₱<?php echo number_format($available_balance, 2); ?></h3>
                 </div>
             </div>
         </div>
 
-        <!-- Row 2: Attendance & Status -->
+        <!-- Prepare Chart Data for JS -->
+        <?php
+            // Count Active Citizens
+            $active_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'active'");
+            $active_row = mysqli_fetch_array($active_query);
+            $p_act = $active_row[0];
+            
+            // Count Inactive Citizens
+            $inactive_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'inactive'");
+            $inactive_row = mysqli_fetch_array($inactive_query);
+            $p_inact = $inactive_row[0];
+            
+            // Monthly Dues Collection by Month (current year grouped totals)
+            $current_year = date('Y');
+            $month_names =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            $bar_vals = array_fill(0, 12, 0);
+
+            $dues_collection_query = mysqli_query($conn, "SELECT MONTH(Date_Paid) AS month_num, SUM(Amount_Paid) AS monthly_total FROM dues_payments WHERE Payment_Status IN ('Paid', 'Partial') AND YEAR(Date_Paid) = '$current_year' GROUP BY MONTH(Date_Paid) ORDER BY MONTH(Date_Paid) ASC");
+            while($dues_row = mysqli_fetch_array($dues_collection_query)){
+                $month_index = (int)$dues_row['month_num'] - 1;
+                if ($month_index >= 0 && $month_index < 12) {
+                    $bar_vals[$month_index] = (float)$dues_row['monthly_total'];
+                }
+            }
+
+            $highest_month_amount = max($bar_vals);
+            $highest_month_label = "No payments yet";
+            if ($highest_month_amount > 0) {
+                $highest_month_label = $month_names[array_search($highest_month_amount, $bar_vals)];
+            }
+            
+            // Count Attendance by Month
+            $attendance_query = mysqli_query($conn, "SELECT DateRecorded FROM transaction_logs WHERE ActivityID IS NOT NULL");
+            $area_vals = array_fill(0, 12, 0);
+            
+            while($attendance_row = mysqli_fetch_array($attendance_query)){
+                $event_date = $attendance_row['DateRecorded'];
+                $month = substr($event_date, 5, 2);
+                $month_index = (int)$month - 1;
+                $area_vals[$month_index]++;
+            }
+        ?>
+
         <div class="row g-3 mb-3">
             <div class="col-lg-8">
                 <div class="card chart-card">
@@ -70,80 +130,35 @@
             </div>
         </div>
 
-        <!-- Row 3: Age Groups -->
+        <!-- Row 3: Monthly Dues Collection -->
         <div class="row g-3 mb-5">
             <div class="col-lg-12">
                 <div class="card chart-card" style="height: 260px;">
-                    <div class="chart-title">Age Group Distribution (For Program Planning)</div>
-                    <div style="height: 160px;"><canvas id="seniorBarChart" width="100%" height="40"></canvas></div>
+                    <div class="chart-title">Monthly Dues Collection Trend</div>
+                    <div style="height: 160px;"><canvas id="seniorBarChart" style="width:100%; height:160px;"></canvas></div>
+                    <div class="mt-2 small text-muted">
+                        Highest collection month this year: <strong><?php echo $highest_month_label; ?></strong>
+                        (₱<?php echo number_format($highest_month_amount, 2); ?>)
+                    </div>
                 </div>
             </div>
         </div>
         <br>
     </main>
 
-    <!-- Prepare Chart Data for JS -->
-    <?php
-        // Count Active Citizens
-        $active_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'active'");
-        $active_row = mysqli_fetch_array($active_query);
-        $p_act = $active_row[0];
-        
-        // Count Inactive Citizens
-        $inactive_query = mysqli_query($conn, "SELECT COUNT(*) FROM seniors WHERE CitizenStatus = 'inactive'");
-        $inactive_row = mysqli_fetch_array($inactive_query);
-        $p_inact = $inactive_row[0];
-        
-        // Count Seniors by Age Group
-        $seniors_query = mysqli_query($conn, "SELECT Birthday FROM seniors");
-        $age_60_65 = 0;
-        $age_66_70 = 0;
-        $age_71_75 = 0;
-        $age_76_plus = 0;
-        
-        while($senior_row = mysqli_fetch_array($seniors_query)){
-            $birth_year = substr($senior_row['Birthday'], 0, 4);
-            $current_year = date('Y');
-            $age = $current_year - $birth_year;
-            
-            if($age >= 60 && $age <= 65) {
-                $age_60_65++;
-            }
-            elseif($age >= 66 && $age <= 70) {
-                $age_66_70++;
-            }
-            elseif($age >= 71 && $age <= 75) {
-                $age_71_75++;
-            }
-            elseif($age >= 76) {
-                $age_76_plus++;
-            }
-        }
-        
-        $bar_vals = [$age_60_65, $age_66_70, $age_71_75, $age_76_plus];
-        
-        // Count Attendance by Month
-        $attendance_query = mysqli_query($conn, "SELECT eventDate FROM events JOIN attendance ON attendance.EventID = events.EventID");
-        $area_vals = array_fill(0, 12, 0);
-        
-        while($attendance_row = mysqli_fetch_array($attendance_query)){
-            $event_date = $attendance_row['eventDate'];
-            $month = substr($event_date, 5, 2);
-            $month_index = (int)$month - 1;
-            $area_vals[$month_index]++;
-        }
-    ?>
-
     <script>
         var php_statusData = [<?php echo $p_act; ?>, <?php echo $p_inact; ?>];
-        var php_ageData = <?php echo json_encode($bar_vals); ?>;
+        var php_duesData = <?php echo json_encode($bar_vals); ?>;
         var php_attendanceData = <?php echo json_encode($area_vals); ?>;
+        var php_highestMonthLabel = '<?php echo $highest_month_label; ?>';
+        var php_highestMonthAmount = <?php echo $highest_month_amount; ?>;
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <!-- Added crossorigin="anonymous" to prevent tracking warnings -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/scripts.js"></script>
     <script src="js/senior-area-chart.js"></script>
-    <script src="js/senior-bar-chart.js"></script>
+    <script src="js/senior-bar-chart.js?v=<?php echo time(); ?>"></script>
     <script src="js/senior-pie-chart.js"></script>
 </body>
 </html>

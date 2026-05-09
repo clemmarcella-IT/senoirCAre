@@ -5,64 +5,53 @@
 	$id = $_GET['id'];
 	
 	// 2. Collect all the text information from the form
-	$fname  = $_POST['fname'];
-	$mi     = $_POST['mi'];
-	$lname  = $_POST['lname'];
-	$sex    = $_POST['sex'];
-	$bday   = $_POST['bday'];
-	$purok  = $_POST['purok'];
-	$status = $_POST['status'];
+	$newOscaID  = $_POST['oscaid'];
+	$fname      = $_POST['fname'];
+	$mi         = $_POST['mi'];
+	$lname      = $_POST['lname'];
+	$sex        = $_POST['sex'];
+	$bday       = $_POST['bday'];
+	$purok      = $_POST['purok'];
+	$status     = $_POST['status'];
+    $pensionStatus = $_POST['pension_status'];
 
-	// Calculate Age
-	$birthDate = new DateTime($bday);
-	$today = new DateTime();
-	$age = $today->diff($birthDate)->y;
+    if ($newOscaID == "" || $fname == "" || $lname == "") {
+        echo "<script>alert('OSCA ID, First Name, and Last Name are required.'); window.history.back();</script>";
+        exit;
+    }
 
-	// 3. Start building the SQL command (Text part)
-	$sql = "UPDATE seniors SET 
-			FirstName = '$fname', 
-			MiddleName = '$mi', 
-			LastName = '$lname', 
-			Sex = '$sex', 
-			Birthday = '$bday', 
-			Age = '$age', 
-			Purok = '$purok', 
-			CitizenStatus = '$status'";
+    if ($newOscaID !== $id) {
+        $exists = mysqli_query($conn, "SELECT OscaIDNo FROM seniors WHERE OscaIDNo = '$newOscaID'");
+        $existingRecord = mysqli_fetch_array($exists);
+        if ($existingRecord) {
+            echo "<script>alert('OSCA ID already exists. Please choose a different ID.'); window.history.back();</script>";
+            exit;
+        }
+    }
 
-	// 4. Set where we want to save the photos
-	$folder = "../uploads/";
+    // 3. Build and run the SQL command
+    if ($newOscaID !== $id) {
+        // If the OSCA ID changed, update related FK tables first by inserting a new senior record and moving child rows.
+        $insertNew = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, CitizenStatus, PensionerStatus)
+                      VALUES ('$newOscaID', '$lname', '$fname', '$mi', '$sex', '$purok', (SELECT Barangay FROM seniors WHERE OscaIDNo = '$id'), '$bday', '$status', '$pensionStatus')";
+        mysqli_query($conn, $insertNew);
 
-	// 5. PROFILE PICTURE: Check if the admin chose a new file
-	if($_FILES['pic']['name'] != "") {
-		$picName = $id . "_updated_profile.jpg";
-		move_uploaded_file($_FILES['pic']['tmp_name'], $folder . $picName);
-		// Add this new filename to our SQL command
-		$sql .= ", Picture = '$picName'";
-	}
-
-	// 6. SIGNATURE: Check updated signature upload
-	if($_FILES['sig1']['name'] != "") {
-		$fileName = $id . "_updated_sig.jpg";
-		move_uploaded_file($_FILES['sig1']['tmp_name'], $folder . $fileName);
-		$sql .= ", SignaturePicture = '$fileName'";
-	}
-
-	for($i=1; $i<=3; $i++) {
-		$inputName = "thumb" . $i; // thumb1, thumb2, thumb3
-		if($_FILES[$inputName]['name'] != "") {
-			$fileName = $id . "_updated_thumb" . $i . ".jpg";
-			move_uploaded_file($_FILES[$inputName]['tmp_name'], $folder . $fileName);
-			$sql .= ", thumbNailPicture$i = '$fileName'";
-		}
-	}
-
-	// 8. Finish the SQL command by telling it which Senior to update
-	$sql .= " WHERE OscaIDNo = '$id'";
-
-	// 9. Run the command in the database
-	mysqli_query($conn, $sql);
+        mysqli_query($conn, "UPDATE transaction_logs SET OscaIDNo = '$newOscaID' WHERE OscaIDNo = '$id'");
+        mysqli_query($conn, "UPDATE dues_payments SET OscaIDNo = '$newOscaID' WHERE OscaIDNo = '$id'");
+        mysqli_query($conn, "DELETE FROM seniors WHERE OscaIDNo = '$id'");
+    } else {
+        mysqli_query($conn, "UPDATE seniors SET 
+            FirstName = '$fname', 
+            MiddleName = '$mi', 
+            LastName = '$lname', 
+            Sex = '$sex', 
+            Birthday = '$bday', 
+            Purok = '$purok', 
+            CitizenStatus = '$status', 
+            PensionerStatus = '$pensionStatus' WHERE OscaIDNo = '$id'");
+    }
 	
-	// 10. Show a simple alert and go back to the list
+	// 5. Show a simple alert and go back to the list
 	?>
 		<script>
 			window.alert('Senior Citizen Profile updated successfully!');

@@ -10,19 +10,27 @@
                 <div class="modal-body">
                     <!-- Hidden inputs to identify the correct record -->
                     <input type="hidden" name="oscaID" value="<?php echo $display['OscaIDNo']; ?>">
-                    <input type="hidden" name="preason" value="<?php echo $preason; ?>">
-                    <input type="hidden" name="pdate" value="<?php echo $pdate; ?>">
+                    <input type="hidden" name="pid" value="<?php echo $pid; ?>">
                     
-                    <!-- Field 1: Control No. (Now allows any number, not just 0-9) -->
+                    <!-- Field 1: Control No. -->
                     <div class="mb-3">
                         <label class="small fw-bold text-muted">Control No.:</label>
+<<<<<<< HEAD
                         <input type="number" name="new_control" class="form-control card shadow border border-1 border-black" placeholder="Enter number" value="<?php echo $modalControl; ?>">
+=======
+                        <input type="text" name="new_control" class="form-control card shadow border border-1 border-black" placeholder="Enter control number" value="<?php echo $display['ControlNo'] ? $display['ControlNo'] : ''; ?>">
+>>>>>>> newrevisesystem
                     </div>
 
-                    <!-- Field 2: Absence Reason -->
+                    <!-- Field 2: Reason -->
                     <div class="mb-3">
+<<<<<<< HEAD
                         <label class="small fw-bold text-muted">Absence Reason:</label>
                         <input type="text" name="new_reason" class="form-control card shadow border border-1 border-black" placeholder="e.g. Bedridden" value="<?php echo $modalReason; ?>">
+=======
+                        <label class="small fw-bold text-muted">Reason</label>
+                        <input type="text" name="new_reason" class="form-control card shadow border border-1 border-black" placeholder="e.g. Bedridden, Deceased" value="<?php echo $display['Reason'] ? $display['Reason'] : ''; ?>">
+>>>>>>> newrevisesystem
                     </div>
                 </div>
                 <div class="modal-footer">

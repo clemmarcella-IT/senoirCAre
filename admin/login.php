@@ -15,9 +15,10 @@ if (isset($_POST['login_btn'])) {
     $id = $_POST['admin_osca'];
     $pass = $_POST['password'];
 
-    $q = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminOscaID='$id' AND Password='$pass'");
+    // Fetch by ID only, then verify the password using password_verify
+    $q = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminOscaID='$id'");
     $row = mysqli_fetch_array($q);
-    if ($row) {
+    if ($row && password_verify($pass, $row['Password'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_osca'] = $row['AdminOscaID'];
         header("Location: dashboard.php");

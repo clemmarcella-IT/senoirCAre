@@ -1,26 +1,24 @@
 <!-- EDIT MODAL -->
-<div class="modal fade" id="edit_pen_<?php echo $uniqueID; ?>" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="edit_pen_<?php echo $pid; ?>" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title fw-bold">Update Payout Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <!-- Pass OLD values via GET so the query knows which record to change -->
-            <form method="POST" action="query_edit_pension.php?old_reason=<?php echo $reason; ?>&old_date=<?php echo $date; ?>">
+            <form method="POST" action="query_edit_pension.php?id=<?php echo $pid; ?>">
                 <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="small fw-bold">Payout Name</label>
-                        <input type="text" name="pname" class="form-control card shadow border border-1 border-black" value="<?php echo $reason; ?>" required>
-                    </div>
+                    
                     <div class="mb-3">
                         <label class="small fw-bold">Date</label>
-                        <input type="date" name="pdate" class="form-control card shadow border border-1 border-black" value="<?php echo $date; ?>" required>
+                        <input type="date" name="pdate" class="form-control card shadow border border-1 border-black" value="<?php echo $display['PayoutDate']; ?>">
                     </div>
+                    
                     <div class="mb-3">
                         <label class="small fw-bold">Cash Amount (₱)</label>
-                        <input type="number" step="0.01" name="pamount" class="form-control card shadow border border-1 border-black" value="<?php echo $display['PensionCashAmount']; ?>" required>
+                        <input type="number" step="0.01" name="pamount" class="form-control card shadow border border-1 border-black" value="<?php echo $display['CashAmount']; ?>">
                     </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -32,21 +30,22 @@
 </div>
 
 <!-- DELETE MODAL -->
-<div class="modal fade" id="del_pen_<?php echo $uniqueID; ?>" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="del_pen_<?php echo $pid; ?>" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0">
+        <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title fw-bold">Delete Payout Event</h5>
+                <h5 class="modal-title fw-bold">Delete Payout</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center p-4">
-                <p>Are you sure you want to delete this payout?</p>
-                <h4 class="fw-bold"><?php echo $reason; ?></h4>
+                <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                <p class="fw-bold">Are you sure you want to delete this payout?</p>
+                <h5 class="text-dark"><?php echo date("M d, Y", strtotime($display['PayoutDate'])); ?> - ₱<?php echo number_format($display['CashAmount'], 2); ?></h5>
                 <p class="text-danger small">This will delete all associated records.</p>
             </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="query_delete_pension.php?reason=<?php echo $reason; ?>&date=<?php echo $date; ?>" class="btn btn-danger px-4">Yes, Delete</a>
+            <div class="modal-footer justify-content-center border-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                <a href="query_delete_pension.php?id=<?php echo $pid; ?>" class="btn btn-danger px-4 fw-bold">Yes, Delete</a>
             </div>
         </div>
     </div>

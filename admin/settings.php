@@ -4,11 +4,19 @@ require_once('includes/session.php');
 if(isset($_POST['update_admin'])) {
     $new_osca = $_POST['admin_osca'];
     $new_pass = $_POST['admin_pass'];
+    $new_contact = $_POST['admin_contact'];
     
-    mysqli_query($conn, "UPDATE admin_users SET AdminOscaID='$new_osca', Password='$new_pass' WHERE AdminID=1");
+    // Hash the password before saving
+    $hashedPassword = password_hash($new_pass, PASSWORD_DEFAULT);
+    
+    mysqli_query($conn, "UPDATE admin_users SET AdminOscaID='$new_osca', Password='$hashedPassword', ContactNumber='$new_contact' WHERE AdminID=1");
     $_SESSION['admin_osca'] = $new_osca;
     echo "<script>alert('Admin Credentials Updated!'); window.location='settings.php';</script>";
 }
+
+// Fetch admin details to prefill the form
+$q_admin = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminID=1");
+$admin_row = mysqli_fetch_array($q_admin);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +46,11 @@ if(isset($_POST['update_admin'])) {
                             <div class="mb-4">
                                 <label class="label-tag">Update Admin OscaIDNo.</label>
                                 <input type="text" name="admin_osca" class="form-control form-control-lg" 
+<<<<<<< HEAD
                                        value="<?php echo $_SESSION['admin_osca']; ?>" 
+=======
+                                       value="<?php echo $admin_row['AdminOscaID']; ?>" 
+>>>>>>> newrevisesystem
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 <small class="text-muted">This is used for your two-step login.</small>
                             </div>
@@ -52,13 +64,18 @@ if(isset($_POST['update_admin'])) {
                                     </button>
                                 </div>
                             </div>
+                            
+                            <div class="mb-4">
+                                <label class="label-tag">Update Admin Contact Number</label>
+                                <input type="text" name="admin_contact" class="form-control form-control-lg" value="<?php echo $admin_row['ContactNumber']; ?>" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <small class="text-muted">This number will be displayed on the User Portal for support.</small>
+                            </div>
 
                             <div class="alert alert-success border-0 small py-2 mb-4">
                                 <i class="fa-solid fa-shield-check me-1"></i> 
                                 Security is active. All updates take effect immediately.
                             </div>
 
-                            <!-- NEW DESIGNED BUTTON -->
                             <button type="submit" name="update_admin" class="btn-save-custom">
                                 <i class="fa-solid fa-floppy-disk"></i> SAVE ALL UPDATES
                             </button>

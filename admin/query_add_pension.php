@@ -4,13 +4,13 @@ include("../includes/db_connection.php");
 $date = $_POST['pdate'];
 $amount = $_POST['pamount'];
 
-// Use the date string as the Reason so it identifies this specific session
-$reason = $date; 
-
-mysqli_query($conn, "INSERT INTO pension (PensionReason, PensionDate, PensionCashAmount, PensionEventStatus) 
-VALUES ('$reason', '$date', '$amount', 'Active')");
+$result = mysqli_query($conn, "INSERT INTO pension_master (PayoutDate, CashAmount) VALUES ('$date', '$amount')");
+if (!$result) {
+    echo "<script>alert('Error adding pension payout!'); window.location='pension.php';</script>";
+    exit;
+}
 ?>
 <script>
-    window.alert('Pension Payout Session created successfully!');
+    window.alert('Pension Payout created successfully!');
     window.location="pension.php";
 </script>

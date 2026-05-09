@@ -1,13 +1,12 @@
 <?php
 include("../includes/db_connection.php");
 
-// Get the session identifiers from the form
-$reason = $_POST['preason'];
-$pdate = $_POST['pdate'];
+// Get the session identifier from the form
+$id = $_POST['id'];
 
 // Update the session status to 'Stopped'
-mysqli_query($conn, "UPDATE pension SET PensionEventStatus='Stopped' WHERE PensionReason='$reason' AND PensionDate='$pdate'");
+mysqli_query($conn, "UPDATE event_master SET EventStatus='Stopped' WHERE EventID='$id' AND EventType='Pension'");
 
 // Redirect back to the attendance view
-header("location:pension_attendance.php?reason=$reason&date=$pdate");
+header("location:pension_attendance.php?id=$id");
 ?> 
