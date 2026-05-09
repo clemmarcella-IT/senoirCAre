@@ -71,7 +71,7 @@ CREATE TABLE `dues_payments` (
   `Date_Paid` date NOT NULL,
   `Time_Paid` time DEFAULT NULL,
   `Payment_Status` varchar(20) DEFAULT 'Pending',
-  `notification_seen` tinyint(1) NOT NULL DEFAULT 0
+ 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -170,7 +170,7 @@ CREATE TABLE `transaction_logs` (
   `Status` varchar(20) DEFAULT 'Unclaimed',
   `ControlNo` varchar(50) DEFAULT NULL,
   `Reason` text DEFAULT NULL,
-  `IsRead` tinyint(1) NOT NULL DEFAULT 0
+  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

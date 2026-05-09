@@ -125,20 +125,21 @@ if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') 
 
                         <!-- SEPARATED ACTION BUTTONS -->
                         <div class="mt-4 no-print border-top pt-3">
+                             <span class="section-title mb-3 d-block">View History Transaction (Click the Buttons below):</span>
                             <div class="d-flex gap-2 flex-wrap">
-                                <a href="activity_records.php?id=<?php echo $id; ?>" class="btn btn-info px-3 py-2 fw-bold text-white position-relative">
+                                <a href="activity_records.php?id=<?php echo $id; ?>" class="btn btn-info px-3 py-2 fw-bold text-white">
                                     <i class="fa fa-calendar-check me-1"></i> Events/Activity
                                 </a>
 
-                                <a href="pension_records.php?id=<?php echo $id; ?>" class="btn btn-success px-3 py-2 fw-bold position-relative">
+                                <a href="pension_records.php?id=<?php echo $id; ?>" class="btn btn-success px-3 py-2 fw-bold">
                                     <i class="fa fa-wallet me-1"></i> Pension
                                 </a>
 
-                                <a href="dues_records.php?id=<?php echo $id; ?>" class="btn btn-warning px-3 py-2 fw-bold position-relative">
+                                <a href="dues_records.php?id=<?php echo $id; ?>" class="btn btn-warning px-3 py-2 fw-bold">
                                     <i class="fa fa-money-bill me-1"></i> Pay Dues
                                 </a>
 
-                                <a href="benefit_claim_records.php?id=<?php echo $id; ?>" class="btn btn-primary px-3 py-2 fw-bold position-relative">
+                                <a href="benefit_claim_records.php?id=<?php echo $id; ?>" class="btn btn-primary px-3 py-2 fw-bold">
                                     <i class="fa fa-hand-holding-heart me-1"></i> Dues Benefits
                                 </a>
                                 <a href="logout.php" class="btn btn-outline-danger px-4 py-2 fw-bold ms-auto">LOGOUT</a>
