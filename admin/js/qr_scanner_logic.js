@@ -11,11 +11,12 @@ function onScanSuccess(decodedText, decodedResult) {
 
     if (nameInput) {
         nameInput.value = 'Loading...';
-        fetch(`query_fetch_senior.php?oscaID=${encodeURIComponent(decodedText)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    nameInput.value = data.name;
+        fetch(`query_fetch_senior.php?oscaID=${encodeURIComponent(decodedText.trim())}`)
+            .then(response => response.text())
+            .then(text => {
+                var dataParts = text.split('|');
+                if (dataParts[0] === "true") {
+                    nameInput.value = dataParts[1];
                     if (submitBtn) submitBtn.disabled = false;
                 } else {
                     nameInput.value = 'Senior not found';

@@ -26,14 +26,12 @@
         <!-- Row 1: Stat Cards -->
         <div class="row g-3 mb-3">
             <div class="col-md-3">
-                <div class="card stat-card border-green">
+                <div class="card stat-card border-green mb-3">
                     <?php include('../includes/db_connection.php');
                     $query = mysqli_query($conn, "SELECT count(*) FROM seniors");
                     while($row = mysqli_fetch_array($query)){ ?>
                     <h6>Total Seniors</h6><h3><?php echo number_format($row[0]); ?></h3><?php } ?>
                 </div>
-            </div>
-            <div class="col-md-3">
                 <div class="card stat-card border-blue">
                     <?php $query = mysqli_query($conn, "SELECT count(*) FROM seniors WHERE PensionerStatus='Pensioner'");
                     while($row = mysqli_fetch_array($query)){ ?>
@@ -43,11 +41,18 @@
             <div class="col-md-3">
                 <div class="card stat-card border-lime">
                     <?php 
-                    $dues_query = mysqli_query($conn, "SELECT SUM(Amount_Paid) AS total_dues FROM dues_payments WHERE Payment_Status='Paid'");
+                    $dues_query = mysqli_query($conn, "SELECT SUM(Amount_Paid) AS total_dues FROM dues_payments WHERE Payment_Status IN ('Paid', 'Partial')");
                     $dues_row = mysqli_fetch_array($dues_query);
-                    $total_dues = $dues_row['total_dues'] ? $dues_row['total_dues'] : 0;
+                    $total_dues_collected = $dues_row['total_dues'] ? floatval($dues_row['total_dues']) : 0;
+                    
+                    $benefits_claimed_query = mysqli_query($conn, "SELECT SUM(Amount_Released) AS total_claimed FROM transaction_logs WHERE ClaimType='Benefit Claim' AND Status='Claimed'");
+                    $benefits_claimed_row = mysqli_fetch_array($benefits_claimed_query);
+                    $total_claimed = $benefits_claimed_row['total_claimed'] ? floatval($benefits_claimed_row['total_claimed']) : 0;
+                    
+                    // Available dues = Total collected - Total claimed benefits
+                    $available_balance = $total_dues_collected - $total_claimed;
                     ?>
-                    <h6>Total Monthly Dues</h6><h3>₱<?php echo number_format($total_dues, 2); ?></h3>
+                    <h6>Total Monthly Dues</h6><h3>₱<?php echo number_format($total_dues_collected, 2); ?></h3>
                 </div>
             </div>
             <div class="col-md-3">
@@ -58,6 +63,11 @@
                     $total_benefits = $benefits_row['total_benefits'] ? $benefits_row['total_benefits'] : 0;
                     ?>
                     <h6>Total Claim Benefits</h6><h3>₱<?php echo number_format($total_benefits, 2); ?></h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card border-info">
+                    <h6>Available Balance</h6><h3>₱<?php echo number_format($available_balance, 2); ?></h3>
                 </div>
             </div>
         </div>
@@ -79,7 +89,7 @@
             $month_names =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             $bar_vals = array_fill(0, 12, 0);
 
-            $dues_collection_query = mysqli_query($conn, "SELECT MONTH(Date_Paid) AS month_num, SUM(Amount_Paid) AS monthly_total FROM dues_payments WHERE Payment_Status='Paid' AND YEAR(Date_Paid) = '$current_year' GROUP BY MONTH(Date_Paid) ORDER BY MONTH(Date_Paid) ASC");
+            $dues_collection_query = mysqli_query($conn, "SELECT MONTH(Date_Paid) AS month_num, SUM(Amount_Paid) AS monthly_total FROM dues_payments WHERE Payment_Status IN ('Paid', 'Partial') AND YEAR(Date_Paid) = '$current_year' GROUP BY MONTH(Date_Paid) ORDER BY MONTH(Date_Paid) ASC");
             while($dues_row = mysqli_fetch_array($dues_collection_query)){
                 $month_index = (int)$dues_row['month_num'] - 1;
                 if ($month_index >= 0 && $month_index < 12) {

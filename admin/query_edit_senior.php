@@ -5,24 +5,25 @@
 	$id = $_GET['id'];
 	
 	// 2. Collect all the text information from the form
-	$newOscaID  = mysqli_real_escape_string($conn, trim($_POST['oscaid']));
-	$fname      = mysqli_real_escape_string($conn, trim($_POST['fname']));
-	$mi         = mysqli_real_escape_string($conn, trim($_POST['mi']));
-	$lname      = mysqli_real_escape_string($conn, trim($_POST['lname']));
-	$sex        = mysqli_real_escape_string($conn, trim($_POST['sex']));
-	$bday       = mysqli_real_escape_string($conn, trim($_POST['bday']));
-	$purok      = mysqli_real_escape_string($conn, trim($_POST['purok']));
-	$status     = mysqli_real_escape_string($conn, trim($_POST['status']));
-    $pensionStatus = mysqli_real_escape_string($conn, trim($_POST['pension_status']));
+	$newOscaID  = $_POST['oscaid'];
+	$fname      = $_POST['fname'];
+	$mi         = $_POST['mi'];
+	$lname      = $_POST['lname'];
+	$sex        = $_POST['sex'];
+	$bday       = $_POST['bday'];
+	$purok      = $_POST['purok'];
+	$status     = $_POST['status'];
+    $pensionStatus = $_POST['pension_status'];
 
-    if (!$newOscaID || !$fname || !$lname) {
+    if ($newOscaID == "" || $fname == "" || $lname == "") {
         echo "<script>alert('OSCA ID, First Name, and Last Name are required.'); window.history.back();</script>";
         exit;
     }
 
     if ($newOscaID !== $id) {
         $exists = mysqli_query($conn, "SELECT OscaIDNo FROM seniors WHERE OscaIDNo = '$newOscaID'");
-        if (mysqli_num_rows($exists) > 0) {
+        $existingRecord = mysqli_fetch_array($exists);
+        if ($existingRecord) {
             echo "<script>alert('OSCA ID already exists. Please choose a different ID.'); window.history.back();</script>";
             exit;
         }

@@ -78,7 +78,7 @@ $isStopped = ($activity['ActivityStatus'] == 'Stopped');
                 <div class="card-header bg-dark text-white font-weight-bold">Attendees Master List</div>
                 <div class="card-body">
                     <div class="table-responsive">
-                    <table id="datatablesSimple" class="table table-hover align-middle">
+                    <table id="datatablesSimple" class="table table-bordered" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>OscaIDNo.</th>
@@ -89,12 +89,7 @@ $isStopped = ($activity['ActivityStatus'] == 'Stopped');
                         </thead>
                         <tbody>
                             <?php
-                            // THE JOIN logic matches your borrow transactions template
-                            $list = mysqli_query($conn, "SELECT transaction_logs.*, seniors.LastName, seniors.FirstName
-                                                        FROM transaction_logs 
-                                                        LEFT JOIN seniors ON transaction_logs.OscaIDNo = seniors.OscaIDNo 
-                                                        WHERE transaction_logs.ActivityID = '$aid' 
-                                                        ORDER BY transaction_logs.TimeRecorded DESC");
+                            $list = mysqli_query($conn, "SELECT transaction_logs.*, seniors.LastName, seniors.FirstName FROM transaction_logs LEFT JOIN seniors ON transaction_logs.OscaIDNo = seniors.OscaIDNo WHERE transaction_logs.ActivityID = '$aid' ORDER BY transaction_logs.TimeRecorded DESC");
                             while($display = mysqli_fetch_array($list)){
                             ?>
                             <tr>
@@ -115,7 +110,7 @@ $isStopped = ($activity['ActivityStatus'] == 'Stopped');
     </main>
 
 <script src="js/scripts.js"></script>
-<script src="js/qr_scanner_logic.js"></script>
+<script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
 <?php if(!$isStopped): ?>
     <script>startScanner();</script>
 <?php endif; ?>

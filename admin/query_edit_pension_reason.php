@@ -3,11 +3,12 @@ include("../includes/db_connection.php");
 
 $oscaID = $_POST['oscaID'];
 $pid = $_POST['pid'];
-$new_control = mysqli_real_escape_string($conn, $_POST['new_control']);
-$new_reason = mysqli_real_escape_string($conn, $_POST['new_reason']);
+$new_control = $_POST['new_control'];
+$new_reason = $_POST['new_reason'];
 
 $existing = mysqli_query($conn, "SELECT * FROM transaction_logs WHERE OscaIDNo='$oscaID' AND PensionMasterID='$pid' AND ClaimType='Pension Claim'");
-if (mysqli_num_rows($existing) > 0) {
+$existingRecord = mysqli_fetch_array($existing);
+if ($existingRecord) {
     mysqli_query($conn, "UPDATE transaction_logs SET ControlNo='$new_control', Reason='$new_reason', Status='Claimed' WHERE OscaIDNo='$oscaID' AND PensionMasterID='$pid' AND ClaimType='Pension Claim'");
 } else {
     $amount_q = mysqli_query($conn, "SELECT CashAmount FROM pension_master WHERE PensionMasterID='$pid'");

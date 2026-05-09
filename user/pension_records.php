@@ -1,7 +1,7 @@
 <?php
+session_start();
 include("../includes/db_connection.php");
 $id = $_GET['id'];
-
 // Get Admin Contact
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
 $row_admin = mysqli_fetch_array($q_admin);
@@ -46,24 +46,29 @@ $admin_contact = $row_admin['ContactNumber'];
                     </thead>
                     <tbody>
                         <?php
-                            $clem = mysqli_query($conn, "SELECT transaction_logs.DateRecorded, transaction_logs.TimeRecorded, transaction_logs.Status, transaction_logs.ControlNo, transaction_logs.Reason, pension_master.CashAmount 
+                            $clem = mysqli_query($conn, "SELECT transaction_logs.DateRecorded AS Date_Recorded, transaction_logs.TimeRecorded AS Time_Recorded, transaction_logs.Status, transaction_logs.ControlNo, transaction_logs.Reason, pension_master.CashAmount 
                                                          FROM transaction_logs 
                                                          LEFT JOIN pension_master ON transaction_logs.PensionMasterID = pension_master.PensionMasterID 
                                                          WHERE transaction_logs.OscaIDNo = '$id' 
                                                          AND transaction_logs.ClaimType = 'Pension Claim' 
                                                          ORDER BY transaction_logs.DateRecorded DESC, transaction_logs.TimeRecorded DESC");
 
-                            while($display = mysqli_fetch_array($clem)){
-                                if($display['Time_Recorded'] != NULL && $display['Time_Recorded'] != '') {
-                                    $time_claimed = date("h:i A", strtotime($display['Time_Recorded']));
-                                } else {
-                                    $time_claimed = '--:--';
-                                }
+                            if (!$clem) {
+                                echo '<tr><td colspan="6" class="text-center text-danger">Error loading pension records</td></tr>';
+                            } else {
+                                $count = 0;
+                                while($display = mysqli_fetch_array($clem)){
+                                    $count++;
+                                    if($display['Time_Recorded'] != NULL && $display['Time_Recorded'] != '') {
+                                        $time_claimed = date("h:i A", strtotime($display['Time_Recorded']));
+                                    } else {
+                                        $time_claimed = '--:--';
+                                    }
                         ?>
                         <tr>
-                            <td class="fw-bold text-secondary"><?php echo $display['Date_Recorded']; ?></td>
+                            <td class="fw-bold text-secondary"><?php echo date('M d, Y', strtotime($display['Date_Recorded'])); ?></td>
                             <td><?php echo $time_claimed; ?></td>
-                            <td class="text-success fw-bold">₱<?php echo number_format($display['CashAmount'], 2); ?></td>
+                            <td class="text-success fw-bold">₱<?php echo ($display['CashAmount']) ? number_format($display['CashAmount'], 2) : '0.00'; ?></td>
                             <td class="text-primary fw-bold"><?php echo ($display['ControlNo'] != NULL) ? $display['ControlNo'] : '-'; ?></td>
                             <td>
                                 <?php 
@@ -78,7 +83,11 @@ $admin_contact = $row_admin['ContactNumber'];
                             </td>
                             <td class="text-danger fw-bold"><?php echo ($display['Reason'] != NULL) ? $display['Reason'] : '-'; ?></td>
                         </tr>
-                        <?php
+                        <?php 
+                                }
+                                if($count == 0) {
+                                    echo '<tr><td colspan="6" class="text-center text-muted">No pension claim records found</td></tr>';
+                                }
                             }
                         ?>
                     </tbody>

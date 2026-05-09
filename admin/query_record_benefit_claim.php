@@ -1,11 +1,12 @@
 <?php
 require_once('includes/session.php');
 
-$oscaID = isset($_POST['oscaID']) ? mysqli_real_escape_string($conn, $_POST['oscaID']) : '';
-$reason = isset($_POST['reason']) ? mysqli_real_escape_string($conn, $_POST['reason']) : '';
-$amount = isset($_POST['amount']) ? mysqli_real_escape_string($conn, $_POST['amount']) : '';
-$date = isset($_POST['date']) ? mysqli_real_escape_string($conn, $_POST['date']) : date('Y-m-d');
+$oscaID = isset($_POST['oscaID']) ? $_POST['oscaID'] : '';
+$reason = isset($_POST['reason']) ? $_POST['reason'] : '';
+$amount = isset($_POST['amount']) ? $_POST['amount'] : '';
+$date = isset($_POST['date']) ? $_POST['date'] : date('Y-m-d');
 $time = date('H:i:s');
+$amountValue = number_format((float)$amount, 2, '.', '');
 
 if (!$oscaID || !$reason || !$amount) {
     echo "<script>alert('Please scan a valid QR code and complete all fields.'); window.history.back();</script>";
@@ -13,7 +14,8 @@ if (!$oscaID || !$reason || !$amount) {
 }
 
 $checkSenior = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo='$oscaID'");
-if (mysqli_num_rows($checkSenior) == 0) {
+$seniorExists = mysqli_fetch_array($checkSenior);
+if (!$seniorExists) {
     echo "<script>alert('Senior record not found. Please verify the scanned QR code.'); window.history.back();</script>";
     exit;
 }
@@ -24,7 +26,7 @@ if (!is_numeric($amount) || floatval($amount) <= 0) {
 }
 
 // Check available funds: Total Dues Income - Total Benefits Released
-$totalIncomeQuery = mysqli_query($conn, "SELECT SUM(Amount_Paid) AS total_income FROM dues_payments WHERE Payment_Status = 'Paid'");
+$totalIncomeQuery = mysqli_query($conn, "SELECT SUM(Amount_Paid) AS total_income FROM dues_payments WHERE Payment_Status IN ('Paid', 'Partial')");
 $totalIncomeRow = mysqli_fetch_array($totalIncomeQuery);
 $totalIncome = $totalIncomeRow['total_income'] ? floatval($totalIncomeRow['total_income']) : 0;
 
@@ -43,8 +45,6 @@ if ($amountValue > $availableFunds) {
     echo "<script>alert('Insufficient funds. Available balance: ₱" . number_format($availableFunds, 2) . ". Please reduce the claim amount.'); window.history.back();</script>";
     exit;
 }
-
-$amountValue = number_format((float)$amount, 2, '.', '');
 
 $insert = mysqli_query($conn, "INSERT INTO transaction_logs (OscaIDNo, ClaimType, Amount_Released, DateRecorded, TimeRecorded, Status, Reason) VALUES ('$oscaID', 'Benefit Claim', '$amountValue', '$date', '$time', 'Claimed', '$reason')");
 

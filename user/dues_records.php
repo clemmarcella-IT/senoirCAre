@@ -1,7 +1,7 @@
 <?php
+session_start();
 include("../includes/db_connection.php");
 $id = $_GET['id'];
-
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
 $row_admin = mysqli_fetch_array($q_admin);
 $admin_contact = $row_admin['ContactNumber'];
@@ -36,43 +36,37 @@ $admin_contact = $row_admin['ContactNumber'];
                     <thead class="table-light">
                         <tr>
                             <th>Date Paid</th>
-                            <th>Time Paid</th>
                             <th>Contribution Name</th>
                             <th>Amount Paid</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <!-- Replace the <tbody> section in your existing user/dues_records.php with this -->
 <tbody>
     <?php
-        // Complex query to get required amount and cumulative sums for calculating the balance
         $clem = mysqli_query($conn, "
-            SELECT dp.PaymentID, dp.Amount_Paid, dp.Date_Paid, dp.Time_Paid, dp.Payment_Status,
-                   m.Contribution_Name, m.Amount_Required,
-                   (SELECT SUM(dp2.Amount_Paid) 
-                    FROM dues_payments dp2 
-                    WHERE dp2.OscaIDNo = dp.OscaIDNo 
-                    AND dp2.DuesID = dp.DuesID 
-                    AND dp2.PaymentID <= dp.PaymentID) as cumulative_paid
+            SELECT dp.DuesID, m.Contribution_Name, m.Amount_Required,
+                   SUM(dp.Amount_Paid) as Total_Paid,
+                   MAX(dp.Date_Paid) as Latest_Date_Paid,
+                   CASE 
+                       WHEN SUM(dp.Amount_Paid) >= m.Amount_Required THEN 'Paid'
+                       ELSE 'Partial'
+                   END as Payment_Status
             FROM dues_payments dp 
             LEFT JOIN monthly_dues_master m ON dp.DuesID = m.DuesID 
-            WHERE dp.OscaIDNo = '$id' 
-            ORDER BY dp.Date_Paid DESC, dp.Time_Paid DESC
+            WHERE dp.OscaIDNo = '$id' AND dp.Payment_Status IN ('Partial', 'Paid')
+            GROUP BY dp.DuesID, m.Contribution_Name, m.Amount_Required
+            ORDER BY Latest_Date_Paid DESC
         ");
 
-        while($display = mysqli_fetch_array($clem)){
-            // The display formula
-            $remaining_balance = $display['Amount_Required'] - $display['cumulative_paid'];
-            $remaining_balance = ($remaining_balance < 0) ? 0 : $remaining_balance; // Prevent negatives
+        if (!$clem) {
+            echo '<tr><td colspan="4" class="text-center text-danger">Error loading dues records</td></tr>';
+        } else {
+            while($display = mysqli_fetch_array($clem)){
     ?>
     <tr>
-        <td class="text-secondary"><?php echo $display['Date_Paid']; ?></td>
-        <td><?php echo date("h:i A", strtotime($display['Time_Paid'])); ?></td>
+        <td class="text-secondary"><?php echo date('M d, Y', strtotime($display['Latest_Date_Paid'])); ?></td>
         <td class="fw-bold"><?php echo $display['Contribution_Name']; ?></td>
-        <td class="text-success fw-bold">+ ₱<?php echo number_format($display['Amount_Paid'], 2); ?></td>
-        
-        <!-- REMAINING BALANCE CALCULATION -->
-        <td class="text-danger fw-bold">₱<?php echo number_format($remaining_balance, 2); ?></td>
+        <td class="text-success fw-bold">₱<?php echo number_format($display['Total_Paid'], 2); ?></td>
         
         <td>
             <?php if($display['Payment_Status'] == 'Paid'): ?>
@@ -82,7 +76,10 @@ $admin_contact = $row_admin['ContactNumber'];
             <?php endif; ?>
         </td>
     </tr>
-    <?php } ?>
+    <?php 
+            }
+        }
+    ?>
 </tbody>
                 </table>
 

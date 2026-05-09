@@ -12,19 +12,36 @@ $time = date('H:i:s');
 $check_req = mysqli_query($conn, "SELECT Amount_Required FROM monthly_dues_master WHERE DuesID='$dues_id'");
 $amount_required = mysqli_fetch_array($check_req)['Amount_Required'];
 
-// 2. Cumulative Check: Get existing payments before today's entry
-$check_paid = mysqli_query($conn, "SELECT SUM(Amount_Paid) as total_paid FROM dues_payments WHERE OscaIDNo='$id' AND DuesID='$dues_id'");
-$previous_paid = mysqli_fetch_array($check_paid)['total_paid'] ?? 0;
+// 2. Check if there's already a dues payment record for this senior/dues period
+$existing_payment = mysqli_query($conn, "SELECT PaymentID, Amount_Paid FROM dues_payments WHERE OscaIDNo='$id' AND DuesID='$dues_id'");
+$existing_record = mysqli_fetch_array($existing_payment);
 
-// 3. Add the new installment
-$new_total = $previous_paid + $amount;
+// 3. Calculate new total
+if ($existing_record) {
+    // Update existing record
+    $current_paid = $existing_record['Amount_Paid'];
+    $new_total = $current_paid + $amount;
+    $payment_status = ($new_total >= $amount_required) ? 'Paid' : 'Partial';
+    
+    // Update the existing dues payment record
+    mysqli_query($conn, "UPDATE dues_payments SET 
+                        Amount_Paid = '$new_total', 
+                        Date_Paid = '$date', 
+                        Time_Paid = '$time',
+                        Payment_Status = '$payment_status' 
+                        WHERE PaymentID = '{$existing_record['PaymentID']}'");
+} else {
+    // Insert new record
+    $new_total = $amount;
+    $payment_status = ($new_total >= $amount_required) ? 'Paid' : 'Partial';
+    
+    mysqli_query($conn, "INSERT INTO dues_payments (OscaIDNo, DuesID, Amount_Paid, Date_Paid, Time_Paid, Payment_Status) 
+                         VALUES ('$id', '$dues_id', '$amount', '$date', '$time', '$payment_status')");
+}
 
-// STEP A & B: Determine Payment Status
-$payment_status = ($new_total >= $amount_required) ? 'Paid' : 'Partial';
-
-// Record the transaction
-mysqli_query($conn, "INSERT INTO dues_payments (OscaIDNo, DuesID, Amount_Paid, Date_Paid, Time_Paid, Payment_Status) 
-                     VALUES ('$id', '$dues_id', '$amount', '$date', '$time', '$payment_status')");
+// Always insert into transaction_logs for notifications
+mysqli_query($conn, "INSERT INTO transaction_logs (OscaIDNo, ClaimType, Amount_Released, DateRecorded, TimeRecorded, Status, Reason) 
+                     VALUES ('$id', 'Dues Payment', '$amount', '$date', '$time', '$payment_status', 'Dues payment for DuesID $dues_id')");
 
 // STEP C & 3: Activate or Deactivate strictly based on debt clearance
 if ($new_total >= $amount_required) {

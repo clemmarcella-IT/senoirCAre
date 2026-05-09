@@ -1,7 +1,9 @@
 <?php
+session_start();
 include("../includes/db_connection.php");
 
 $id = $_GET['id'];
+$oscaID = $id;
 
 // Get Senior Info
 $res = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo = '$id'");
@@ -82,6 +84,7 @@ if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') 
                                 $badgeColor = 'bg-success';
                             }
                             ?>
+
                             <span class="badge <?php echo $badgeColor; ?> no-print px-3"><?php echo $row['CitizenStatus']; ?></span>
                         </div>
 
@@ -118,12 +121,25 @@ if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') 
                         </div>
 
                         <!-- SEPARATED ACTION BUTTONS -->
-                        <div class="mt-4 d-flex gap-2 flex-wrap no-print border-top pt-3">
-                            <a href="activity_records.php?id=<?php echo $id; ?>" class="btn btn-info px-3 py-2 fw-bold text-white"><i class="fa fa-calendar-check me-1"></i> Events/Activity</a>
-                            <a href="pension_records.php?id=<?php echo $id; ?>" class="btn btn-success px-3 py-2 fw-bold"><i class="fa fa-wallet me-1"></i> Pension</a>
-                            <a href="dues_records.php?id=<?php echo $id; ?>" class="btn btn-warning px-3 py-2 fw-bold"><i class="fa fa-money-bill me-1"></i> Pay Dues</a>
-                            <a href="benefit_claim_records.php?id=<?php echo $id; ?>" class="btn btn-primary px-3 py-2 fw-bold"><i class="fa fa-hand-holding-heart me-1"></i> Dues Benefits</a>
-                            <a href="logout.php" class="btn btn-outline-danger px-4 py-2 fw-bold ms-auto">LOGOUT</a>
+                        <div class="mt-4 no-print border-top pt-3">
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="activity_records.php?id=<?php echo $id; ?>" class="btn btn-info px-3 py-2 fw-bold text-white position-relative">
+                                    <i class="fa fa-calendar-check me-1"></i> Events/Activity
+                                </a>
+
+                                <a href="pension_records.php?id=<?php echo $id; ?>" class="btn btn-success px-3 py-2 fw-bold position-relative">
+                                    <i class="fa fa-wallet me-1"></i> Pension
+                                </a>
+
+                                <a href="dues_records.php?id=<?php echo $id; ?>" class="btn btn-warning px-3 py-2 fw-bold position-relative">
+                                    <i class="fa fa-money-bill me-1"></i> Pay Dues
+                                </a>
+
+                                <a href="benefit_claim_records.php?id=<?php echo $id; ?>" class="btn btn-primary px-3 py-2 fw-bold position-relative">
+                                    <i class="fa fa-hand-holding-heart me-1"></i> Dues Benefits
+                                </a>
+                                <a href="logout.php" class="btn btn-outline-danger px-4 py-2 fw-bold ms-auto">LOGOUT</a>
+                            </div>
                         </div>
                     </div>
                 </div>

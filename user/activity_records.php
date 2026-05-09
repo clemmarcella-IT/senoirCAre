@@ -1,7 +1,7 @@
 <?php
+session_start();
 include("../includes/db_connection.php");
 $id = $_GET['id'];
-
 // Get Admin Contact
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
 $row_admin = mysqli_fetch_array($q_admin);
@@ -44,21 +44,46 @@ $admin_contact = $row_admin['ContactNumber'];
                     </thead>
                     <tbody>
                         <?php
-                            $clem = mysqli_query($conn, "SELECT activities.ActivityName, transaction_logs.DateRecorded, transaction_logs.TimeRecorded, transaction_logs.Status 
+                            $clem = mysqli_query($conn, "SELECT activities.ActivityName, 
+                                                         transaction_logs.DateRecorded AS Date_Recorded, 
+                                                         transaction_logs.TimeRecorded AS Time_Recorded, 
+                                                         transaction_logs.Status 
                                                          FROM transaction_logs 
                                                          LEFT JOIN activities ON transaction_logs.ActivityID = activities.ActivityID 
                                                          WHERE transaction_logs.OscaIDNo = '$id' 
-                                                         ORDER BY transaction_logs.DateRecorded DESC");
+                                                         AND transaction_logs.ActivityID IS NOT NULL
+                                                         AND (transaction_logs.ClaimType IS NULL OR transaction_logs.ClaimType = '')
+                                                         ORDER BY transaction_logs.DateRecorded DESC, transaction_logs.TimeRecorded DESC");
 
-                            while($display = mysqli_fetch_array($clem)){
+                            if (!$clem) {
+                                echo '<tr><td colspan="4" class="text-center text-danger">Error loading activity records</td></tr>';
+                            } else {
+                                $count = 0;
+                                while($display = mysqli_fetch_array($clem)){
+                                    $count++;
                         ?>
                         <tr>
-                            <td><?php echo $display['DateRecorded']; ?></td>
-                            <td><?php echo date("h:i A", strtotime($display['TimeRecorded'])); ?></td>
-                            <td class="fw-bold"><?php echo $display['ActivityName']; ?></td>
-                            <td><span class="badge bg-info text-dark"><?php echo $display['Status']; ?></span></td>
+                            <td><?php echo date('M d, Y', strtotime($display['Date_Recorded'])); ?></td>
+                            <td><?php echo date("h:i A", strtotime($display['Time_Recorded'])); ?></td>
+                            <td class="fw-bold"><?php echo ($display['ActivityName']) ? $display['ActivityName'] : 'N/A'; ?></td>
+                            <td>
+                                <?php
+                                    $status = $display['Status'];
+                                    if($status == 'Present') {
+                                        echo '<span class="badge bg-success">PRESENT</span>';
+                                    } else if($status == 'Absent') {
+                                        echo '<span class="badge bg-danger">ABSENT</span>';
+                                    } else {
+                                        echo '<span class="badge bg-info text-dark">'.$status.'</span>';
+                                    }
+                                ?>
+                            </td>
                         </tr>
-                        <?php
+                        <?php 
+                                }
+                                if($count == 0) {
+                                    echo '<tr><td colspan="4" class="text-center text-muted">No activity records found</td></tr>';
+                                }
                             }
                         ?>
                     </tbody>
@@ -82,10 +107,12 @@ function checkNewAttendance() {
         type: 'POST',
         data: {id: '<?php echo $id; ?>', lastTime: lastTime},
         success: function(response) {
-            var data = JSON.parse(response);
-            if (data.new) {
-                showNotification(data.message);
-                localStorage.setItem('lastAttendanceTime_<?php echo $id; ?>', data.newTime);
+            var dataParts = response.split('|');
+            if (dataParts[0] === 'true') {
+                var message = dataParts[1];
+                var newTime = dataParts[2];
+                showNotification(message);
+                localStorage.setItem('lastAttendanceTime_<?php echo $id; ?>', newTime);
                 location.reload(); // Reload to update table
             }
         }

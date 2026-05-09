@@ -16,6 +16,8 @@ if(mysqli_fetch_array($check)) {
     // Record payment/attendance
     mysqli_query($conn, "INSERT INTO dues_payments (OscaIDNo, DuesID, Amount_Paid, Date_Paid, Time_Paid, Payment_Status) 
                          VALUES ('$id', '$dues_id', '$amount', '$date', '$time', 'Paid')");
+    mysqli_query($conn, "INSERT INTO transaction_logs (OscaIDNo, ClaimType, Amount_Released, DateRecorded, TimeRecorded, Status, Reason) 
+                         VALUES ('$id', 'Dues Payment', '$amount', '$date', '$time', 'Paid', 'Dues attendance payment for DuesID $dues_id')");
     
     // Automatically Activate the Senior Status
     mysqli_query($conn, "UPDATE seniors SET CitizenStatus = 'Active' WHERE OscaIDNo = '$id'");

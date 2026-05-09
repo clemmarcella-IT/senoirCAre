@@ -1,7 +1,7 @@
 <?php
+session_start();
 include("../includes/db_connection.php");
 $id = $_GET['id'];
-
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
 $row_admin = mysqli_fetch_array($q_admin);
 $admin_contact = $row_admin['ContactNumber'];
@@ -45,29 +45,55 @@ $admin_contact = $row_admin['ContactNumber'];
                     </thead>
                     <tbody>
                         <?php
-                            $clem = mysqli_query($conn, "SELECT DateRecorded, TimeRecorded, Status, Reason, Amount_Released FROM transaction_logs WHERE OscaIDNo = '$id' AND ClaimType = 'Benefit Claim' ORDER BY DateRecorded DESC, TimeRecorded DESC");
+                            $clem = mysqli_query($conn, "SELECT DateRecorded AS Date_Recorded, 
+                                                                TimeRecorded AS Time_Recorded, 
+                                                                Status, 
+                                                                Reason, 
+                                                                Amount_Released 
+                                                         FROM transaction_logs 
+                                                         WHERE OscaIDNo = '$id' 
+                                                         AND ClaimType = 'Benefit Claim' 
+                                                         ORDER BY DateRecorded DESC, TimeRecorded DESC");
 
-                            while($display = mysqli_fetch_array($clem)){
-                                if($display['TimeRecorded'] != NULL && $display['TimeRecorded'] != '') {
-                                    $time_claimed = date("h:i A", strtotime($display['TimeRecorded']));
-                                } else {
-                                    $time_claimed = '--:--';
-                                }
+                            if (!$clem) {
+                                echo '<tr><td colspan="6" class="text-center text-danger">Error loading benefit claim records</td></tr>';
+                            } else {
+                                $count = 0;
+                                while($display = mysqli_fetch_array($clem)){
+                                    $count++;
+                                    if($display['Time_Recorded'] != NULL && $display['Time_Recorded'] != '') {
+                                        $time_claimed = date("h:i A", strtotime($display['Time_Recorded']));
+                                    } else {
+                                        $time_claimed = '--:--';
+                                    }
                         ?>
                         <tr>
-                            <td><?php echo date('M d, Y', strtotime($display['DateRecorded'])); ?></td>
+                            <td><?php echo date('M d, Y', strtotime($display['Date_Recorded'])); ?></td>
                             <td><?php echo $time_claimed; ?></td>
                             <td class="fw-bold">Benefit Claim</td>
                             
-                            <!-- DISPLAY NG AMOUNT -->
                             <td class="text-success fw-bold">
                                 <?php echo ($display['Amount_Released'] > 0) ? "₱".number_format($display['Amount_Released'], 2) : "-"; ?>
                             </td>
 
-                            <td><span class="badge bg-primary"><?php echo $display['Status']; ?></span></td>
-                            <td class="text-secondary small"><?php echo ($display['Reason'] != "") ? $display['Reason'] : "-"; ?></td>
+                            <td>
+                                <?php 
+                                    if($display['Status'] == 'Claimed') {
+                                        echo '<span class="badge bg-success">CLAIMED</span>';
+                                    } else if($display['Status'] == 'Absent') {
+                                        echo '<span class="badge bg-danger">ABSENT</span>';
+                                    } else {
+                                        echo '<span class="badge bg-primary">'.$display['Status'].'</span>';
+                                    }
+                                ?>
+                            </td>
+                            <td class="text-secondary small"><?php echo ($display['Reason'] != "" && $display['Reason'] != NULL) ? $display['Reason'] : "-"; ?></td>
                         </tr>
-                        <?php
+                        <?php 
+                                }
+                                if($count == 0) {
+                                    echo '<tr><td colspan="6" class="text-center text-muted">No benefit claim records found</td></tr>';
+                                }
                             }
                         ?>
                     </tbody>

@@ -73,7 +73,7 @@
     </main>
 
     <script src="js/scripts.js"></script>
-    <script src="js/qr_scanner_logic.js"></script>
+    <script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
     <script>startScanner();</script>
 </body>
 </html>

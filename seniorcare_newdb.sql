@@ -76,6 +76,7 @@ CREATE TABLE `dues_payments` (
   `DuesID` int(11) NOT NULL,
   `Amount_Paid` decimal(10,2) NOT NULL,
   `Date_Paid` date NOT NULL,
+  `Time_Paid` time DEFAULT NULL,
   `Payment_Status` varchar(20) DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -179,7 +180,8 @@ CREATE TABLE `transaction_logs` (
 INSERT INTO `transaction_logs` (`LogID`, `OscaIDNo`, `ActivityID`, `PensionMasterID`, `ClaimType`, `Amount_Released`, `DateRecorded`, `TimeRecorded`, `Status`, `ControlNo`, `Reason`) VALUES
 (1, 'OSCA-00123', 1, NULL, NULL, NULL, '2026-05-15', '07:45:00', 'Present', NULL, NULL),
 (2, 'OSCA-00123', NULL, 1, 'Pension Claim', 1500.00, '2026-05-20', '09:15:00', 'Claimed', 'CTRL-1001', NULL),
-(3, 'OSCA-00124', NULL, NULL, 'Emergency', 2000.00, '2026-05-08', '14:30:00', 'Claimed', 'AID-5001', 'Bedridden Financial Assistance');
+(3, 'OSCA-00124', NULL, NULL, 'Emergency', 2000.00, '2026-05-08', '14:30:00', 'Claimed', 'AID-5001', 'Bedridden Financial Assistance'),
+(4, 'OSCA-00123', NULL, NULL, 'Dues Payment', 50.00, '2026-05-08', '10:30:00', 'Partial', NULL, 'Dues payment for DuesID 1');
 
 --
 -- Indexes for dumped tables
@@ -271,7 +273,7 @@ ALTER TABLE `pension_master`
 -- AUTO_INCREMENT for table `transaction_logs`
 --
 ALTER TABLE `transaction_logs`
-  MODIFY `LogID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `LogID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
