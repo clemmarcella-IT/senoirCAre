@@ -2,6 +2,10 @@
 session_start();
 include("../includes/db_connection.php");
 $id = $_GET['id'];
+
+// Clear notification badges for Pension
+mysqli_query($conn, "UPDATE transaction_logs SET IsRead = 1 WHERE OscaIDNo = '$id' AND Status = 'Claimed' AND PensionMasterID IS NOT NULL AND IsRead = 0");
+
 // Get Admin Contact
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
 $row_admin = mysqli_fetch_array($q_admin);

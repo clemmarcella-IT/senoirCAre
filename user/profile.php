@@ -33,25 +33,25 @@ if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') 
     $pension_color = "text-danger";
 }
 
-// Get Events/Activity unread count (unattended active events)
-$q_events = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM activities WHERE ActivityStatus = 'Active' AND ActivityID NOT IN (SELECT ActivityID FROM transaction_logs WHERE OscaIDNo = '$id' AND Status = 'Present' AND ActivityID IS NOT NULL)");
+// Get Events/Activity unread count (newly attended events)
+$q_events = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM transaction_logs WHERE OscaIDNo = '$id' AND Status = 'Present' AND ActivityID IS NOT NULL AND IsRead = 0");
 $row_events = mysqli_fetch_array($q_events);
 $events_badge = $row_events['cnt'];
 
-// Get Pension unread count (if Pensioner, count unclaimed pensions)
+// Get Pension unread count (newly claimed pensions)
 $pension_badge = 0;
 if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') {
-    $q_pension = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM pension_master WHERE PensionMasterID NOT IN (SELECT PensionMasterID FROM transaction_logs WHERE OscaIDNo = '$id' AND Status = 'Claimed' AND PensionMasterID IS NOT NULL)");
+    $q_pension = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM transaction_logs WHERE OscaIDNo = '$id' AND Status = 'Claimed' AND PensionMasterID IS NOT NULL AND IsRead = 0");
     $row_pension = mysqli_fetch_array($q_pension);
     $pension_badge = $row_pension['cnt'];
 }
 
-// Get Dues unread count (unread payments)
+// Get Dues unread count (newly paid dues)
 $q_dues = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM dues_payments WHERE OscaIDNo = '$id' AND notification_seen = 0");
 $row_dues = mysqli_fetch_array($q_dues);
 $dues_badge = $row_dues['cnt'];
 
-// Get Benefits unread count (unread benefit claims)
+// Get Benefits unread count (newly claimed benefits)
 $q_benefits = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM transaction_logs WHERE OscaIDNo = '$id' AND ClaimType = 'Benefit Claim' AND IsRead = 0");
 $row_benefits = mysqli_fetch_array($q_benefits);
 $benefits_badge = $row_benefits['cnt'];
@@ -146,6 +146,7 @@ $benefits_badge = $row_benefits['cnt'];
 
                         <!-- SEPARATED ACTION BUTTONS -->
                         <div class="mt-4 no-print border-top pt-3">
+                            <span class="section-title mb-3 d-block">View History Transaction</span>
                             <div class="d-flex gap-2 flex-wrap">
                                 <a href="activity_records.php?id=<?php echo $id; ?>" class="btn btn-info px-3 py-2 fw-bold text-white position-relative">
                                     <i class="fa fa-calendar-check me-1"></i> Events/Activity
