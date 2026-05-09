@@ -3,8 +3,6 @@ session_start();
 include("../includes/db_connection.php");
 $id = $_GET['id'];
 
-// Clear notification badges
-mysqli_query($conn, "UPDATE transaction_logs SET IsRead = 1 WHERE OscaIDNo = '$id' AND ClaimType = 'Benefit Claim' AND IsRead = 0");
 
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");
 $row_admin = mysqli_fetch_array($q_admin);
