@@ -1,4 +1,7 @@
-<?php include('includes/session.php'); ?>
+<?php 
+include('includes/session.php'); 
+include('../includes/db_connection.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,8 +39,8 @@
                 <div class="card-header bg-dark text-white fw-bold">Benefit Claim History</div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="datatablesSimple" class="table table-bordered table-hover align-middle" width="100%" cellspacing="0">
-                            <thead class="table-light">
+                        <table id="datatablesSimple" class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
                                 <tr>
                                     <th>OSCA ID</th>
                                     <th>Name</th>
@@ -46,32 +49,44 @@
                                     <th>Amount</th>
                                     <th>Reason</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                $query = mysqli_query($conn, "SELECT transaction_logs.OscaIDNo, seniors.LastName, seniors.FirstName, transaction_logs.DateRecorded, transaction_logs.TimeRecorded, transaction_logs.Amount_Released, transaction_logs.Reason, transaction_logs.Status FROM transaction_logs LEFT JOIN seniors ON transaction_logs.OscaIDNo = seniors.OscaIDNo WHERE transaction_logs.ClaimType = 'Benefit Claim' ORDER BY transaction_logs.DateRecorded DESC, transaction_logs.TimeRecorded DESC");
-                                while ($row = mysqli_fetch_array($query)) {
-                                    $date = $row['DateRecorded'];
-                                    $time = $row['TimeRecorded'] ? date('h:i A', strtotime($row['TimeRecorded'])) : '--:--';
-                                    $amount = $row['Amount_Released'] ? number_format($row['Amount_Released'], 2) : '0.00';
-                                    $name = trim($row['FirstName'] . ' ' . $row['LastName']);
-                                ?>
-                                <tr>
-                                    <td class="fw-bold"><?php echo $row['OscaIDNo']; ?></td>
-                                    <td><?php echo $name ? $name : 'Unknown'; ?></td>
-                                    <td><?php echo date('M d, Y', strtotime($date)); ?></td>
-                                    <td><?php echo $time; ?></td>
-                                    <td class="text-success fw-bold">₱<?php echo $amount; ?></td>
-                                    <td class="text-secondary"><?php echo $row['Reason'] ? $row['Reason'] : '-'; ?></td>
-                                    <td>
-                                        <span class="badge <?php echo ($row['Status'] == 'Claimed') ? 'bg-success' : 'bg-secondary'; ?>">
-                                            <?php echo $row['Status'] ? $row['Status'] : 'Recorded'; ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
+                            <?php
+                            $query = mysqli_query($conn, "SELECT LogID, OscaIDNo, LastName, FirstName, DateRecorded, TimeRecorded, Amount_Released, Reason, Status FROM transaction_logs LEFT JOIN seniors USING(OscaIDNo) WHERE ClaimType = 'Benefit Claim' ORDER BY DateRecorded DESC, TimeRecorded DESC");
+                            while ($row = mysqli_fetch_array($query)) {
+                                $date = $row['DateRecorded'];
+                                $time = $row['TimeRecorded'] ? date('h:i A', strtotime($row['TimeRecorded'])) : '--:--';
+                                $amount = $row['Amount_Released'] ? number_format($row['Amount_Released'], 2) : '0.00';
+                                $name = $row['FirstName'] . ' ' . $row['LastName'];
+                            ?>
+                            <tr>
+                                <td><?php echo $row['OscaIDNo']; ?></td>
+                                <td><?php echo $name ? $name : 'Unknown'; ?></td>
+                                <td><?php echo date('M d, Y', strtotime($date)); ?></td>
+                                <td><?php echo $time; ?></td>
+                                <td>₱<?php echo $amount; ?></td>
+                                <td><?php echo $row['Reason'] ? $row['Reason'] : '-'; ?></td>
+                                <td>
+                                    <span class="badge <?php echo ($row['Status'] == 'Claimed') ? 'bg-success' : 'bg-secondary'; ?>">
+                                        <?php echo $row['Status'] ? $row['Status'] : 'Recorded'; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $row['LogID']; ?>">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <form action="query_benefits_crud.php" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this benefit claim?');">
+                                        <input type="hidden" name="log_id" value="<?php echo $row['LogID']; ?>">
+                                        <button type="submit" name="delete_claim" class="btn btn-sm btn-outline-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+
+                                    <?php include('includes/benefit_edit_modal.php'); ?>
+                                </td>
+                            </tr>
+                            <?php } ?>
                         </table>
                     </div>
                 </div>

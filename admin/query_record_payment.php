@@ -50,7 +50,7 @@ if ($new_total >= $amount_required) {
 } else {
     mysqli_query($conn, "UPDATE seniors SET CitizenStatus = 'Inactive' WHERE OscaIDNo = '$id'");
     $balance = $amount_required - $new_total;
-    $msg = "Partial payment logged. Remaining Balance: P" . number_format($balance, 2) . " | Status remains INACTIVE.";
+    $msg = "Partial payment logged. Remaining Balance: P$balance | Status remains INACTIVE.";
 }
 
 echo "<script>alert('$msg'); window.location='dues_collection.php?id=$dues_id';</script>";

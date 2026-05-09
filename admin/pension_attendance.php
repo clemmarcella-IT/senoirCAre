@@ -60,62 +60,54 @@ if (!$payout) {
                         <div class="card-header bg-dark text-white font-weight-bold">Pension Master List</div>
                         <div class="card-body">
                             <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle" id="datatablesSimple" width="100%" cellspacing="0">
-    <thead class="table-light">
-        <tr>
-            <th>PayoutNo.</th>
-            <th>OscaIDNo.</th>
-            <th>Name</th>
-            <th>Time Claimed</th>
-            <th>Status</th>
-            <th>Control No.</th>
-            <th>Reason</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-         <?php
-             $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, transaction_logs.DateRecorded, transaction_logs.TimeRecorded, transaction_logs.Status, transaction_logs.Reason, transaction_logs.ControlNo 
-                                          FROM seniors 
-                                          LEFT JOIN transaction_logs ON seniors.OscaIDNo = transaction_logs.OscaIDNo 
-                                          AND transaction_logs.PensionMasterID = '$pid' 
-                                          AND transaction_logs.ClaimType = 'Pension Claim' 
-                                          WHERE seniors.PensionerStatus = 'Pensioner'
-                                          ORDER BY transaction_logs.DateRecorded DESC, transaction_logs.TimeRecorded DESC, seniors.LastName ASC");
-             
-             $counter = 1;
-             while($display = mysqli_fetch_array($clem)){
-                $status = $display['Status'];
-                
-                if ($status == "Claimed") {
-                    $statusText = '<span class="badge bg-success">CLAIMED</span>';
-                    $time = $display['TimeRecorded'] ? date("h:i A", strtotime($display['TimeRecorded'])) : "-- : --";
-                } else {
-                    $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
-                    $time = "-- : --";
-                }
+                            <table class="table table-bordered" id="datatablesSimple" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>PayoutNo.</th>
+                                        <th>OscaIDNo.</th>
+                                        <th>Name</th>
+                                        <th>Time Claimed</th>
+                                        <th>Status</th>
+                                        <th>Control No.</th>
+                                        <th>Reason</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <?php
+                                $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, LastName, FirstName, DateRecorded, TimeRecorded, Status, Reason, ControlNo FROM seniors LEFT JOIN transaction_logs ON seniors.OscaIDNo = transaction_logs.OscaIDNo AND PensionMasterID = '$pid' AND ClaimType = 'Pension Claim' WHERE PensionerStatus = 'Pensioner' ORDER BY DateRecorded DESC, TimeRecorded DESC, LastName ASC");
+                                
+                                $counter = 1;
+                                while($display = mysqli_fetch_array($clem)){
+                                    $status = $display['Status'];
+                                    
+                                    if ($status == "Claimed") {
+                                        $statusText = '<span class="badge bg-success">CLAIMED</span>';
+                                        $time = $display['TimeRecorded'] ? date("h:i A", strtotime($display['TimeRecorded'])) : "-- : --";
+                                    } else {
+                                        $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
+                                        $time = "-- : --";
+                                    }
 
-                $reasonText = $display['Reason'] ? $display['Reason'] : '-';
-                $controlText = $display['ControlNo'] ? $display['ControlNo'] : '-';
-                ?>
-                <tr>
-                    <td class="text-muted fw-bold"><?php echo $counter++; ?>.</td>
-                    <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
-                    <td><?php echo $display['LastName']; ?>, <?php echo $display['FirstName']; ?></td>
-                    <td><?php echo $time; ?></td>
-                    <td><?php echo $statusText; ?></td>
-                    <td class="fw-bold text-primary"><?php echo $controlText; ?></td>
-                    <td class="fw-bold text-danger"><?php echo $reasonText; ?></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reasonModal_<?php echo $display['OscaIDNo']; ?>">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                        <?php include("includes/pension_reason_modal.php"); ?>
-                    </td>
-                </tr>
-            <?php } ?>
-    </tbody>
-</table>
+                                    $reasonText = $display['Reason'] ? $display['Reason'] : '-';
+                                    $controlText = $display['ControlNo'] ? $display['ControlNo'] : '-';
+                                ?>
+                                <tr>
+                                    <td><?php echo $counter++; ?>.</td>
+                                    <td><?php echo $display['OscaIDNo']; ?></td>
+                                    <td><?php echo $display['LastName']; ?>, <?php echo $display['FirstName']; ?></td>
+                                    <td><?php echo $time; ?></td>
+                                    <td><?php echo $statusText; ?></td>
+                                    <td><?php echo $controlText; ?></td>
+                                    <td><?php echo $reasonText; ?></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reasonModal_<?php echo $display['OscaIDNo']; ?>">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <?php include("includes/pension_reason_modal.php"); ?>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </table>
                             </div>
                         </div>
                     </div>

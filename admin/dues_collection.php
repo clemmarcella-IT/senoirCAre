@@ -70,15 +70,10 @@ $amount_required = $dues['Amount_Required'];
                                         <option value="">Search by ID or Name...</option>
                                         <?php
                                         // Finds seniors who haven't fully paid. If fully paid, it's removed from selection.
-                                        $senior_q = mysqli_query($conn, "
-                                            SELECT s.OscaIDNo, s.LastName, s.FirstName,
-                                            COALESCE((SELECT SUM(Amount_Paid) FROM dues_payments dp WHERE dp.OscaIDNo = s.OscaIDNo AND dp.DuesID = '$did'), 0) as total_paid
-                                            FROM seniors s
-                                            HAVING total_paid < $amount_required
-                                            ORDER BY s.LastName ASC
-                                        ");
+                                        $senior_q = mysqli_query($conn, "SELECT OscaIDNo, LastName, FirstName, IFNULL((SELECT SUM(Amount_Paid) FROM dues_payments WHERE dues_payments.OscaIDNo = seniors.OscaIDNo AND DuesID = '$did'), 0) AS total_paid FROM seniors HAVING total_paid < $amount_required ORDER BY LastName ASC");
                                         while ($s = mysqli_fetch_array($senior_q)) {
                                             $balance = $amount_required - $s['total_paid'];
+
                                         ?>
                                             <option value="<?php echo $s['OscaIDNo']; ?>">
                                                 <?php echo $s['OscaIDNo'] . " - " . $s['LastName'] . ", " . $s['FirstName'] . " (Bal: ₱" . number_format($balance, 2) . ")"; ?>
@@ -104,8 +99,8 @@ $amount_required = $dues['Amount_Required'];
                         <div class="card-header bg-dark text-white fw-bold">Recent Collections</div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="datatablesSimple" class="table table-hover align-middle">
-                                    <thead class="table-light">
+                                <table id="datatablesSimple" class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
                                         <tr>
                                             <th>OscaIDNo.</th>
                                             <th>Senior Name</th>
@@ -114,37 +109,25 @@ $amount_required = $dues['Amount_Required'];
                                             <th>Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <?php
-                                        // UPDATED LOGIC: Group by senior and sum the total payments to avoid duplication
-                                        $list = mysqli_query($conn, "
-                                            SELECT dp.OscaIDNo, s.LastName, s.FirstName, 
-                                                   SUM(dp.Amount_Paid) as Total_Paid, 
-                                                   MAX(dp.Date_Paid) as Last_Date_Paid
-                                            FROM dues_payments dp
-                                            JOIN seniors s ON dp.OscaIDNo = s.OscaIDNo
-                                            WHERE dp.DuesID = '$did'
-                                            GROUP BY dp.OscaIDNo, s.LastName, s.FirstName
-                                            ORDER BY Last_Date_Paid DESC
-                                        ");
-                                        while ($row = mysqli_fetch_array($list)) {
-                                            $total_paid = $row['Total_Paid'];
-                                        ?>
-                                            <tr>
-                                                <td class="fw-bold"><?php echo $row['OscaIDNo']; ?></td>
-                                                <td><?php echo $row['LastName'] . ", " . $row['FirstName']; ?></td>
-                                                <td class="text-success fw-bold">₱<?php echo number_format($total_paid, 2); ?></td>
-                                                <td><?php echo date("M d, Y", strtotime($row['Last_Date_Paid'])); ?></td>
-                                                <td>
-                                                    <?php if($total_paid >= $amount_required): ?>
-                                                        <span class="badge bg-success">CLEARED</span>
-                                                    <?php else: ?>
-                                                        <span class="badge bg-warning text-dark">PARTIAL</span>
-                                                    <?php endif; ?>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
+                                    <?php
+                                    $list = mysqli_query($conn, "SELECT OscaIDNo, LastName, FirstName, SUM(Amount_Paid) AS Total_Paid, MAX(Date_Paid) AS Last_Date_Paid FROM dues_payments JOIN seniors USING(OscaIDNo) WHERE DuesID = '$did' GROUP BY OscaIDNo, LastName, FirstName ORDER BY Last_Date_Paid DESC");
+                                    while ($row = mysqli_fetch_array($list)) {
+                                        $total_paid = $row['Total_Paid'];
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $row['OscaIDNo']; ?></td>
+                                        <td><?php echo $row['LastName'] . ", " . $row['FirstName']; ?></td>
+                                        <td>₱<?php echo number_format($total_paid, 2); ?></td>
+                                        <td><?php echo date("M d, Y", strtotime($row['Last_Date_Paid'])); ?></td>
+                                        <td>
+                                            <?php if($total_paid >= $amount_required): ?>
+                                                <span class="badge bg-success">CLEARED</span>
+                                            <?php else: ?>
+                                                <span class="badge bg-warning text-dark">PARTIAL</span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
                                 </table>
                             </div>
                         </div>

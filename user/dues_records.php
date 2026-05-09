@@ -34,8 +34,8 @@ $admin_contact = $row_admin['ContactNumber'];
         <div class="card-body p-4">
             <div class="table-responsive">
                 
-                <table class="table table-bordered table-hover align-middle" id="datatablesSimple" width="100%" cellspacing="0">
-                    <thead class="table-light">
+                <table class="table table-bordered" id="datatablesSimple" width="100%" cellspacing="0">
+                    <thead>
                         <tr>
                             <th>Date Paid</th>
                             <th>Contribution Name</th>
@@ -43,46 +43,25 @@ $admin_contact = $row_admin['ContactNumber'];
                             <th>Status</th>
                         </tr>
                     </thead>
-<tbody>
-    <?php
-        $clem = mysqli_query($conn, "
-            SELECT dp.DuesID, m.Contribution_Name, m.Amount_Required,
-                   SUM(dp.Amount_Paid) as Total_Paid,
-                   MAX(dp.Date_Paid) as Latest_Date_Paid,
-                   CASE 
-                       WHEN SUM(dp.Amount_Paid) >= m.Amount_Required THEN 'Paid'
-                       ELSE 'Partial'
-                   END as Payment_Status
-            FROM dues_payments dp 
-            LEFT JOIN monthly_dues_master m ON dp.DuesID = m.DuesID 
-            WHERE dp.OscaIDNo = '$id' AND dp.Payment_Status IN ('Partial', 'Paid')
-            GROUP BY dp.DuesID, m.Contribution_Name, m.Amount_Required
-            ORDER BY Latest_Date_Paid DESC
-        ");
-
-        if (!$clem) {
-            echo '<tr><td colspan="4" class="text-center text-danger">Error loading dues records</td></tr>';
-        } else {
-            while($display = mysqli_fetch_array($clem)){
-    ?>
-    <tr>
-        <td class="text-secondary"><?php echo date('M d, Y', strtotime($display['Latest_Date_Paid'])); ?></td>
-        <td class="fw-bold"><?php echo $display['Contribution_Name']; ?></td>
-        <td class="text-success fw-bold">₱<?php echo number_format($display['Total_Paid'], 2); ?></td>
-        
-        <td>
-            <?php if($display['Payment_Status'] == 'Paid'): ?>
-                <span class="badge bg-success">CLEARED</span>
-            <?php else: ?>
-                <span class="badge bg-warning text-dark">PARTIAL</span>
-            <?php endif; ?>
-        </td>
-    </tr>
-    <?php 
-            }
-        }
-    ?>
-</tbody>
+                    <?php
+                    $clem = mysqli_query($conn, "SELECT DuesID, Contribution_Name, Amount_Required, SUM(Amount_Paid) AS Total_Paid, MAX(Date_Paid) AS Latest_Date_Paid FROM dues_payments LEFT JOIN monthly_dues_master USING(DuesID) WHERE dues_payments.OscaIDNo = '$id' GROUP BY DuesID, Contribution_Name, Amount_Required ORDER BY Latest_Date_Paid DESC");
+                    while($display = mysqli_fetch_array($clem)){
+                    ?>
+                    <tr>
+                        <td><?php echo date('M d, Y', strtotime($display['Latest_Date_Paid'])); ?></td>
+                        <td><?php echo $display['Contribution_Name']; ?></td>
+                        <td>₱<?php echo number_format($display['Total_Paid'], 2); ?></td>
+                        <td>
+                            <?php
+                            if($display['Total_Paid'] >= $display['Amount_Required']){
+                                echo '<span class="badge bg-success">CLEARED</span>';
+                            } else {
+                                echo '<span class="badge bg-warning text-dark">PARTIAL</span>';
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
                 </table>
 
             </div>

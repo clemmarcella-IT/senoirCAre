@@ -87,19 +87,17 @@ $isStopped = ($activity['ActivityStatus'] == 'Stopped');
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php
-                            $list = mysqli_query($conn, "SELECT transaction_logs.*, seniors.LastName, seniors.FirstName FROM transaction_logs LEFT JOIN seniors ON transaction_logs.OscaIDNo = seniors.OscaIDNo WHERE transaction_logs.ActivityID = '$aid' ORDER BY transaction_logs.TimeRecorded DESC");
-                            while($display = mysqli_fetch_array($list)){
-                            ?>
-                            <tr>
-                                <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
-                                <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                <td><?php echo date("h:i A", strtotime($display['TimeRecorded'])); ?></td>
-                                <td><span class="text-success fw-bold">PRESENT</span></td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
+                        <?php
+                        $list = mysqli_query($conn, "SELECT transaction_logs.OscaIDNo, LastName, FirstName, TimeRecorded FROM transaction_logs LEFT JOIN seniors ON transaction_logs.OscaIDNo = seniors.OscaIDNo WHERE ActivityID = '$aid' ORDER BY TimeRecorded DESC");
+                        while($display = mysqli_fetch_array($list)){
+                        ?>
+                        <tr>
+                            <td><?php echo $display['OscaIDNo']; ?></td>
+                            <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
+                            <td><?php echo $display['TimeRecorded'] ? date("h:i A", strtotime($display['TimeRecorded'])) : '--:--'; ?></td>
+                            <td><span class="text-success fw-bold">PRESENT</span></td>
+                        </tr>
+                        <?php } ?>
                     </table>
                     </div>
                 </div>
