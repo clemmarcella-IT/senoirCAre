@@ -32,6 +32,30 @@ if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') 
     $pension_text = "Non-Pensioner";
     $pension_color = "text-danger";
 }
+
+// Get Events/Activity unread count (unattended active events)
+$q_events = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM activities WHERE ActivityStatus = 'Active' AND ActivityID NOT IN (SELECT ActivityID FROM transaction_logs WHERE OscaIDNo = '$id' AND Status = 'Present' AND ActivityID IS NOT NULL)");
+$row_events = mysqli_fetch_array($q_events);
+$events_badge = $row_events['cnt'];
+
+// Get Pension unread count (if Pensioner, count unclaimed pensions)
+$pension_badge = 0;
+if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') {
+    $q_pension = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM pension_master WHERE PensionMasterID NOT IN (SELECT PensionMasterID FROM transaction_logs WHERE OscaIDNo = '$id' AND Status = 'Claimed' AND PensionMasterID IS NOT NULL)");
+    $row_pension = mysqli_fetch_array($q_pension);
+    $pension_badge = $row_pension['cnt'];
+}
+
+// Get Dues unread count (unread payments)
+$q_dues = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM dues_payments WHERE OscaIDNo = '$id' AND notification_seen = 0");
+$row_dues = mysqli_fetch_array($q_dues);
+$dues_badge = $row_dues['cnt'];
+
+// Get Benefits unread count (unread benefit claims)
+$q_benefits = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM transaction_logs WHERE OscaIDNo = '$id' AND ClaimType = 'Benefit Claim' AND IsRead = 0");
+$row_benefits = mysqli_fetch_array($q_benefits);
+$benefits_badge = $row_benefits['cnt'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -125,18 +149,38 @@ if ($row['PensionerStatus'] == 'Pensioner' || $row['PensionerStatus'] == 'Yes') 
                             <div class="d-flex gap-2 flex-wrap">
                                 <a href="activity_records.php?id=<?php echo $id; ?>" class="btn btn-info px-3 py-2 fw-bold text-white position-relative">
                                     <i class="fa fa-calendar-check me-1"></i> Events/Activity
+                                    <?php if($events_badge > 0): ?>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <?php echo $events_badge; ?>
+                                    </span>
+                                    <?php endif; ?>
                                 </a>
 
                                 <a href="pension_records.php?id=<?php echo $id; ?>" class="btn btn-success px-3 py-2 fw-bold position-relative">
                                     <i class="fa fa-wallet me-1"></i> Pension
+                                    <?php if($pension_badge > 0): ?>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <?php echo $pension_badge; ?>
+                                    </span>
+                                    <?php endif; ?>
                                 </a>
 
                                 <a href="dues_records.php?id=<?php echo $id; ?>" class="btn btn-warning px-3 py-2 fw-bold position-relative">
                                     <i class="fa fa-money-bill me-1"></i> Pay Dues
+                                    <?php if($dues_badge > 0): ?>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <?php echo $dues_badge; ?>
+                                    </span>
+                                    <?php endif; ?>
                                 </a>
 
                                 <a href="benefit_claim_records.php?id=<?php echo $id; ?>" class="btn btn-primary px-3 py-2 fw-bold position-relative">
                                     <i class="fa fa-hand-holding-heart me-1"></i> Dues Benefits
+                                    <?php if($benefits_badge > 0): ?>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <?php echo $benefits_badge; ?>
+                                    </span>
+                                    <?php endif; ?>
                                 </a>
                                 <a href="logout.php" class="btn btn-outline-danger px-4 py-2 fw-bold ms-auto">LOGOUT</a>
                             </div>
