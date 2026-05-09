@@ -2,23 +2,11 @@
 require_once('includes/session.php'); 
 $pid = $_GET['id'];
 
-<<<<<<< HEAD
-$res = mysqli_query($conn, "SELECT * FROM pension WHERE PensionReason = '$preason' AND PensionDate = '$pdate' AND OscaIDNo IS NULL");
-$event = mysqli_fetch_array($res);
-if (!$event) {
-    $event =[
-        'PensionReason' => $preason,
-        'PensionDate' => $pdate,
-        'PensionCashAmount' => 0,
-        'PensionEventStatus' => 'Active'
-    ];
-=======
 $res = mysqli_query($conn, "SELECT PensionMasterID, PayoutDate, CashAmount FROM pension_master WHERE PensionMasterID = '$pid'");
 $payout = mysqli_fetch_array($res);
 if (!$payout) {
     echo "<script>alert('Pension payout not found.'); window.location='pension.php';</script>";
     exit;
->>>>>>> newrevisesystem
 }
 ?>
 <!DOCTYPE html>
@@ -72,88 +60,6 @@ if (!$payout) {
                         <div class="card-header bg-dark text-white font-weight-bold">Pension Master List</div>
                         <div class="card-body">
                             <div class="table-responsive">
-<<<<<<< HEAD
-                            <table class="table table-bordered table-hover align-middle" id="datatablesSimple">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>PayoutNo.</th>
-                                        <th>OscaIDNo.</th>
-                                        <th>Name</th>
-                                        <th>Time Claimed</th>
-                                        <th>Status</th>
-                                        <th>Control No.</th>
-                                        <th>Reason</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                     <?php
-                                         $clem = mysqli_query($conn, "SELECT seniors.OscaIDNo, seniors.LastName, seniors.FirstName, pension.pensionTimeRecieve, pension.PensionAttendanceStatus, pension.PensionReason, pension.ControlNo 
-                                                                      FROM seniors 
-                                                                      LEFT JOIN pension ON seniors.OscaIDNo = pension.OscaIDNo 
-                                                                      AND pension.PensionReason = '$preason' 
-                                                                      AND pension.PensionDate = '$pdate' 
-                                                                      WHERE seniors.CitizenStatus = 'active'
-                                                                      ORDER BY pension.pensionTimeRecieve DESC, seniors.LastName ASC");
-                                         
-                                         $counter = 1;
-                                         while($display = mysqli_fetch_array($clem)){
-                                            
-                                            // Handle status checking and assignments
-                                            $status = $display['PensionAttendanceStatus'];
-                                            $controlNo = $display['ControlNo'];
-                                            
-                                            if ($controlNo == "" || $controlNo == null) {
-                                                $displayControl = "-";
-                                                $modalControl = "";
-                                            } else {
-                                                $displayControl = $controlNo;
-                                                $modalControl = $controlNo;
-                                            }
-
-                                            if ($status == 'Claimed' || $status == 'claimed') {
-                                                $statusText = '<span class="badge bg-success">CLAIMED</span>';
-                                                
-                                                $pensionTime = $display['pensionTimeRecieve'];
-                                                if ($pensionTime != "" && $pensionTime != null) {
-                                                    $time = date("h:i A", strtotime($pensionTime));
-                                                } else {
-                                                    $time = '-- : --';
-                                                }
-                                                
-                                                $reasonText = "";
-                                                $modalReason = "";
-                                            } else if ($status != "" && $status != "Unclaimed" && $status != null) {
-                                                $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
-                                                $time = '-- : --';
-                                                $reasonText = $status; // Show typed reason here
-                                                $modalReason = $status;
-                                            } else {
-                                                $statusText = '<span class="badge bg-danger">UNCLAIMED</span>';
-                                                $time = '-- : --';
-                                                $reasonText = "";
-                                                $modalReason = "";
-                                            }
-                                            ?>
-                                            <tr>
-                                                <td class="text-muted fw-bold"><?php echo $counter++; ?>.</td>
-                                                <td class="fw-bold"><?php echo $display['OscaIDNo']; ?></td>
-                                                <td><?php echo $display['LastName'].", ".$display['FirstName']; ?></td>
-                                                <td><?php echo $time; ?></td>
-                                                <td><?php echo $statusText; ?></td>
-                                                <td class="fw-bold text-primary"><?php echo $displayControl; ?></td>
-                                                <td class="fw-bold text-danger"><?php echo $reasonText; ?></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#reasonModal_<?php echo $display['OscaIDNo']; ?>">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                    <?php include("includes/pension_reason_modal.php"); ?>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                </tbody>
-                            </table>
-=======
                             <table class="table table-bordered table-hover align-middle" id="datatablesSimple" width="100%" cellspacing="0">
     <thead class="table-light">
         <tr>
@@ -210,7 +116,6 @@ if (!$payout) {
             <?php } ?>
     </tbody>
 </table>
->>>>>>> newrevisesystem
                             </div>
                         </div>
                     </div>

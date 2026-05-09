@@ -39,56 +39,6 @@
                     <div class="table-responsive">
                         <table id="datatablesSimple" class="table table-hover align-middle">
                             <thead class="table-light">
-<<<<<<< HEAD
-                            <tr>
-                                <th>Photo</th>
-                                <th>OscaIDNo.</th>
-                                <th>Full Name</th>
-                                <th>Sex</th>
-                                <th>Purok</th>
-                                <th>Status</th>
-                                <th class="no-print">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $query = mysqli_query($conn, "SELECT * FROM seniors ORDER BY Lastname ASC");
-                            while ($row = mysqli_fetch_array($query)) {
-                                $id = $row['OscaIDNo'];
-                            ?>
-                            <tr>
-                                <td>
-                                    <!-- UX: Clicking photo opens full details page -->
-                                    <a href="view_senior_details.php?id=<?php echo $id; ?>">
-                                        <img src="../uploads/<?php echo $row['Picture']; ?>" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid var(--forest-deep);">
-                                    </a>
-                                </td>
-                                <td class="fw-bold text-primary"><?php echo $id; ?></td>
-                                <td>
-                                    <a href="view_senior_details.php?id=<?php echo $id; ?>" class="text-dark fw-bold text-decoration-none text-uppercase">
-                                        <?php echo $row['LastName'].", ".$row['FirstName']; ?>
-                                    </a>
-                                </td>
-                                <td><?php echo $row['Sex']; ?></td>
-                                <td><?php echo $row['Purok']; ?></td>
-                                <td>
-                                    <span class="badge <?php echo ($row['CitizenStatus'] == 'active') ? 'bg-success' : 'bg-danger'; ?> text-uppercase" style="font-size: 0.75rem; padding: 6px 12px;">
-                                        <?php echo $row['CitizenStatus']; ?>
-                                    </span>
-                                </td>
-                                <td class="no-print">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#edit_<?php echo $id; ?>"><i class="fa fa-edit"></i></button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete_<?php echo $id; ?>"><i class="fa fa-trash"></i></button>
-                                    </div>
-                                </td>
-                                <!-- Load Update/Delete Popups -->
-                                <?php include("includes/senior_modals.php"); ?>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-=======
                                 <tr>
                                     <th>OscaIDNo.</th>
                                     <th>Full Name</th>
@@ -132,7 +82,6 @@
                                 <?php } ?>
                             </tbody>
                         </table>
->>>>>>> newrevisesystem
                     </div>
                 </div>
             </div>

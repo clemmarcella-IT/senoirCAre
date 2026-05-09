@@ -46,11 +46,7 @@ $admin_row = mysqli_fetch_array($q_admin);
                             <div class="mb-4">
                                 <label class="label-tag">Update Admin OscaIDNo.</label>
                                 <input type="text" name="admin_osca" class="form-control form-control-lg" 
-<<<<<<< HEAD
-                                       value="<?php echo $_SESSION['admin_osca']; ?>" 
-=======
                                        value="<?php echo $admin_row['AdminOscaID']; ?>" 
->>>>>>> newrevisesystem
                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 <small class="text-muted">This is used for your two-step login.</small>
                             </div>

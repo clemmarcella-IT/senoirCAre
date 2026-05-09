@@ -4,21 +4,6 @@ function onScanSuccess(decodedText, decodedResult) {
     const nameInput = document.getElementById('scanned_name');
     const submitBtn = document.getElementById('submitBtn');
 
-<<<<<<< HEAD
-    if(idInput) {
-        idInput.value = decodedText; // Sets the OscaIDNo
-        console.log("Set scanned_id to:", decodedText);
-        if(submitBtn) {
-            submitBtn.disabled = false;
-            console.log("Enabled submit button");
-            // Automatically submit if you want faster check-ins:
-            // document.getElementById('attendanceForm').submit();
-        } else {
-            console.log("Submit button not found");
-        }
-    } else {
-        console.log("scanned_id input not found");
-=======
     if (idInput) {
         idInput.value = decodedText; // Sets the OscaIDNo
         console.log("Set scanned_id to:", decodedText);
@@ -47,7 +32,6 @@ function onScanSuccess(decodedText, decodedResult) {
     } else if (submitBtn) {
         submitBtn.disabled = false;
         console.log("Enabled submit button");
->>>>>>> newrevisesystem
     }
 }
 
