@@ -11,13 +11,24 @@ function onScanSuccess(decodedText, decodedResult) {
 
     if (nameInput) {
         nameInput.value = 'Loading...';
-        fetch(`query_fetch_senior.php?oscaID=${encodeURIComponent(decodedText.trim())}`)
+        
+        let fetchUrl = `query_fetch_senior.php?oscaID=${encodeURIComponent(decodedText.trim())}`;
+        let duesId = idInput ? idInput.getAttribute('data-dues-id') : null;
+        if (duesId) {
+            fetchUrl += `&dues_id=${encodeURIComponent(duesId)}`;
+        }
+
+        fetch(fetchUrl)
             .then(response => response.text())
             .then(text => {
                 var dataParts = text.split('|');
                 if (dataParts[0] === "true") {
                     nameInput.value = dataParts[1];
                     if (submitBtn) submitBtn.disabled = false;
+                } else if (dataParts[0] === "fully_paid") {
+                    nameInput.value = dataParts[1] + ' (Fully Paid)';
+                    if (submitBtn) submitBtn.disabled = true;
+                    alert('This senior has already fully paid their required dues amount for this cycle.');
                 } else {
                     nameInput.value = 'Senior not found';
                     if (submitBtn) submitBtn.disabled = true;

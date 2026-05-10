@@ -21,19 +21,7 @@ $amount_required = $dues['Amount_Required'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        .select2-container .select2-selection--single {
-            height: 38px;
-            border: 1px solid rgba(0, 0, 0, 0.35);
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            padding: 4px;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 36px;
-        }
-    </style>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
@@ -64,22 +52,16 @@ $amount_required = $dues['Amount_Required'];
                                 <input type="hidden" name="dues_id" value="<?php echo $did; ?>">
                                 <input type="hidden" name="amount_required" value="<?php echo $amount_required; ?>">
                                 
-                                <div class="mb-3">
-                                    <label class="small fw-bold text-muted mb-1">Select Senior</label>
-                                    <select name="osca_id" class="form-select select2-senior" required>
-                                        <option value="">Search by ID or Name...</option>
-                                        <?php
-                                        // Finds seniors who haven't fully paid. If fully paid, it's removed from selection.
-                                        $senior_q = mysqli_query($conn, "SELECT OscaIDNo, LastName, FirstName, IFNULL((SELECT SUM(Amount_Paid) FROM dues_payments WHERE dues_payments.OscaIDNo = seniors.OscaIDNo AND DuesID = '$did'), 0) AS total_paid FROM seniors HAVING total_paid < $amount_required ORDER BY LastName ASC");
-                                        while ($s = mysqli_fetch_array($senior_q)) {
-                                            $balance = $amount_required - $s['total_paid'];
-
-                                        ?>
-                                            <option value="<?php echo $s['OscaIDNo']; ?>">
-                                                <?php echo $s['OscaIDNo'] . " - " . $s['LastName'] . ", " . $s['FirstName'] . " (Bal: ₱" . number_format($balance, 2) . ")"; ?>
-                                            </option>
-                                        <?php } ?>
-                                    </select>
+                                <div id="reader"></div>
+                                <div class="mt-3">
+                                    <div class="mb-3">
+                                        <label class="small fw-bold text-muted mb-1">Osca ID</label>
+                                        <input type="text" name="osca_id" id="scanned_id" data-dues-id="<?php echo $did; ?>" class="form-control text-center font-weight-bold text-primary" readonly placeholder="Waiting for Scan" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="small fw-bold text-muted mb-1">Senior Name</label>
+                                        <input type="text" id="scanned_name" class="form-control card shadow border border-1 border-black" readonly placeholder="Scan QR to load senior name">
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
@@ -139,20 +121,12 @@ $amount_required = $dues['Amount_Required'];
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="js/datatables-simple-demo.js"></script>
     <script src="js/scripts.js"></script>
+    <script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
     <script>
-        $(document).ready(function() {
-            // Apply select2 dropdown for easy finding
-            $('.select2-senior').select2({
-                placeholder: "Search by ID or Name...",
-                allowClear: true,
-                width: '100%'
-            });
-        });
-
+        startScanner();
         
     function printTable() {
         var table = document.getElementById("datatablesSimple");

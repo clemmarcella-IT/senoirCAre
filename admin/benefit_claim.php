@@ -9,7 +9,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container .select2-selection--single {
+            height: 38px;
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 4px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
@@ -38,6 +51,20 @@
                                 <div class="mb-3">
                                     <label class="small fw-bold text-muted">Osca ID</label>
                                     <input type="text" name="oscaID" id="scanned_id" class="form-control text-center font-weight-bold text-primary" readonly placeholder="Waiting for Scan">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="small fw-bold text-muted">Or Select Manually</label>
+                                    <select id="manualSeniorSelect" class="form-select select2-senior">
+                                        <option value="">Search by ID or Name...</option>
+                                        <?php
+                                        $senior_q = mysqli_query($conn, "SELECT OscaIDNo, LastName, FirstName FROM seniors ORDER BY LastName ASC");
+                                        while ($s = mysqli_fetch_array($senior_q)) {
+                                        ?>
+                                            <option value="<?php echo $s['OscaIDNo']; ?>">
+                                                <?php echo $s['OscaIDNo'] . " - " . $s['LastName'] . ", " . $s['FirstName']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
                                 <button type="submit" id="submitBtn" class="btn btn-success fw-bold shadow-sm w-100 py-2" disabled>Save Benefit Claim</button>
                             </div>
@@ -72,8 +99,24 @@
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
-    <script>startScanner();</script>
+    <script>
+        startScanner();
+        $(document).ready(function() {
+            $('.select2-senior').select2({
+                placeholder: "Search by ID or Name...",
+                allowClear: true,
+                width: '100%'
+            });
+            $('#manualSeniorSelect').on('change', function() {
+                var selectedId = $(this).val();
+                if (selectedId) {
+                    onScanSuccess(selectedId, null);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
