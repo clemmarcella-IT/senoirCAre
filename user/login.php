@@ -63,8 +63,8 @@ if (isset($_POST['login_btn'])) {
                     
                     <div class="text-center mt-3 pt-3 border-top">
                         <p class="small text-muted mb-2">To access your QR history and transaction records, enter your OscaIDNo.</p>
-                        <a href="../admin/login.php" class="btn btn-outline-dark btn-sm w-100 py-2 shadow-sm">
-                            <i class="fa-solid fa-user-shield me-2"></i> GO TO ADMIN LOGIN
+                        <a href="../index.php" class="btn btn-outline-dark btn-sm w-100 py-2 shadow-sm">
+                            <i class="fa-solid fa-house me-2"></i> BACK TO MAIN PAGE
                         </a>
                     </div>
                 </div>

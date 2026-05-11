@@ -140,8 +140,8 @@ if (isset($_POST['verify_otp_login'])) {
         <!-- Find the end of your login-card and add this before the last </div> -->
             <div class="text-center mt-3 pt-3 border-top">
                 <p class="small text-muted mb-2">Are you a Senior Citizen?</p>
-                <a href="../user/login.php" class="btn btn-outline-secondary btn-sm w-100 py-2 shadow-sm">
-                    <i class="fa-solid fa-house-user me-2"></i> BACK TO USER PORTAL
+                <a href="../index.php" class="btn btn-outline-secondary btn-sm w-100 py-2 shadow-sm">
+                    <i class="fa-solid fa-house me-2"></i> BACK TO MAIN PAGE
                 </a>
             </div>
     </div>
