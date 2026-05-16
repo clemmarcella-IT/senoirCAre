@@ -28,7 +28,7 @@ $admin_contact = $row_admin['ContactNumber'];
 <div class="container py-4 main-container">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-info text-white fw-bold d-flex justify-content-between align-items-center py-3">
-            <span>Event & Meeting Attendance Records</span>
+            <span>Event & Activities Attendance Records</span>
             <a href="profile.php?id=<?php echo $id; ?>" class="btn btn-light btn-sm fw-bold">Back to Profile</a>
         </div>
         <div class="card-body p-4">
