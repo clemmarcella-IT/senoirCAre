@@ -48,9 +48,7 @@ window.addEventListener('DOMContentLoaded', event => {
         }
     });
 
-    // --- MODAL ACCESSIBILITY FOCUS FIX ---
-    // Prevents "Blocked aria-hidden on an element because its descendant retained focus" console warnings
-    // 1. Prepare modal when showing
+
     document.addEventListener('show.bs.modal', (event) => {
         if (event.target) {
             event.target.removeAttribute('aria-hidden');
