@@ -1,7 +1,5 @@
 <?php
-session_start();
-include("../includes/db_connection.php");
-$id = $_GET['id'];
+include("includes/session.php");
 mysqli_query($conn, "UPDATE dues_payments SET notification_seen=1 WHERE OscaIDNo='$id'");
 
 $q_admin = mysqli_query($conn, "SELECT ContactNumber FROM admin_users WHERE AdminID=1");

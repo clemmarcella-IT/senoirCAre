@@ -1,8 +1,6 @@
 <?php
-session_start();
-include("../includes/db_connection.php");
+include("includes/session.php");
 
-$id = $_GET['id'];
 $oscaID = $id;
 
 // Get Senior Info
