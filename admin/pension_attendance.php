@@ -114,7 +114,7 @@ if (!$payout) {
         </div>
     </main>
 
-<script src="js/scripts.js"></script>
+<script src="js/scripts.js?v=<?php echo time(); ?>"></script>
 <script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
 <script>startScanner();</script>
 <script src="../vendor/simple-datatables/js/simple-datatables.min.js"></script>

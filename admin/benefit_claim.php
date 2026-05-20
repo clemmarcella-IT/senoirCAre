@@ -100,7 +100,7 @@
     </main>
 
     <script src="../vendor/select2/select2.min.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js?v=<?php echo time(); ?>"></script>
     <script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
     <script>
         startScanner();

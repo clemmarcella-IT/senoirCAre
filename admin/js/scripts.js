@@ -48,4 +48,34 @@ window.addEventListener('DOMContentLoaded', event => {
         }
     });
 
+    // --- MODAL ACCESSIBILITY FOCUS FIX ---
+    // Prevents "Blocked aria-hidden on an element because its descendant retained focus" console warnings
+    // 1. Prepare modal when showing
+    document.addEventListener('show.bs.modal', (event) => {
+        if (event.target) {
+            event.target.removeAttribute('aria-hidden');
+            event.target.removeAttribute('inert');
+        }
+    });
+
+    // 2. Clear focus and make inert immediately when hiding starts
+    document.addEventListener('hide.bs.modal', (event) => {
+        if (event.target) {
+            event.target.setAttribute('inert', 'true');
+            // Force blur if activeElement is inside the modal
+            if (document.activeElement && event.target.contains(document.activeElement)) {
+                if (typeof document.activeElement.blur === 'function') {
+                    document.activeElement.blur();
+                }
+            }
+        }
+    });
+
+    // 3. Restore accessibility attributes when fully closed
+    document.addEventListener('hidden.bs.modal', (event) => {
+        if (event.target) {
+            event.target.setAttribute('aria-hidden', 'true');
+        }
+    });
+
 });

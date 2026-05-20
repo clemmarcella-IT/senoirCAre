@@ -49,6 +49,6 @@
         </div>
     </main>
 
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

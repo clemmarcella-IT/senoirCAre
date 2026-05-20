@@ -83,7 +83,7 @@ $admin_row = mysqli_fetch_array($q_admin);
         </div>
     </main>
 
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js?v=<?php echo time(); ?>"></script>
     <script src="js/togglePassword.js"></script>
 </body>
 </html>

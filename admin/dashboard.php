@@ -156,7 +156,7 @@
 
     <!-- Added crossorigin="anonymous" to prevent tracking warnings -->
     <script src="../vendor/chartjs/Chart.min.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js?v=<?php echo time(); ?>"></script>
     <script src="js/senior-area-chart.js"></script>
     <script src="js/senior-bar-chart.js?v=<?php echo time(); ?>"></script>
     <script src="js/senior-pie-chart.js"></script>

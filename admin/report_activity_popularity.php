@@ -72,7 +72,7 @@
     <script src="../vendor/jszip/jszip.min.js"></script>
     <script src="../vendor/pdfmake/pdfmake.min.js"></script>
     <script src="../vendor/pdfmake/vfs_fonts.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js?v=<?php echo time(); ?>"></script>
     <script>
         $(document).ready(function() {
             $('#example').DataTable({

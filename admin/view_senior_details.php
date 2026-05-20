@@ -142,7 +142,7 @@ $php_age = $currentYear - $birthYear;
     
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../vendor/qrcodejs/qrcode.min.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js?v=<?php echo time(); ?>"></script>
     <script src="js/UserQRGenerate.js"></script>
     <script src="js/calculateAge.js"></script>
     

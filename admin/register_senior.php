@@ -98,7 +98,7 @@
             </div>
         </div>
     </main>
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js?v=<?php echo time(); ?>"></script>
     <script src="js/calculateAge.js"></script>
 </body>
 </html>
