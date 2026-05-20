@@ -2,18 +2,21 @@
 session_start();
 
 // Connects to your main database file
-include_once("../../includes/db_connection.php"); 
+include_once(__DIR__ . '/../../includes/db_connection.php'); 
 
 // Check if user ID is provided via GET parameter
-if (!isset($_GET['id']) || empty($_GET['id'])) {
+if (!isset($_GET['id'])) {
     header("Location: login.php");
     exit();
 }
 
+$id = $_GET['id'];
+
 // Validate that the ID exists in the seniors table
-$id = mysqli_real_escape_string($conn, $_GET['id']);
 $check_senior = mysqli_query($conn, "SELECT OscaIDNo FROM seniors WHERE OscaIDNo = '$id'");
-if (!mysqli_fetch_array($check_senior)) {
+$senior_record = mysqli_fetch_array($check_senior);
+
+if (!$senior_record) {
     echo "<script>alert('Senior record not found.'); window.location='login.php';</script>";
     exit();
 }

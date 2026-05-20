@@ -34,7 +34,8 @@
                 </div>
             </div>
 
-            <div class="card mb-4 shadow border-0">
+            <div class="card mb-4 shadow border-0" style="border-radius: 15px; overflow: hidden;">
+                <div class="card-header bg-dark text-white fw-bold">Senior Citizen Master List</div>
                 <div class="card-body bg-white">
                     <div class="table-responsive">
                         <table id="datatablesSimple" class="table table-hover align-middle">
