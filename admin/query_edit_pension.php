@@ -8,7 +8,7 @@ $new_amount = $_POST['pamount'];
 mysqli_query($conn, "UPDATE pension_master SET PayoutDate='$new_date', CashAmount='$new_amount' WHERE PensionMasterID='$id'");
 ?>
 
-<!-- Alert and Redirect -->
+
 <script>
     window.alert('Pension Payout updated successfully!');
     window.location="pension.php";

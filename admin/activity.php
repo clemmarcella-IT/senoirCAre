@@ -77,7 +77,6 @@
                                             </button>
                                         </div>
                                     </td>
-                                    <!-- THE FIX: The Modal include is now OUTSIDE the <td> but INSIDE the <tr> -->
                                     <?php include("includes/activity_modals.php"); ?>
                                 </tr>
                                 <?php } ?>

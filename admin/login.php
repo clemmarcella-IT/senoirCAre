@@ -10,7 +10,7 @@ $showOTPModal = false;
 $tempID = "";
 $displayCode = "";
 
-// --- LOGIC A: Standard Login (ID + Password) ---
+
 if (isset($_POST['login_btn'])) {
     $id = $_POST['admin_osca'];
     $pass = $_POST['password'];
@@ -28,7 +28,7 @@ if (isset($_POST['login_btn'])) {
     }
 }
 
-// --- LOGIC B: Forgot Password (Step 1: Generate Handshake) ---
+// --- LOGIC B: Forgot Password Request (Step 1: Generate OTP)
 if (isset($_POST['forgot_req'])) {
     $id = $_POST['osca_for_reset'];
     $q = mysqli_query($conn, "SELECT * FROM admin_users WHERE AdminOscaID='$id'");
@@ -47,7 +47,7 @@ if (isset($_POST['forgot_req'])) {
     }
 }
 
-// --- LOGIC C: Verify Handshake (Step 2: Direct Login) ---
+// --- LOGIC C: Verify Handshake (Step 2: Direct Login)
 if (isset($_POST['verify_otp_login'])) {
     $id = $_POST['temp_id'];
     $code = $_POST['otp_code'];
@@ -84,7 +84,6 @@ if (isset($_POST['verify_otp_login'])) {
         .input-group-text { cursor: pointer; background: white; border-left: none; }
         .input-group .form-control { border-right: none; }
 
-        /* LOGIN BUTTON STYLE - Matches User Portal Design */
         .btn-forest {
             background-color: var(--forest-deep);
             color: white;
@@ -137,7 +136,6 @@ if (isset($_POST['verify_otp_login'])) {
     LOGIN TO DASHBOARD
 </button>
         </form>
-        <!-- Find the end of your login-card and add this before the last </div> -->
             <div class="text-center mt-3 pt-3 border-top">
                 <p class="small text-muted mb-2">Are you a Senior Citizen?</p>
                 <a href="../index.php" class="btn btn-outline-secondary btn-sm w-100 py-2 shadow-sm">

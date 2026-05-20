@@ -53,7 +53,7 @@ $isStopped = ($activity['ActivityStatus'] == 'Stopped');
             </div>
 
     <div class="row">
-        <!-- LEFT: SCANNER (Hidden if Stopped) -->
+       
         <div class="col-md-4">
             <?php if(!$isStopped): ?>
                 <div class="card p-3 shadow-sm border-0">
@@ -72,7 +72,7 @@ $isStopped = ($activity['ActivityStatus'] == 'Stopped');
             <?php endif; ?>
         </div>
 
-        <!-- RIGHT: JOINED ATTENDANCE LIST -->
+        
         <div class="col-md-8">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-dark text-white font-weight-bold">Attendees Master List</div>

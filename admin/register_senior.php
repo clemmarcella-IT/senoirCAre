@@ -26,7 +26,7 @@
                     <form id="seniorForm" action="query_add_senior.php" method="POST">
                         <div class="row g-3">
 
-                            <!-- Row 1: ID, Sex, Status -->
+                            
                             <div class="col-md-4">
                                 <label class="fw-bold small text-muted">OscaIDNo. (Primary Key)</label>
                                 <input type="text" class="form-control card shadow border border-1 border-black" name="oscaID" placeholder="Numbers only" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required/>
@@ -47,7 +47,7 @@
                                 </select>
                             </div>
 
-                            <!-- Row 2: Names -->
+                           
                             <div class="col-md-4">
                                 <label class="small fw-bold">First Name</label>
                                 <input type="text" class="form-control card shadow border border-1 border-black" name="fname" required/>
@@ -61,7 +61,7 @@
                                 <input type="text" class="form-control card shadow border border-1 border-black" name="lname" required/>
                             </div>
 
-                            <!-- Row 3: Purok, Barangay, Birthday -->
+                            
                             <div class="col-md-4">
                                 <label class="small fw-bold">Purok (Zone)</label>
                                 <select class="form-select card shadow border border-1 border-black" name="purok" required>
@@ -79,7 +79,7 @@
                                 <div id="ageDisplay" class="mt-1 text-primary fw-bold small">Derived Age: --</div>
                             </div>
 
-                            <!-- Row 4: Pensioner -->
+                          
                             <div class="col-md-4">
                                 <label class="fw-bold small text-muted">Pensioner Status</label>
                                 <select class="form-select card shadow border border-1 border-black" name="pension_status">

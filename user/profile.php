@@ -129,7 +129,7 @@ $count_dues = mysqli_fetch_array($q_dues)[0];
                             </div>
                             <div class="col-6">
                                 <label class="label-tag">Pensioner Status</label>
-                                <!-- THIS IS WHERE IT DISPLAYS PENSIONER OR NON-PENSIONER -->
+                               
                                 <div class="data-box <?php echo $pension_color; ?> fw-bold"><?php echo $pension_text; ?></div>
                             </div>
                         </div>

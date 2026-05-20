@@ -41,7 +41,6 @@ if (!$payout) {
             </div>
 
             <div class="row">
-                <!-- LEFT: SCANNER -->
                 <div class="col-md-4">
                     <div class="card p-3 shadow-sm border-0">
                         <div class="card-header bg-success text-white fw-bold text-center mb-3">Live QR Scanner</div>
@@ -53,8 +52,7 @@ if (!$payout) {
                         </form>
                     </div>
                 </div>
-
-                <!-- RIGHT: MASTER LIST -->
+                
                 <div class="col-md-8">
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-dark text-white font-weight-bold">Pension Master List</div>

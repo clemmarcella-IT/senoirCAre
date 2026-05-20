@@ -1,18 +1,16 @@
-/**
- * SENIOR-CARE: QR Generation Logic (Admin Version)
- */
+
 function renderProfileQR(id) {
     if(!id) return;
     
-    // Ensure the target element exists before running
+    
     const target = document.getElementById("qrcode-target");
     if(!target) return;
 
     new QRCode(target, {
         text: id, 
-        width: 200,           // Increased for better clarity
-        height: 200,          // Increased for better clarity
-        colorDark : "#1F4B2C", // Forest Green
+        width: 200,          
+        height: 200,          
+        colorDark : "#1F4B2C",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
     });

@@ -18,7 +18,7 @@ if ($existingRecord) {
 }
 ?>
 
-<!-- Alert and Redirect -->
+
 <script>
     window.alert('Pension payout record updated successfully!');
     window.location="pension_attendance.php?id=<?php echo $pid; ?>";

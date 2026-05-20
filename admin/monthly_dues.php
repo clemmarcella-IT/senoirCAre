@@ -45,7 +45,7 @@
                                     <th>Contribution Name</th>
                                     <th>Amount Required</th>
                                     <th>Due Date</th>
-                                    <th>Seniors Fully Paid</th> <!-- UPDATED LABEL -->
+                                    <th>Seniors Fully Paid</th> 
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -65,7 +65,7 @@
                                     <td class="text-success fw-bold">₱<?php echo number_format($row['Amount_Required'], 2); ?></td>
                                     <td><?php echo date("M d, Y", strtotime($row['Due_Date'])); ?></td>
                                     
-                                    <!-- NOW SHOWS HOW MANY SENIORS HAVE CLEARED THIS DUE -->
+                                    <!-- SHOWS HOW MANY SENIORS HAVE CLEARED THIS DUE -->
                                     <td><span class="badge bg-primary"><?php echo $pcount; ?> Cleared</span></td>
                                     
                                     <td>

@@ -71,7 +71,6 @@ $admin_contact = $row_admin['ContactNumber'];
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-<!-- USING YOUR NEW JS FILE -->
 <script src="js/datatables-simple-demo.js"></script>
 </body>
 </html>

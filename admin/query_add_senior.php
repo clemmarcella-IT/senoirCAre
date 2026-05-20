@@ -20,7 +20,6 @@ if(isset($_POST['oscaID'])){
         exit;
     }
 
-    // Insert into seniors table (matches the actual DB columns)
     $query = "INSERT INTO seniors (OscaIDNo, LastName, FirstName, MiddleName, Sex, Purok, Barangay, Birthday, CitizenStatus, PensionerStatus) 
               VALUES ('$oscaID', '$lname', '$fname', '$mi', '$sex', '$purok', '$brgy', '$bday', '$status', '$pensionStatus')";
 

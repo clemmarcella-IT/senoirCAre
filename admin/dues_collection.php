@@ -43,7 +43,6 @@ $amount_required = $dues['Amount_Required'];
             </div>
 
             <div class="row">
-                <!-- LEFT: PAYMENT FORM -->
                 <div class="col-md-4">
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-header bg-success text-white fw-bold">Record Office Payment</div>
@@ -74,8 +73,6 @@ $amount_required = $dues['Amount_Required'];
                         </div>
                     </div>
                 </div>
-
-                <!-- RIGHT: COLLECTION RECORDS -->
                 <div class="col-md-8">
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-dark text-white fw-bold">Recent Collections</div>

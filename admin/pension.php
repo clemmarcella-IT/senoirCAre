@@ -22,7 +22,6 @@
             
             <div class="card mb-4 border-0 shadow-sm mt-3">
                 <div class="card-body">
-                    <!-- UPDATED LAYOUT TO EXACTLY MATCH HEALTH.PHP -->
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                         <span class="text-muted small fw-bold mb-2 mb-md-0 text-center text-md-start">PENSION PAYOUT MANAGEMENT</span>
                         <div class="d-flex flex-column flex-sm-row gap-2">

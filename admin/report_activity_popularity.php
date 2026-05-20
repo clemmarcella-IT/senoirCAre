@@ -19,7 +19,6 @@
 
     <main id="main-content">
         <div class="container-fluid px-4">
-            <!-- HEADER WITH BACK BUTTON -->
             <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
                 <h2 class="mb-0">Most Attended Events</h2>
                 <a href="reports.php" class="btn btn-outline-secondary">

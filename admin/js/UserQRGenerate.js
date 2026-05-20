@@ -1,5 +1,5 @@
 /**
- * SENIOR-CARE: QR Generation Logic (Standardized)
+ * SENIOR-CARE: QR Generation Logic
  */
 function renderProfileQR(id) {
     if(!id) return;

@@ -5,7 +5,7 @@ function onScanSuccess(decodedText, decodedResult) {
     const submitBtn = document.getElementById('submitBtn');
 
     if (idInput) {
-        idInput.value = decodedText; // Sets the OscaIDNo
+        idInput.value = decodedText; 
         console.log("Set scanned_id to:", decodedText);
     }
 

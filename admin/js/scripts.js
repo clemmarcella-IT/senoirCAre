@@ -10,7 +10,7 @@ window.toggleSidebar = function() {
         // MOBILE: Slide the menu in/out over the content
         document.body.classList.toggle('sidebar-mobile-open');
     } else {
-        // DESKTOP: Shrink the menu to show only icons (YouTube Style)
+        // DESKTOP: Shrink the menu to show only icons 
         document.body.classList.toggle('sidebar-collapsed');
     }
 };
@@ -18,8 +18,8 @@ window.toggleSidebar = function() {
 // 2. PAGE INITIALIZATION
 window.addEventListener('DOMContentLoaded', event => {
 
-    // --- ACTIVE LINK HIGHLIGHT ---
-    // This finds the current filename (e.g., 'health.php')
+    //ACTIVE LINK HIGHLIGHT
+    // This finds the current filename 
     const currentPath = window.location.pathname.split("/").pop();
     const navLinks = document.querySelectorAll('#sidebar .nav-link');
     
@@ -41,7 +41,6 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
-    // --- CLEANUP ON RESIZE ---
     // If the user rotates their phone or resizes the window, reset the states
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {

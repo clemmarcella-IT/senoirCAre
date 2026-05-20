@@ -19,7 +19,7 @@ if (isset($_POST['delete_claim'])) {
     exit;
 }
 
-// Fallback redirect if accessed directly without POST
+
 header('Location: benefits.php');
 exit;
 ?>

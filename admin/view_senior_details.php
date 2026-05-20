@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id']; 
 
-// Query gamit ang bagong database attributes
+
 $query = mysqli_query($conn, "SELECT * FROM seniors WHERE OscaIDNo = '$id'");
 $data = mysqli_fetch_array($query);
 
@@ -18,7 +18,7 @@ if (!$data) {
     exit;
 }
 
-// Logic for Pensioner Status Display (In-adjust para sa $data variable)
+// Logic for Pensioner Status Display
 if ($data['PensionerStatus'] == 'Pensioner' || $data['PensionerStatus'] == 'Yes') {
     $pension_text = "Pensioner";
     $pension_color = "text-success";
@@ -47,7 +47,7 @@ $php_age = $currentYear - $birthYear;
     <?php include('includes/sidebar.php'); ?>
 
     <main id="main-content">
-        <!-- NAVIGATION -->
+      
         <div class="d-flex justify-content-between align-items-center mb-4 no-print">
             <h2 class="fw-bold text-success"><i class="fa fa-id-card me-2"></i> Citizen Full Record</h2>
             <a href="profiling.php" class="btn btn-outline-dark fw-bold shadow-sm">
@@ -55,16 +55,16 @@ $php_age = $currentYear - $birthYear;
             </a>
         </div>
 
-        <!-- TWO-TONE PROFILE CARD -->
+     
         <div class="card shadow border-0" id="printArea" style="border-radius: 20px; overflow: hidden;">
             <div class="row g-0">
                 
-                <!-- LEFT SIDE (DARK SIDE) -->
+              
                 <div class="col-md-4 bg-dark text-white text-center p-5 id-side">
                     <h3 class="text-uppercase fw-bold mb-1"><?php echo $data['FirstName']; ?></h3>
                     <p class="small opacity-75 mb-4">OscaIDNo. <?php echo $data['OscaIDNo']; ?></p>
                     
-                    <!-- QR CODE -->
+                 
                     <div class="bg-white p-3 rounded d-inline-block shadow-sm mb-4">
                         <div id="qrcode-target"></div>
                     </div>
@@ -76,12 +76,12 @@ $php_age = $currentYear - $birthYear;
                     </div>
                 </div>
 
-                <!-- RIGHT SIDE (DATA SIDE) -->
+                
                 <div class="col-md-8 p-5 bg-white data-side">
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
                         <h4 class="fw-bold text-success m-0">Personal Registry Data</h4>
                         
-                        <!-- CITIZEN STATUS -->
+                       
                         <?php $statusColor = ($data['CitizenStatus'] == 'Inactive') ? 'bg-danger' : 'bg-success'; ?>
                         <span class="badge <?php echo $statusColor; ?> fs-6 text-uppercase px-4 py-2" style="border-radius: 50px;">
                             <?php echo $data['CitizenStatus']; ?>
@@ -106,7 +106,7 @@ $php_age = $currentYear - $birthYear;
                             <div class="data-box"><?php echo $data['Sex']; ?></div>
                         </div>
 
-                        <!-- LIVE AGE -->
+                       
                         <div class="col-md-4">
                             <label class="label-tag text-muted small fw-bold">AGE</label>
                             <div id="ageDisplay" class="data-box text-success fw-bold"><?php echo $php_age; ?> Years Old</div>
@@ -125,7 +125,6 @@ $php_age = $currentYear - $birthYear;
 
                         <div class="col-md-6">
                             <label class="label-tag text-muted small fw-bold">PENSIONER STATUS</label>
-                            <!-- GINAMIT ANG IYONG PENSION LOGIC DITO -->
                             <div class="data-box fw-bold <?php echo $pension_color; ?>">
                                 <?php echo $pension_text; ?>
                             </div>

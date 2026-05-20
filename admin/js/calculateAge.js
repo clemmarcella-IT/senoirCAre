@@ -1,7 +1,5 @@
-/**
- * SENIOR-CARE: Live Age Calculation
- * Works for both Single Registration and Multiple Edit Modals
- */
+//SENIOR-CARE: Live Age Calculation
+
 function calculateAge(rowId = '') {
     // If an ID is passed (Edit Modal), attach it. Otherwise, use default (Registration).
     const inputId = rowId ? 'bdayInput_' + rowId : 'bdayInput';
