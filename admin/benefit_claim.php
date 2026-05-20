@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>New Benefit Claim | SENIOR-CARE</title>
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../vendor/simple-datatables/css/style.min.css" rel="stylesheet" />
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="../vendor/select2/select2.min.css" rel="stylesheet" />
     <style>
         .select2-container .select2-selection--single {
             height: 38px;
@@ -22,9 +22,9 @@
             height: 36px;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../vendor/html5-qrcode/html5-qrcode.min.js"></script>
 </head>
 <body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
@@ -99,7 +99,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="../vendor/select2/select2.min.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
     <script>

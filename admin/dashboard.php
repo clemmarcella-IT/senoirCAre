@@ -7,8 +7,8 @@
     <title>Dashboard | Admin</title>
     
     <!-- Added crossorigin="anonymous" to prevent tracking warnings -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="sb-nav-fixed">
@@ -155,7 +155,7 @@
     </script>
 
     <!-- Added crossorigin="anonymous" to prevent tracking warnings -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../vendor/chartjs/Chart.min.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/senior-area-chart.js"></script>
     <script src="js/senior-bar-chart.js?v=<?php echo time(); ?>"></script>

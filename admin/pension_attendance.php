@@ -15,13 +15,13 @@ if (!$payout) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Pension Claim | Pension Payout</title>
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../vendor/simple-datatables/css/style.min.css" rel="stylesheet" />
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="../vendor/jquery/jquery.slim.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../vendor/html5-qrcode/html5-qrcode.min.js"></script>
 </head>
 <body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
@@ -117,13 +117,13 @@ if (!$payout) {
 <script src="js/scripts.js"></script>
 <script src="js/qr_scanner_logic.js?v=<?php echo time(); ?>"></script>
 <script>startScanner();</script>
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script src="../vendor/simple-datatables/js/simple-datatables.min.js"></script>
 <script src="js/datatables-simple-demo.js"></script>
 <script>
     function printTable() {
         var table = document.getElementById("datatablesSimple");
         var newWindow = window.open("", "", "width=800,height=600");
-        newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css'></head><body>");
+        newWindow.document.write("<html><head><title>Print</title><link rel='stylesheet' href='../vendor/bootstrap/css/bootstrap.min.css'></head><body>");
         newWindow.document.write("<h3 class='text-center'>Pension Payout</h3>");
         newWindow.document.write(table.outerHTML);
         newWindow.document.close();

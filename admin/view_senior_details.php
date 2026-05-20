@@ -38,8 +38,8 @@ $php_age = $currentYear - $birthYear;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Citizen Profile | <?php echo $id; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
 </head>
 <body class="sb-nav-fixed">
@@ -140,8 +140,8 @@ $php_age = $currentYear - $birthYear;
         </div>
     </main>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../vendor/qrcodejs/qrcode.min.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/UserQRGenerate.js"></script>
     <script src="js/calculateAge.js"></script>

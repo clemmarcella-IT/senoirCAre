@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Pension Summary | Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/all.min.css">
     <link href="css/style.css?v=<?php echo time(); ?>" rel="stylesheet" />
     
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="../vendor/datatables-buttons/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="../vendor/datatables-buttons/css/buttons.dataTables.min.css">
 </head>
 <body class="sb-nav-fixed">
     <?php include('includes/header.php'); ?>
@@ -66,14 +66,14 @@
     </main>
 
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/datatables-buttons/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../vendor/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="../vendor/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="../vendor/jszip/jszip.min.js"></script>
+    <script src="../vendor/pdfmake/pdfmake.min.js"></script>
+    <script src="../vendor/pdfmake/vfs_fonts.js"></script>
     <script src="js/scripts.js"></script>
     <script>
         $(document).ready(function() {

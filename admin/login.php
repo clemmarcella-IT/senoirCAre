@@ -73,9 +73,9 @@ if (isset($_POST['verify_otp_login'])) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Admin Login | SENIOR-CARE</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/all.min.css">
+    <script src="../vendor/sweetalert2/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
         body { background: linear-gradient(135deg, #F4FFFC 0%, #D6F1DF 100%); height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
@@ -116,13 +116,13 @@ if (isset($_POST['verify_otp_login'])) {
         <form method="POST">
             <div class="mb-3">
                 <label class="small fw-bold text-muted mb-1">Admin OscaIDNo.</label>
-                <input type="text" name="admin_osca" class="form-control" placeholder="Numbers only" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <input type="text" name="admin_osca" class="form-control" placeholder="Numbers only" oninput="this.value = this.value.replace(/[^0-9]/g, '')" autocomplete="username" required>
             </div>
             
             <div class="mb-3">
                 <label class="small fw-bold text-muted mb-1">Password</label>
                 <div class="input-group">
-                    <input type="password" name="password" id="passInput" class="form-control" placeholder="••••••••" required>
+                    <input type="password" name="password" id="passInput" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
                     <span class="input-group-text" onclick="togglePassword('passInput', 'eyeIcon')">
                         <i id="eyeIcon" class="fa fa-eye text-muted"></i>
                     </span>

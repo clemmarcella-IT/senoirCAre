@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Monthly Dues | SENIOR-CARE</title>
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../vendor/simple-datatables/css/style.min.css" rel="stylesheet" />
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../vendor/font-awesome/css/all.min.css">
     <link href="css/style.css" rel="stylesheet" />
 </head>
 <body class="sb-nav-fixed">
@@ -123,8 +123,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../vendor/simple-datatables/js/simple-datatables.min.js"></script>
     <script src="js/datatables-simple-demo.js"></script>
     <script src="js/scripts.js"></script>
     <script>
@@ -132,7 +132,7 @@
         var table = document.getElementById("datatablesSimple");
         var newWindow = window.open("", "", "width=900,height=800");
         newWindow.document.write("<html><head><title>Monthly Dues Report</title>");
-        newWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">');
+        newWindow.document.write('<link rel="stylesheet" href="../vendor/bootstrap/css/bootstrap.min.css">');
         newWindow.document.write("<style>body{padding:40px;font-family:sans-serif;}table{width:100%;border-collapse:collapse;margin-top:20px;}th,td{border:1px solid #ddd;padding:10px;text-align:left;}th{background:#1F4B2C!important;color:white!important;text-transform:uppercase;font-size:12px;}</style>");
         newWindow.document.write("</head><body>");
         newWindow.document.write("<div style='text-align:center;border-bottom:2px solid #1F4B2C;padding-bottom:10px;margin-bottom:20px;'><h2>BARANGAY KALAWAG 1</h2><p style='margin:0;'>Monthly Dues Report</p></div>");

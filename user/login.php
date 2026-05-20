@@ -26,7 +26,7 @@ if (isset($_POST['login_btn'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Login | SENIOR-CARE</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/userStyle.css">
 </head>
 <body>
@@ -52,7 +52,7 @@ if (isset($_POST['login_btn'])) {
                     <form action="login.php" method="POST">
                         <div class="mb-4">
                             <label class="fw-bold small mb-2">OscaIDNo.</label>
-                            <input type="text" name="login_osca" class="form-control form-control-lg" placeholder="Digits only (e.g. 001)" required>
+                            <input type="text" name="login_osca" class="form-control form-control-lg" placeholder="Digits only (e.g. 001)" autocomplete="username" required>
                         </div>
 
                         <button type="submit" name="login_btn" class="btn btn-forest w-100 py-2 mb-3">
