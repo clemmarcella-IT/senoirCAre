@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2026 at 11:58 AM
+-- Generation Time: May 20, 2026 at 02:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,8 +40,11 @@ CREATE TABLE `activities` (
 --
 
 INSERT INTO `activities` (`ActivityID`, `ActivityName`, `ActivityDate`, `ActivityTimeStart`, `ActivityStatus`) VALUES
-(1, 'sada', '2026-05-09', '16:22:00', 'Stopped'),
-(2, 'sada', '2026-05-09', '17:25:00', 'Stopped');
+(2, 'sada', '2026-05-09', '17:25:00', 'Stopped'),
+(3, 'General Assembly and Health Check', '2026-05-10', '12:11:00', 'Stopped'),
+(8, 'sada', '2026-05-20', '20:11:00', 'Stopped'),
+(9, 'sada', '2026-05-20', '20:12:00', 'Stopped'),
+(10, 'sada', '2026-05-20', '20:43:00', 'Stopped');
 
 -- --------------------------------------------------------
 
@@ -63,7 +66,7 @@ CREATE TABLE `admin_users` (
 --
 
 INSERT INTO `admin_users` (`AdminID`, `AdminOscaID`, `Password`, `ContactNumber`, `ResetCode`, `CodeExpiry`) VALUES
-(1, '001', '$2y$10$40jacbDAJxAxwt2Nkg3by.wsTjBrjotr6OfqdRQgXhfH9f4DUW0XK', '09123456789', NULL, NULL);
+(1, '001', '$2y$10$bGXL0ZGmHXeu8p.8cKEvYO0PjlwxE0WjBmELElHgV4xCf9AN2bGCe', '09123456789', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -87,10 +90,12 @@ CREATE TABLE `dues_payments` (
 --
 
 INSERT INTO `dues_payments` (`PaymentID`, `OscaIDNo`, `DuesID`, `Amount_Paid`, `Date_Paid`, `Time_Paid`, `Payment_Status`, `notification_seen`) VALUES
-(3, '055455', 18, 200.00, '2026-05-09', NULL, 'Partial'),
-(4, '055455', 18, 100.00, '2026-05-09', NULL, 'Paid'),
-(5, '055455', 19, 100.00, '2026-05-09', NULL, 'Partial'),
-(6, '055455', 19, 300.00, '2026-05-09', NULL, 'Paid');
+(7, '055455', 20, 100.00, '2026-05-09', NULL, 'Partial', 1),
+(8, '055455', 20, 100.00, '2026-05-09', NULL, 'Paid', 1),
+(9, '055455', 21, 50.00, '2026-05-09', NULL, 'Partial', 1),
+(10, '055455', 21, 50.00, '2026-05-09', NULL, 'Paid', 1),
+(18, '055455', 26, 60.00, '2026-05-20', NULL, 'Partial', 1),
+(19, '055455', 26, 40.00, '2026-05-20', NULL, 'Paid', 1);
 
 -- --------------------------------------------------------
 
@@ -110,8 +115,9 @@ CREATE TABLE `monthly_dues_master` (
 --
 
 INSERT INTO `monthly_dues_master` (`DuesID`, `Contribution_Name`, `Amount_Required`, `Due_Date`) VALUES
-(18, 'MonthlyDue_May_2026', 300.00, '2026-05-09'),
-(19, 'MonthlyDue_May_2026', 400.00, '2026-05-09');
+(20, 'MonthlyDue_May_2026', 200.00, '2026-05-09'),
+(21, 'MonthlyDue_May_2026', 100.00, '2026-05-09'),
+(26, 'MonthlyDue_May_2026', 100.00, '2026-05-20');
 
 -- --------------------------------------------------------
 
@@ -130,7 +136,10 @@ CREATE TABLE `pension_master` (
 --
 
 INSERT INTO `pension_master` (`PensionMasterID`, `PayoutDate`, `CashAmount`) VALUES
-(3, '2026-05-09', 4000.00);
+(3, '2026-05-09', 4000.00),
+(10, '2026-05-20', 1000.00),
+(11, '2026-05-20', 1000.00),
+(12, '2026-05-20', 2000.00);
 
 -- --------------------------------------------------------
 
@@ -156,7 +165,8 @@ CREATE TABLE `seniors` (
 --
 
 INSERT INTO `seniors` (`OscaIDNo`, `LastName`, `FirstName`, `MiddleName`, `Sex`, `Purok`, `Barangay`, `Birthday`, `CitizenStatus`, `PensionerStatus`) VALUES
-('055455', 'DELA CRUZ', 'JUAN', 'M', 'Male', 'Zone 1', 'Kalawag 1', '1955-05-15', 'Active', 'Pensioner');
+('055455', 'DELA CRUZ', 'JUAN', 'M', 'Male', 'Zone 1', 'Kalawag 1', '1955-05-15', 'Active', 'Pensioner'),
+('1323434', 'clemenceou', 'mar', 'M', 'Male', 'Zone 3', 'Kalawag 1', '1956-01-05', 'Active', 'Pensioner');
 
 -- --------------------------------------------------------
 
@@ -184,11 +194,25 @@ CREATE TABLE `transaction_logs` (
 --
 
 INSERT INTO `transaction_logs` (`LogID`, `OscaIDNo`, `ActivityID`, `PensionMasterID`, `ClaimType`, `Amount_Released`, `DateRecorded`, `TimeRecorded`, `Status`, `ControlNo`, `Reason`, `IsRead`) VALUES
-(1, '055455', NULL, NULL, 'Pension Claim', 4000.00, '2026-05-09', '09:09:30', 'Claimed', '4565676', ''),
-(2, '055455', NULL, NULL, 'Benefit Claim', 50.00, '2026-05-09', '10:21:43', 'Claimed', NULL, 'medical'),
-(3, '055455', 1, NULL, NULL, NULL, '2026-05-09', '10:22:51', 'Present', NULL, NULL),
-(4, '055455', NULL, 3, 'Pension Claim', 4000.00, '2026-05-09', '10:33:31', 'Claimed', '4565676', ''),
-(6, '055455', 2, NULL, NULL, NULL, '2026-05-09', '11:26:44', 'Present', NULL, NULL);
+(1, '055455', NULL, NULL, 'Pension Claim', 4000.00, '2026-05-09', '09:09:30', 'Claimed', '4565676', '', 1),
+(2, '055455', NULL, NULL, 'Benefit Claim', 50.00, '2026-05-09', '10:21:43', 'Claimed', NULL, 'medical', 1),
+(3, '055455', NULL, NULL, NULL, NULL, '2026-05-09', '10:22:51', 'Present', NULL, NULL, 1),
+(4, '055455', NULL, 3, 'Pension Claim', 4000.00, '2026-05-09', '10:33:31', 'Claimed', '4565676', '', 1),
+(6, '055455', 2, NULL, NULL, NULL, '2026-05-09', '11:26:44', 'Present', NULL, NULL, 1),
+(8, '055455', NULL, NULL, NULL, NULL, '2026-05-16', '17:48:18', 'Present', NULL, NULL, 1),
+(9, '055455', NULL, NULL, 'Pension Claim', 10000.00, '2026-05-20', '06:51:13', 'Claimed', '4565676', '', 1),
+(13, '055455', NULL, NULL, 'Pension Claim', 10000.00, '2026-05-20', '06:55:40', 'Claimed', '4565676', '', 1),
+(14, '055455', NULL, NULL, NULL, NULL, '2026-05-20', '06:56:16', 'Present', NULL, NULL, 1),
+(16, '055455', NULL, NULL, 'Benefit Claim', 100.00, '2026-05-20', '11:03:19', 'Claimed', NULL, 'medical', 1),
+(17, '055455', NULL, NULL, 'Pension Claim', 10000.00, '2026-05-20', '11:04:38', 'Claimed', '4565676', '', 1),
+(19, '055455', NULL, NULL, NULL, NULL, '2026-05-20', '11:05:18', 'Present', NULL, NULL, 1),
+(20, '055455', 8, NULL, NULL, NULL, '2026-05-20', '14:11:22', 'Present', NULL, NULL, 1),
+(21, '055455', 9, NULL, NULL, NULL, '2026-05-20', '14:13:00', 'Present', NULL, NULL, 1),
+(22, '055455', NULL, 10, 'Pension Claim', 1000.00, '2026-05-20', '14:14:19', 'Claimed', '4565676', '', 1),
+(24, '055455', 10, NULL, NULL, NULL, '2026-05-20', '14:43:58', 'Present', NULL, NULL, 1),
+(25, '055455', NULL, 12, 'Pension Claim', 2000.00, '2026-05-20', '14:44:42', 'Claimed', '4565676', '', 1),
+(26, '1323434', NULL, 12, 'Pension Claim', NULL, '2026-05-20', '14:45:01', 'Unclaimed', '1213', 'death', 0),
+(27, '055455', NULL, NULL, 'Benefit Claim', 200.00, '2026-05-20', '14:45:41', 'Claimed', NULL, 'death', 1);
 
 --
 -- Indexes for dumped tables
@@ -250,7 +274,7 @@ ALTER TABLE `transaction_logs`
 -- AUTO_INCREMENT for table `activities`
 --
 ALTER TABLE `activities`
-  MODIFY `ActivityID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ActivityID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `admin_users`
@@ -262,25 +286,25 @@ ALTER TABLE `admin_users`
 -- AUTO_INCREMENT for table `dues_payments`
 --
 ALTER TABLE `dues_payments`
-  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `PaymentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `monthly_dues_master`
 --
 ALTER TABLE `monthly_dues_master`
-  MODIFY `DuesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `DuesID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `pension_master`
 --
 ALTER TABLE `pension_master`
-  MODIFY `PensionMasterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `PensionMasterID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `transaction_logs`
 --
 ALTER TABLE `transaction_logs`
-  MODIFY `LogID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `LogID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
